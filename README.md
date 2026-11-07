@@ -66,7 +66,6 @@ prerequisites, Android cross-compilation and troubleshooting.
 ## Documentation
 
 - [docs/build.md](docs/build.md) — build pipeline, native compilation, troubleshooting ([中文](docs/build.zh-CN.md))
-- [docs/dependency-tree.md](docs/dependency-tree.md) — package and native dependency graph
 
 ## License
 

@@ -61,7 +61,6 @@ dotnet build ImGui4NET.slnx
 ## 文档
 
 - [docs/build.zh-CN.md](build.zh-CN.md) —— 构建管线、原生编译、排错（[English](build.md)）
-- [docs/dependency-tree.md](dependency-tree.md) —— 包依赖与原生依赖图
 
 ## 许可证
 
