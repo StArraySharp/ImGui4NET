@@ -1,0 +1,110 @@
+<Project>
+
+  <PropertyGroup>
+    <TargetFramework Condition="'$(TargetFramework)' == ''">net10.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <LangVersion>latest</LangVersion>
+    <Deterministic>true</Deterministic>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <!--
+      Version: <Dear ImGui version>.<library revision>
+      Example: 1.93.0.1  (Dear ImGui 1.93.0, first library revision)
+
+      Four numeric segments are used because NuGet only accepts
+      major[.minor[.build[.revision]]] and treats a 5th segment as invalid. Note
+      that a segment may not exceed 65534: 65535 is rejected by the assembly
+      version parser (CS7034).
+
+      ImGuiVersion must match the submodule tag; the CheckImguiVersion target
+      below warns when they disagree. LibraryRevision is bumped by hand.
+    -->
+    <PropertyGroup>
+      <ImGuiVersion Condition="'$(ImGuiVersion)' == ''">1.93.0</ImGuiVersion>
+      <LibraryRevision Condition="'$(LibraryRevision)' == ''">1</LibraryRevision>
+
+      <Version>$(ImGuiVersion).$(LibraryRevision)</Version>
+      <AssemblyVersion>$(Version)</AssemblyVersion>
+      <FileVersion>$(Version)</FileVersion>
+      <InformationalVersion>$(Version)</InformationalVersion>
+    </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>ImGui4NET contributors</Authors>
+    <Company>ImGui4NET</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>icon.png</PackageIcon>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+    <!-- Third-party binding version, kept in one place so all backends agree. -->
+    <SilkNetVersion>2.23.0</SilkNetVersion>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(IsPackable)' == 'true'">
+    <None Include="$(MSBuildThisFileDirectory)../README.md" Pack="true" PackagePath="/" />
+      <None Include="$(MSBuildThisFileDirectory)../LICENSE" Pack="true" PackagePath="/" />
+      <None Include="$(MSBuildThisFileDirectory)ImGui4NET.Assets/icon.png" Pack="true" PackagePath="/" />
+    </ItemGroup>
+
+  <!--
+    Guard against version drift: the declared ImGuiVersion must appear in the
+    submodule's imgui.h. Building a package that claims one version while the
+    sources are another is the exact failure this catches.
+  -->
+  <Target Name="CheckImguiVersion" BeforeTargets="GetAssemblyVersion;GenerateAssemblyInfo;Pack">
+    <PropertyGroup>
+      <_ImguiHeader>$(MSBuildThisFileDirectory)../imgui/imgui.h</_ImguiHeader>
+    </PropertyGroup>
+    <ReadLinesFromFile File="$(_ImguiHeader)" Condition="Exists('$(_ImguiHeader)')">
+      <Output TaskParameter="Lines" ItemName="_ImguiHeaderLines" />
+    </ReadLinesFromFile>
+    <ItemGroup>
+          <!--
+            Only the string form counts. imgui.h also defines IMGUI_VERSION_NUM and
+            mentions IMGUI_VERSION in a GetVersion() comment, both of which would
+            otherwise be picked up.
+          -->
+          <_ImguiVersionLine Include="@(_ImguiHeaderLines)"
+                             Condition="$([System.String]::Copy('%(Identity)').StartsWith('#define IMGUI_VERSION '))" />
+        </ItemGroup>
+    <PropertyGroup>
+      <_ImguiHeaderVersion>@(_ImguiVersionLine->'%(Identity)'->Replace('&quot;','')->Replace('#define IMGUI_VERSION','')->Trim())</_ImguiHeaderVersion>
+    </PropertyGroup>
+    <Warning Condition="Exists('$(_ImguiHeader)') and '$(_ImguiHeaderVersion)' != '' and '$(_ImguiHeaderVersion)' != '$(ImGuiVersion)'"
+             Text="Version drift: ImGuiVersion is $(ImGuiVersion) but imgui.h reports $(_ImguiHeaderVersion)." />
+  </Target>
+
+  <!--
+    Native libraries. Every runtime file under runtimes/<rid>/native is copied
+    to the build output and packed into the NuGet package. Adding a new RID is
+    therefore just a matter of dropping files into a new folder.
+
+    $(MSBuildProjectDirectory) is used rather than $(MSBuildThisFileDirectory):
+    this file lives in src/, one level above each project.
+  -->
+  <ItemGroup Condition="Exists('$(MSBuildProjectDirectory)/runtimes')">
+    <None Include="$(MSBuildProjectDirectory)/runtimes/*/native/*.dll"
+          CopyToOutputDirectory="PreserveNewest"
+          Link="%(Filename)%(Extension)"
+          Pack="true"
+          PackagePath="runtimes/%(RecursiveDir)%(Filename)%(Extension)" />
+    <None Include="$(MSBuildProjectDirectory)/runtimes/*/native/*.so"
+          CopyToOutputDirectory="PreserveNewest"
+          Link="%(Filename)%(Extension)"
+          Pack="true"
+          PackagePath="runtimes/%(RecursiveDir)%(Filename)%(Extension)" />
+    <None Include="$(MSBuildProjectDirectory)/runtimes/*/native/*.dylib"
+          CopyToOutputDirectory="PreserveNewest"
+          Link="%(Filename)%(Extension)"
+          Pack="true"
+          PackagePath="runtimes/%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+</Project>

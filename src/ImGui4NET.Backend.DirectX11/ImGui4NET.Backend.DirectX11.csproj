@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <AssemblyName>ImGui4NET.Backend.DirectX11</AssemblyName>
+    <RootNamespace>ImGui4NET.Backend.DirectX11</RootNamespace>
+    <PackageId>ImGui4NET.Backend.DirectX11</PackageId>
+    <Description>Dear ImGui Direct3D 11 renderer backend. Part of ImGui4NET.</Description>
+    <PackageTags>imgui;dear-imgui;backend;directx11</PackageTags>
+    <IsPackable>true</IsPackable>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS0169;CS0649;CS8981;CS0108;CS0114;CS8669;CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ImGui4NET\ImGui4NET.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Silk.NET.Direct3D11" Version="$(SilkNetVersion)" />
+  </ItemGroup>
+
+</Project>
+
+

@@ -1,0 +1,30 @@
+# Build output
+bin/
+obj/
+*.user
+*.suo
+
+# IDE
+.idea/
+.vs/
+*.DotSettings.user
+
+# Native build artifacts
+*.o
+*.a
+*.lib
+*.exp
+*.pdb
+*.ilk
+
+# Third-party native libraries fetched by tools/fetch-deps.sh
+third_party/libs/
+
+# Native build artifacts (import libraries, logs)
+/build/
+
+# Python bytecode
+__pycache__/
+*.pyc
+
+docs/dependency-tree.md

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"
+     viewBox="0 0 256 256" role="img" aria-label="ImGui4NET">
+  <title>ImGui4NET</title>
+  <defs>
+    <linearGradient id="plate" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1b1d24"/>
+      <stop offset="1" stop-color="#0c0d12"/>
+    </linearGradient>
+    <linearGradient id="sharp" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8b5cf6"/>
+      <stop offset="1" stop-color="#512bd4"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Plate -->
+  <rect x="0" y="0" width="256" height="256"
+        rx="52" ry="52" fill="url(#plate)"/>
+
+  <!-- ImGui window frame -->
+  <rect x="26" y="26"
+        width="204" height="204"
+        rx="26" ry="26"
+        fill="none" stroke="#4ca8f5" stroke-width="8"
+        stroke-opacity="0.82"/>
+  <line x1="50" y1="62"
+        x2="206" y2="62"
+        stroke="#4ca8f5" stroke-width="6"
+        stroke-opacity="0.45" stroke-linecap="round"/>
+
+  <!-- C# mark -->
+  <g fill="url(#sharp)">
+      <polygon points="98.00,86.00 119.00,86.00 104.00,202.00 83.00,202.00"/>
+      <polygon points="149.00,86.00 170.00,86.00 155.00,202.00 134.00,202.00"/>
+      <polygon points="58.00,112.00 196.00,112.00 196.00,133.00 58.00,133.00"/>
+      <polygon points="58.00,150.00 196.00,150.00 196.00,171.00 58.00,171.00"/>
+  </g>
+</svg>

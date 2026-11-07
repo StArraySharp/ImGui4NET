@@ -1,0 +1,8 @@
+[submodule "imgui"]
+	path = imgui
+	url = https://github.com/ocornut/imgui.git
+	branch = master
+[submodule "imgui_club"]
+	path = imgui_club
+	url = https://github.com/ocornut/imgui_club.git
+	branch = main

@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <AssemblyName>ImGui4NET.Backend.Vulkan</AssemblyName>
+    <RootNamespace>ImGui4NET.Backend.Vulkan</RootNamespace>
+    <PackageId>ImGui4NET.Backend.Vulkan</PackageId>
+    <Description>Dear ImGui Vulkan renderer backend. Part of ImGui4NET.</Description>
+    <PackageTags>imgui;dear-imgui;backend;vulkan</PackageTags>
+    <IsPackable>true</IsPackable>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS0169;CS0649;CS8981;CS0108;CS0114;CS8669;CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ImGui4NET\ImGui4NET.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Silk.NET.Vulkan" Version="$(SilkNetVersion)" />
+  </ItemGroup>
+
+</Project>
+
+

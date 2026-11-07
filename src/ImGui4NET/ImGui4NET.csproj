@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <AssemblyName>ImGui4NET</AssemblyName>
+    <RootNamespace>ImGui4NET</RootNamespace>
+    <PackageId>ImGui4NET</PackageId>
+    <Description>Bare-metal .NET bindings for Dear ImGui: the native structs and functions are exposed directly, without a wrapper layer. Use together with one of the ImGui4NET.Backend.* packages.</Description>
+    <PackageTags>imgui;dear-imgui;gui;bindings;native</PackageTags>
+    <IsPackable>true</IsPackable>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS0169;CS0649;CS8981;CS0108;CS0114;CS8669;CS1591</NoWarn>
+  </PropertyGroup>
+
+</Project>
+
+
+

@@ -1,0 +1,25 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ImGui4NET/ImGui4NET.csproj" />
+    <Project Path="src/ImGui4NET.Club/ImGui4NET.Club.csproj" />
+    <Project Path="src/ImGui4NET.Backend.OpenGL2/ImGui4NET.Backend.OpenGL2.csproj" />
+    <Project Path="src/ImGui4NET.Backend.OpenGL3/ImGui4NET.Backend.OpenGL3.csproj" />
+    <Project Path="src/ImGui4NET.Backend.DirectX9/ImGui4NET.Backend.DirectX9.csproj" />
+    <Project Path="src/ImGui4NET.Backend.DirectX11/ImGui4NET.Backend.DirectX11.csproj" />
+    <Project Path="src/ImGui4NET.Backend.DirectX12/ImGui4NET.Backend.DirectX12.csproj" />
+    <Project Path="src/ImGui4NET.Backend.Vulkan/ImGui4NET.Backend.Vulkan.csproj" />
+    <Project Path="src/ImGui4NET.Backend.Win32/ImGui4NET.Backend.Win32.csproj" />
+    <Project Path="src/ImGui4NET.Backend.Glfw/ImGui4NET.Backend.Glfw.csproj" />
+    <Project Path="src/ImGui4NET.Backend.Sdl2/ImGui4NET.Backend.Sdl2.csproj" />
+    <Project Path="src/ImGui4NET.Backend.Sdl3/ImGui4NET.Backend.Sdl3.csproj" />
+    <Project Path="src/ImGui4NET.Backend.SdlGpu3/ImGui4NET.Backend.SdlGpu3.csproj" />
+    <Project Path="src/ImGui4NET.Backend.Glut/ImGui4NET.Backend.Glut.csproj" />
+    <Project Path="src/ImGui4NET.Backend.Allegro5/ImGui4NET.Backend.Allegro5.csproj" />
+    <Project Path="src/ImGui4NET.Backend.Null/ImGui4NET.Backend.Null.csproj" />
+    <Project Path="src/ImGui4NET.Backend.Android/ImGui4NET.Backend.Android.csproj" />
+  </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/ImGui4NET.Sample.OpenGL3/ImGui4NET.Sample.OpenGL3.csproj" />
+  </Folder>
+</Solution>
+

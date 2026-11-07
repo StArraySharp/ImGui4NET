@@ -1,0 +1,10 @@
+# Shell scripts must keep LF endings so they run inside Linux containers/WSL.
+*.sh   text eol=lf
+
+# Everything else may use the platform default.
+*.cs   text
+*.csproj text
+*.props text
+*.md   text
+*.slnx text
+*.py   text eol=lf

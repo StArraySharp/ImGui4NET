@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <AssemblyName>ImGui4NET.Backend.Allegro5</AssemblyName>
+    <RootNamespace>ImGui4NET.Backend.Allegro5</RootNamespace>
+    <PackageId>ImGui4NET.Backend.Allegro5</PackageId>
+    <Description>Dear ImGui Allegro5 platform backend. Part of ImGui4NET.</Description>
+    <PackageTags>imgui;dear-imgui;backend;allegro5</PackageTags>
+    <IsPackable>true</IsPackable>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS0169;CS0649;CS8981;CS0108;CS0114;CS8669;CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ImGui4NET\ImGui4NET.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Ships allegro-5.2.dll and the Allegro headers used by imgui_impl_allegro5. -->
+  </ItemGroup>
+
+</Project>
+
+
+
+
