@@ -736,15 +736,51 @@ echo "==> Done"
 if [ "$BUILD_ANDROID" = "1" ]; then
     echo "==> Building Android arm64 native libraries"
 
-    NDK="${ANDROID_NDK:-}"
-    if [ -z "$NDK" ]; then
-        for candidate in "${ANDROID_NDK_HOME:-}" "${ANDROID_SDK_ROOT:-}/ndk/27.2.12479018" \
-                         "/d/AndroidSDK/android-ndk-r27c" "/d/AndroidSDK/ndk/27.2.12479018"; do
-            [ -d "$candidate" ] && NDK="$candidate" && break
+    # NDK discovery, in order of precedence:
+    #   1. ANDROID_NDK               explicit path to an NDK root
+    #   2. ANDROID_NDK_HOME          same, conventional CI variable
+    #   3. <sdk>/ndk/<version>       highest version under the SDK's ndk/ folder
+    #   4. NDK_ROOT                  legacy name
+    # The SDK itself is located via ANDROID_SDK_ROOT, then ANDROID_HOME.
+    find_ndk() {
+        local candidate
+
+        for candidate in "${ANDROID_NDK:-}" "${ANDROID_NDK_HOME:-}" "${NDK_ROOT:-}"; do
+            if [ -n "$candidate" ] && [ -d "$candidate" ]; then
+                echo "$candidate"
+                return
+            fi
         done
-    fi
+
+        local sdk
+        for sdk in "${ANDROID_SDK_ROOT:-}" "${ANDROID_HOME:-}"; do
+            [ -n "$sdk" ] && [ -d "$sdk/ndk" ] || continue
+            # Entries may be symlinks (the SDK usually links a versioned name to
+            # the unpacked NDK), so `find -type d` would skip them. Test each
+            # entry with -d instead, and version-sort to pick the newest.
+            candidate="$(
+                for entry in "$sdk"/ndk/*; do
+                    [ -d "$entry" ] && basename "$entry"
+                done | sort -V | tail -1
+            )"
+            if [ -n "$candidate" ]; then
+                echo "$sdk/ndk/$candidate"
+                return
+            fi
+        done
+    }
+
+    NDK="$(find_ndk)"
     if [ -z "$NDK" ]; then
-        echo "error: Android NDK not found; set ANDROID_NDK" >&2
+        cat >&2 <<'EOF'
+error: Android NDK not found.
+
+Set one of these and retry:
+  ANDROID_NDK       path to the NDK root, e.g. /opt/android-ndk-r27c
+  ANDROID_NDK_HOME  same
+  ANDROID_SDK_ROOT  SDK root containing an ndk/<version> folder
+  ANDROID_HOME      same
+EOF
         exit 1
     fi
 
