@@ -6,6 +6,16 @@
 
 绑定直接暴露原生 C++ API：结构体是布局与原生完全一致的 `unsafe` 值类型，每个函数都是带 mangled 入口点的 `[DllImport]`。**没有包装层，互操作边界上零分配。**
 
+## 快速开始
+
+```bash
+dotnet add package ImGui4NET
+dotnet add package ImGui4NET.Backend.Glfw       # 平台后端
+dotnet add package ImGui4NET.Backend.OpenGL3    # 渲染后端
+```
+
+`win-x64`、`linux-x64`、`android-arm64` 的原生库随包发布在 `runtimes/` 下。包同时支持 `net8.0` 与 `net10.0`；Direct3D 与 Win32 后端为 `net8.0-windows` 与 `net10.0-windows`。全部包均兼容 trim 与 NativeAOT。
+
 ## 包清单
 
 | 包 | 内容 |
@@ -61,6 +71,7 @@ dotnet build ImGui4NET.slnx
 ## 文档
 
 - [docs/build.zh-CN.md](build.zh-CN.md) —— 构建管线、原生编译、排错（[English](build.md)）
+- [docs/CHANGELOG.md](CHANGELOG.md) —— 发布历史
 
 ## 许可证
 

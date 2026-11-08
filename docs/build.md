@@ -397,7 +397,7 @@ script); otherwise the dynamic symbol table is incomplete.
 ## Verifying a build
 
 ```bash
-# Managed layer
+# Managed layer (builds net8.0 and net10.0)
 dotnet build ImGui4NET.slnx
 
 # Runtime smoke test
@@ -415,3 +415,44 @@ nm -D --defined-only src/ImGui4NET/runtimes/linux-x64/native/libimgui.so | grep 
 
 Expected: roughly 1200+ for the core library and 24 for club (excluding extra
 symbols produced by inline expansion).
+
+---
+
+## Publishing to NuGet
+
+Publishing runs in CI (`.github/workflows/publish.yml`) on a `v*` tag, using
+[NuGet Trusted Publishing](https://learn.microsoft.com/nuget/nuget-org/trusted-publishing):
+the workflow exchanges a GitHub OIDC token for a temporary API key, so no
+long-lived secret is stored in the repository.
+
+One-time setup on nuget.org:
+
+1. Account → **Trusted Publishing** → add a policy.
+2. Repository Owner `StArraySharp`, Repository `ImGui4NET`, Workflow File
+   `publish.yml`, Environment `release`.
+3. Add a repository secret `NUGET_USER` holding your nuget.org **profile name**
+   (not the email address).
+4. Request prefix reservation for `ImGui4NET` so nobody else can publish under
+   `ImGui4NET.*`.
+
+Releasing a version:
+
+```bash
+# 1. Bump LibraryRevision in src/Directory.Build.props if only bindings changed,
+#    or ImGuiVersion when moving to a new Dear ImGui tag.
+# 2. Update docs/CHANGELOG.md.
+# 3. Tag and push; the workflow packs and publishes.
+git commit -am "release: 1.93.0.2"
+git tag v1.93.0.2
+git push origin main --tags
+```
+
+The workflow refuses to publish when a package version differs from the tag.
+
+Local dry run:
+
+```bash
+dotnet pack ImGui4NET.slnx -c Release -o ./artifacts
+# inspect the contents before pushing
+unzip -l artifacts/ImGui4NET.1.93.0.1.nupkg
+```

@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <TargetFramework Condition="'$(TargetFramework)' == ''">net10.0</TargetFramework>
+    <TargetFrameworks Condition="'$(TargetFramework)' == '' and '$(TargetFrameworks)' == ''">net8.0;net10.0</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -9,6 +9,14 @@
     <LangVersion>latest</LangVersion>
     <Deterministic>true</Deterministic>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+
+    <!--
+      The bindings are plain P/Invoke over blittable structs: no reflection, no
+      dynamic code. Advertising that lets a consumer's NativeAOT/trim build skip
+      the "this package may not be compatible" warnings.
+    -->
+    <IsTrimmable>true</IsTrimmable>
+    <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
 
   <!--
@@ -38,20 +46,43 @@
     <Company>ImGui4NET</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/StArraySharp/ImGui4NET</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/StArraySharp/ImGui4NET</PackageProjectUrl>
+    <PackageReleaseNotes>See https://github.com/StArraySharp/ImGui4NET/blob/main/docs/CHANGELOG.md</PackageReleaseNotes>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 
+    <!-- PublishRepositoryUrl feeds <repository url="..."> in the nuspec; SourceLink
+         then embeds a source map so debuggers can step into the bindings. -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
     <!-- Third-party binding version, kept in one place so all backends agree. -->
     <SilkNetVersion>2.23.0</SilkNetVersion>
   </PropertyGroup>
 
+  <!--
+    The package readme is a dedicated file rather than the repository README:
+    NuGet renders it in isolation, so every link inside must be absolute. The
+    repository README keeps relative links that work on GitHub.
+  -->
   <ItemGroup Condition="'$(IsPackable)' == 'true'">
-    <None Include="$(MSBuildThisFileDirectory)../README.md" Pack="true" PackagePath="/" />
-      <None Include="$(MSBuildThisFileDirectory)../LICENSE" Pack="true" PackagePath="/" />
-      <None Include="$(MSBuildThisFileDirectory)ImGui4NET.Assets/icon.png" Pack="true" PackagePath="/" />
-    </ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)../docs/PACKAGE-README.md"
+          Pack="true" PackagePath="/README.md" />
+    <None Include="$(MSBuildThisFileDirectory)../LICENSE" Pack="true" PackagePath="/" />
+    <None Include="$(MSBuildThisFileDirectory)ImGui4NET.Assets/icon.png" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+  <!--
+    SourceLink maps the PDB back to this repository so a consumer pressing F11
+    lands in the real binding source instead of a decompiled stub. It needs a
+    git checkout; building from an export tarball simply skips the mapping.
+  -->
+  <ItemGroup Condition="'$(IsPackable)' == 'true' and Exists('$(MSBuildThisFileDirectory)../.git')">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.403" PrivateAssets="All" />
+  </ItemGroup>
 
   <!--
     Guard against version drift: the declared ImGuiVersion must appear in the

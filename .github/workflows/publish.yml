@@ -1,0 +1,84 @@
+name: Publish
+
+# Triggered by a version tag, e.g. `git tag v1.93.0.1 && git push origin v1.93.0.1`.
+# Publishing uses NuGet Trusted Publishing (OIDC): no long-lived API key is
+# stored in the repository. Configure the policy on nuget.org under
+# Account -> Trusted Publishing with:
+#   Repository Owner: StArraySharp
+#   Repository:       ImGui4NET
+#   Workflow File:    publish.yml
+#   Environment:      release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      id-token: write   # required for the OIDC token exchange
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restore tools
+        run: dotnet tool restore
+
+      - name: Restore
+        run: dotnet restore ImGui4NET.slnx
+
+      - name: Build
+        run: dotnet build ImGui4NET.slnx -c Release --no-restore
+
+      - name: Pack
+        run: dotnet pack ImGui4NET.slnx -c Release --no-build -o artifacts
+
+      # Fails the job when the tag and the packaged version disagree, which is
+      # the most common way to publish a mislabelled package.
+      - name: Verify tag matches package version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          for f in artifacts/*.nupkg; do
+            case "$f" in
+              *".$tag.nupkg") ;;
+              *) echo "::error file=$f::package version does not match tag $tag"; exit 1 ;;
+            esac
+          done
+          echo "All packages are version $tag."
+
+      - name: NuGet login (OIDC -> temporary API key)
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
+      - name: Push packages
+        run: |
+          for f in artifacts/*.nupkg; do
+            echo "Pushing $f"
+            dotnet nuget push "$f" \
+              --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" \
+              --source https://api.nuget.org/v3/index.json \
+              --skip-duplicate
+          done
+
+      - name: Push symbols
+        run: |
+          for f in artifacts/*.snupkg; do
+            echo "Pushing $f"
+            dotnet nuget push "$f" \
+              --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" \
+              --source https://api.nuget.org/v3/index.json \
+              --skip-duplicate
+          done

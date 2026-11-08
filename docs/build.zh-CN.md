@@ -366,7 +366,7 @@ Linux/Android 必须用 `-Wl,--export-dynamic`（脚本已带），否则动态�
 ## 验证构建结果
 
 ```bash
-# 托管层
+# 托管层（同时构建 net8.0 与 net10.0）
 dotnet build ImGui4NET.slnx
 
 # 运行时冒烟测试
@@ -383,3 +383,41 @@ nm -D --defined-only src/ImGui4NET/runtimes/linux-x64/native/libimgui.so | grep 
 ```
 
 正常值：core 约 1200+，club 约 24（不含 inline 展开的额外符号）。
+
+---
+
+## 发布到 NuGet
+
+发布由 CI（`.github/workflows/publish.yml`）在 `v*` 标签上执行，使用
+[NuGet Trusted Publishing](https://learn.microsoft.com/nuget/nuget-org/trusted-publishing)：
+工作流用 GitHub OIDC 令牌换取临时 API key，仓库里不保存长期密钥。
+
+nuget.org 上的一次性配置：
+
+1. Account → **Trusted Publishing** → 新增策略。
+2. Repository Owner 填 `StArraySharp`，Repository 填 `ImGui4NET`，Workflow File 填
+   `publish.yml`，Environment 填 `release`。
+3. 在仓库添加 secret `NUGET_USER`，值为 nuget.org 的**用户名**（不是邮箱）。
+4. 申请 `ImGui4NET` 前缀保留，防止他人发布 `ImGui4NET.*` 下的包。
+
+发布一个版本：
+
+```bash
+# 1. 仅绑定变更时改 src/Directory.Build.props 的 LibraryRevision；
+#    升级 Dear ImGui 时改 ImGuiVersion。
+# 2. 更新 docs/CHANGELOG.md。
+# 3. 打标签并推送，工作流会自动打包发布。
+git commit -am "release: 1.93.0.2"
+git tag v1.93.0.2
+git push origin main --tags
+```
+
+标签与包版本不一致时工作流会拒绝发布。
+
+本地预演：
+
+```bash
+dotnet pack ImGui4NET.slnx -c Release -o ./artifacts
+# 推送前先检查包内容
+unzip -l artifacts/ImGui4NET.1.93.0.1.nupkg
+```

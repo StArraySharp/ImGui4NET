@@ -28,3 +28,6 @@ __pycache__/
 *.pyc
 
 docs/dependency-tree.md
+
+# NuGet packages produced by dotnet pack
+artifacts/

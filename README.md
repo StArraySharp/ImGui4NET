@@ -9,6 +9,19 @@ types with the exact native layout, and every function is a `[DllImport]` with
 the mangled entry point. There is no wrapper layer and no allocation on the
 interop boundary.
 
+## Getting started
+
+```bash
+dotnet add package ImGui4NET
+dotnet add package ImGui4NET.Backend.Glfw       # platform backend
+dotnet add package ImGui4NET.Backend.OpenGL3    # renderer backend
+```
+
+Native libraries for `win-x64`, `linux-x64` and `android-arm64` ship inside the
+packages under `runtimes/`. Packages target `net8.0` and `net10.0`; the
+Direct3D and Win32 backends target `net8.0-windows` and `net10.0-windows`.
+All packages are trim- and NativeAOT-compatible.
+
 ## Packages
 
 | Package | Contents |
@@ -66,6 +79,7 @@ prerequisites, Android cross-compilation and troubleshooting.
 ## Documentation
 
 - [docs/build.md](docs/build.md) — build pipeline, native compilation, troubleshooting ([中文](docs/build.zh-CN.md))
+- [docs/CHANGELOG.md](docs/CHANGELOG.md) — release history
 
 ## License
 
