@@ -80,6 +80,17 @@ prerequisites, Android cross-compilation and troubleshooting.
 
 - [docs/build.md](docs/build.md) — build pipeline, native compilation, troubleshooting ([中文](docs/build.zh-CN.md))
 - [docs/CHANGELOG.md](docs/CHANGELOG.md) — release history
+- [samples/ImGui4NET.Sample.OpenGL3](samples/ImGui4NET.Sample.OpenGL3/README.md) — a full dashboard built on the raw bindings, with screenshots
+
+## Sample
+
+[samples/ImGui4NET.Sample.OpenGL3](samples/ImGui4NET.Sample.OpenGL3/README.md)
+is a complete application: OpenTK window, custom-drawn dashboard, Microsoft
+YaHei for CJK text, the `imgui_club` Memory Editor, and PNG screenshot capture.
+
+```bash
+dotnet run --project samples/ImGui4NET.Sample.OpenGL3
+```
 
 ## License
 

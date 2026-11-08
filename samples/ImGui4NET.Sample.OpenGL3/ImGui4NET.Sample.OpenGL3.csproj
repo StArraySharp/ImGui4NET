@@ -11,10 +11,12 @@
 
   <ItemGroup>
     <PackageReference Include="OpenTK" Version="4.9.4" />
+    <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\ImGui4NET\ImGui4NET.csproj" />
+    <ProjectReference Include="..\..\src\ImGui4NET.Club\ImGui4NET.Club.csproj" />
     <ProjectReference Include="..\..\src\ImGui4NET.Backend.OpenGL3\ImGui4NET.Backend.OpenGL3.csproj" />
   </ItemGroup>
 

@@ -3,8 +3,21 @@ name: CI
 on:
   push:
     branches: [main]
+    # Documentation-only changes cannot break the build, so skip the run and
+    # save Actions minutes. `paths-ignore` cannot re-include anything, and
+    # docs/PACKAGE-README.md is packed as the NuGet README, so the negated
+    # `paths` form is used instead: order matters, a positive pattern after a
+    # negative one includes the path again.
+    paths:
+      - '**'
+      - '!**/*.md'
+      - 'docs/PACKAGE-README.md'
   pull_request:
     branches: [main]
+    paths:
+      - '**'
+      - '!**/*.md'
+      - 'docs/PACKAGE-README.md'
 
 jobs:
   build:

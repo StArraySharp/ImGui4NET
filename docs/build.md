@@ -404,6 +404,10 @@ dotnet build ImGui4NET.slnx
 dotnet run --project samples/ImGui4NET.Sample.OpenGL3
 ```
 
+The sample also drives the `imgui_club` Memory Editor, so it exercises
+`ImGui4NET.Club` (struct layout, the hand-written `MemoryEditor_Ctor` and
+`MemoryEditor_DrawWindow` entry points) at the same time.
+
 Quick check of exported symbol counts:
 
 ```bash

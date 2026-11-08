@@ -186,6 +186,56 @@ def drop_string_literal_defaults(text: str) -> str:
     return VEC2_CONSTRUCTOR_DEFAULT.sub("= default", text)
 
 
+# Parameters the C++ side takes by reference (``const ImVec2&``) but which
+# ClangSharp emits as pointers. A reference's default argument constructs a
+# temporary that is never null, and the native code dereferences it
+# unconditionally, so ``= null`` makes any call that omits the argument crash
+# with an access violation. C# default arguments must be compile-time
+# constants, so a pointer cannot carry the zero value here: the default is
+# dropped instead, forcing the caller to pass an explicit pointer.
+BY_REF_DEFAULT_NAMES = {
+    # ImVec2&
+    "size", "size_arg", "pivot", "outer_size", "uv0", "uv1", "align",
+    # ImVec4&
+    "bg_col", "tint_col",
+}
+
+# ``ImVec2* size = null`` -> ``ImVec2* size`` for the names above. Pointer
+# parameters the native side null-checks (IsMousePosValid's mouse_pos,
+# DockSpace's window_class, ItemAdd's nav_bb, RenderTextClipped's clip_rect) are
+# intentionally absent and keep their null default.
+BY_REF_DEFAULT = re.compile(
+    r"(?P<type>ImVec2|ImVec4|ImRect)\*\s+(?P<name>@?[A-Za-z_][A-Za-z0-9_]*)"
+    r"\s*=\s*(?:null|default)(?P<tail>\s*[,)])"
+)
+
+
+def fix_by_reference_defaults(text: str) -> str:
+    """Drop null defaults on by-reference parameters.
+
+    See :data:`BY_REF_DEFAULT_NAMES` for why null is not safe there. C# requires
+    every optional parameter to come after all required ones, so removing a
+    default forces the whole signature to become required: the offending
+    parameter's own default is removed together with any default before or after
+    it.
+    """
+    lines = text.split("\n")
+    out: list[str] = []
+
+    # ``= <literal>`` up to the next comma or the closing paren.
+    PARAM_DEFAULT = re.compile(r"\s*=\s*[^,()]+(?=\s*[,)])")
+
+    for line in lines:
+        match = BY_REF_DEFAULT.search(line)
+        if match is None or match.group("name").lstrip("@") not in BY_REF_DEFAULT_NAMES:
+            out.append(line)
+            continue
+
+        out.append(PARAM_DEFAULT.sub("", line))
+
+    return "\n".join(out)
+
+
 POINTER_TYPE_ARG = re.compile(r"ImVector<(?P<t>[A-Za-z_]\w*)\*>")
 
 
@@ -445,6 +495,7 @@ def apply_rewrites(
     text = mark_unsafe_structs(text)
     text = rewrite_string_params(text)
     text = drop_string_literal_defaults(text)
+    text = fix_by_reference_defaults(text)
     text = fix_pointer_type_arguments(text)
     text = rename_constructors(text)
     text = nullable_string_params(text)

@@ -373,6 +373,10 @@ dotnet build ImGui4NET.slnx
 dotnet run --project samples/ImGui4NET.Sample.OpenGL3
 ```
 
+该示例同时调用 `imgui_club` 的 Memory Editor，因此一次运行即可验证
+`ImGui4NET.Club`（结构体布局、手写的 `MemoryEditor_Ctor` 与
+`MemoryEditor_DrawWindow` 入口点）。
+
 快速检查核心库导出的符号数量：
 
 ```bash
