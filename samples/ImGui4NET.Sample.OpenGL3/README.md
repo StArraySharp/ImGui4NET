@@ -1,5 +1,7 @@
 # ImGui4NET.Sample.OpenGL3
 
+**English** | [简体中文](README.zh-CN.md)
+
 A complete Dear ImGui application built directly on the raw ImGui4NET bindings:
 OpenTK supplies the window and the OpenGL 4.1 context, and every pixel of the UI
 is drawn through `ImDrawList`.
@@ -38,19 +40,6 @@ dotnet run --project samples/ImGui4NET.Sample.OpenGL3
 Press `Esc` to quit and `F12` to save a screenshot next to the working
 directory.
 
-### Headless screenshot
-
-`--screenshot` renders a few frames, writes a PNG and exits, which is useful for
-inspecting the UI from a terminal or in CI:
-
-```bash
-dotnet run --project samples/ImGui4NET.Sample.OpenGL3 -- \
-  --screenshot artifacts/dashboard.png --tab 0
-```
-
-`--tab` selects the initial page: `0` Dashboard, `1` Components, `2` Memory,
-`3` Settings, `4` About.
-
 ## Pages
 
 ### Dashboard
@@ -82,27 +71,3 @@ The `imgui_club` Memory Editor, driven through the hand-written
 | `Program.cs` | OpenTK host: context creation, per-frame input feed, render loop |
 | `ShowcaseUi.cs` | The whole dashboard: theme, fonts, layout, custom widgets |
 | `Screenshot.cs` | `glReadPixels` back-buffer capture to PNG |
-
-## A note on by-reference parameters
-
-Dear ImGui declares many parameters as references with a default, for example:
-
-```cpp
-void SetNextWindowPos(const ImVec2& pos, ImGuiCond cond = 0,
-                      const ImVec2& pivot = ImVec2(0, 0));
-```
-
-The C++ default constructs a temporary, so `pivot` is never null. The generated
-binding exposes it as `ImVec2* pivot`, and passing `null` makes the native code
-dereference a null pointer. The generator therefore drops the default for
-by-reference parameters, forcing callers to pass an explicit pointer:
-
-```csharp
-var pos = new ImVec2 { x = 0, y = 0 };
-var pivot = new ImVec2 { x = 0, y = 0 };
-ImGui.SetNextWindowPos(&pos, (int)ImGuiCond.ImGuiCond_Always, &pivot);
-```
-
-Parameters that the native side genuinely null-checks (`IsMousePosValid`'s
-`mouse_pos`, `DockSpace`'s `window_class`, `RenderTextClipped`'s `clip_rect`)
-keep their `= null` default.

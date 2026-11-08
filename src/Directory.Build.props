@@ -33,7 +33,7 @@
     -->
     <PropertyGroup>
       <ImGuiVersion Condition="'$(ImGuiVersion)' == ''">1.93.0</ImGuiVersion>
-      <LibraryRevision Condition="'$(LibraryRevision)' == ''">2</LibraryRevision>
+      <LibraryRevision Condition="'$(LibraryRevision)' == ''">3</LibraryRevision>
 
       <Version>$(ImGuiVersion).$(LibraryRevision)</Version>
       <AssemblyVersion>$(Version)</AssemblyVersion>

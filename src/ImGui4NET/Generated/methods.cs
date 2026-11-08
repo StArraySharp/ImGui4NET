@@ -23,6 +23,18 @@ namespace ImGui4NET
 {
     public static unsafe partial class ImGui
     {
+
+    /// <summary>
+    /// C++ default arguments for by-reference parameters. A pointer cannot be a
+    /// C# default argument, so calls that omit one are forwarded to these values.
+    /// </summary>
+    internal static readonly ImVec2 C_ImVec2_0f_0f = new() { x = 0f, y = 0f };
+    internal static readonly ImVec2 C_ImVec2_0p0f_0p0f = new() { x = 0.0f, y = 0.0f };
+    internal static readonly ImVec2 C_ImVec2_1f_1f = new() { x = 1f, y = 1f };
+    internal static readonly ImVec2 C_ImVec2_neg1p17549435eneg38F_0f = new() { x = -1.17549435e-38F, y = 0f };
+    internal static readonly ImVec4 C_ImVec4_0f_0f_0f_0f = new() { x = 0f, y = 0f, z = 0f, w = 0f };
+    internal static readonly ImVec4 C_ImVec4_1f_1f_1f_1f = new() { x = 1f, y = 1f, z = 1f, w = 1f };
+
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13CreateContextEP11ImFontAtlas", ExactSpelling = true)]
         public static extern ImGuiContext* CreateContext(ImFontAtlas* shared_font_atlas = null);
 
@@ -109,11 +121,11 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10BeginChildEPKcRK6ImVec2ii", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte BeginChild([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, [NativeTypeName("const ImVec2 &")] ImVec2* size, [NativeTypeName("ImGuiChildFlags")] int child_flags, [NativeTypeName("ImGuiWindowFlags")] int window_flags);
+public static extern byte BeginChild([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, [NativeTypeName("const ImVec2 &")] ImVec2* size, [NativeTypeName("ImGuiChildFlags")] int child_flags = 0, [NativeTypeName("ImGuiWindowFlags")] int window_flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10BeginChildEjRK6ImVec2ii", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte BeginChild([NativeTypeName("ImGuiID")] uint id, [NativeTypeName("const ImVec2 &")] ImVec2* size, [NativeTypeName("ImGuiChildFlags")] int child_flags, [NativeTypeName("ImGuiWindowFlags")] int window_flags);
+public static extern byte BeginChild([NativeTypeName("ImGuiID")] uint id, [NativeTypeName("const ImVec2 &")] ImVec2* size, [NativeTypeName("ImGuiChildFlags")] int child_flags = 0, [NativeTypeName("ImGuiWindowFlags")] int window_flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui8EndChildEv", ExactSpelling = true)]
         public static extern void EndChild();
@@ -156,16 +168,16 @@ namespace ImGui4NET
         public static extern ImGuiViewport* GetWindowViewport();
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui16SetNextWindowPosERK6ImVec2iS2_", ExactSpelling = true)]
-        public static extern void SetNextWindowPos([NativeTypeName("const ImVec2 &")] ImVec2* pos, [NativeTypeName("ImGuiCond")] int cond, [NativeTypeName("const ImVec2 &")] ImVec2* pivot);
+public static extern void SetNextWindowPos([NativeTypeName("const ImVec2 &")] ImVec2* pos, [NativeTypeName("ImGuiCond")] int cond, [NativeTypeName("const ImVec2 &")] ImVec2* pivot);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui17SetNextWindowSizeERK6ImVec2i", ExactSpelling = true)]
-        public static extern void SetNextWindowSize([NativeTypeName("const ImVec2 &")] ImVec2* size, [NativeTypeName("ImGuiCond")] int cond = 0);
+public static extern void SetNextWindowSize([NativeTypeName("const ImVec2 &")] ImVec2* size, [NativeTypeName("ImGuiCond")] int cond = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui28SetNextWindowSizeConstraintsERK6ImVec2S2_PFvP21ImGuiSizeCallbackDataEPv", ExactSpelling = true)]
-        public static extern void SetNextWindowSizeConstraints([NativeTypeName("const ImVec2 &")] ImVec2* size_min, [NativeTypeName("const ImVec2 &")] ImVec2* size_max, [NativeTypeName("ImGuiSizeCallback")] delegate* unmanaged[Cdecl]<ImGuiSizeCallbackData*, void> custom_callback = null, void* custom_callback_data = null);
+public static extern void SetNextWindowSizeConstraints([NativeTypeName("const ImVec2 &")] ImVec2* size_min, [NativeTypeName("const ImVec2 &")] ImVec2* size_max, [NativeTypeName("ImGuiSizeCallback")] delegate* unmanaged[Cdecl]<ImGuiSizeCallbackData*, void> custom_callback = null, void* custom_callback_data = null);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui24SetNextWindowContentSizeERK6ImVec2", ExactSpelling = true)]
-        public static extern void SetNextWindowContentSize([NativeTypeName("const ImVec2 &")] ImVec2* size);
+public static extern void SetNextWindowContentSize([NativeTypeName("const ImVec2 &")] ImVec2* size);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui22SetNextWindowCollapsedEbi", ExactSpelling = true)]
         public static extern void SetNextWindowCollapsed([NativeTypeName("bool")] byte collapsed, [NativeTypeName("ImGuiCond")] int cond = 0);
@@ -174,7 +186,7 @@ namespace ImGui4NET
         public static extern void SetNextWindowFocus();
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui19SetNextWindowScrollERK6ImVec2", ExactSpelling = true)]
-        public static extern void SetNextWindowScroll([NativeTypeName("const ImVec2 &")] ImVec2* scroll);
+public static extern void SetNextWindowScroll([NativeTypeName("const ImVec2 &")] ImVec2* scroll);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui20SetNextWindowBgAlphaEf", ExactSpelling = true)]
         public static extern void SetNextWindowBgAlpha(float alpha);
@@ -183,10 +195,10 @@ namespace ImGui4NET
         public static extern void SetNextWindowViewport([NativeTypeName("ImGuiID")] uint viewport_id);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12SetWindowPosERK6ImVec2i", ExactSpelling = true)]
-        public static extern void SetWindowPos([NativeTypeName("const ImVec2 &")] ImVec2* pos, [NativeTypeName("ImGuiCond")] int cond = 0);
+public static extern void SetWindowPos([NativeTypeName("const ImVec2 &")] ImVec2* pos, [NativeTypeName("ImGuiCond")] int cond = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13SetWindowSizeERK6ImVec2i", ExactSpelling = true)]
-        public static extern void SetWindowSize([NativeTypeName("const ImVec2 &")] ImVec2* size, [NativeTypeName("ImGuiCond")] int cond = 0);
+public static extern void SetWindowSize([NativeTypeName("const ImVec2 &")] ImVec2* size, [NativeTypeName("ImGuiCond")] int cond = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui18SetWindowCollapsedEbi", ExactSpelling = true)]
         public static extern void SetWindowCollapsed([NativeTypeName("bool")] byte collapsed, [NativeTypeName("ImGuiCond")] int cond = 0);
@@ -195,10 +207,10 @@ namespace ImGui4NET
         public static extern void SetWindowFocus();
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12SetWindowPosEPKcRK6ImVec2i", ExactSpelling = true)]
-        public static extern void SetWindowPos([MarshalAs(UnmanagedType.LPUTF8Str)] string name, [NativeTypeName("const ImVec2 &")] ImVec2* pos, [NativeTypeName("ImGuiCond")] int cond = 0);
+public static extern void SetWindowPos([MarshalAs(UnmanagedType.LPUTF8Str)] string name, [NativeTypeName("const ImVec2 &")] ImVec2* pos, [NativeTypeName("ImGuiCond")] int cond = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13SetWindowSizeEPKcRK6ImVec2i", ExactSpelling = true)]
-        public static extern void SetWindowSize([MarshalAs(UnmanagedType.LPUTF8Str)] string name, [NativeTypeName("const ImVec2 &")] ImVec2* size, [NativeTypeName("ImGuiCond")] int cond = 0);
+public static extern void SetWindowSize([MarshalAs(UnmanagedType.LPUTF8Str)] string name, [NativeTypeName("const ImVec2 &")] ImVec2* size, [NativeTypeName("ImGuiCond")] int cond = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui18SetWindowCollapsedEPKcbi", ExactSpelling = true)]
         public static extern void SetWindowCollapsed([MarshalAs(UnmanagedType.LPUTF8Str)] string name, [NativeTypeName("bool")] byte collapsed, [NativeTypeName("ImGuiCond")] int cond = 0);
@@ -255,7 +267,7 @@ namespace ImGui4NET
         public static extern void PushStyleColor([NativeTypeName("ImGuiCol")] int idx, [NativeTypeName("ImU32")] uint col);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui14PushStyleColorEiRK6ImVec4", ExactSpelling = true)]
-        public static extern void PushStyleColor([NativeTypeName("ImGuiCol")] int idx, [NativeTypeName("const ImVec4 &")] ImVec4* col);
+public static extern void PushStyleColor([NativeTypeName("ImGuiCol")] int idx, [NativeTypeName("const ImVec4 &")] ImVec4* col);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13PopStyleColorEi", ExactSpelling = true)]
         public static extern void PopStyleColor(int count = 1);
@@ -264,7 +276,7 @@ namespace ImGui4NET
         public static extern void PushStyleVar([NativeTypeName("ImGuiStyleVar")] int idx, float val);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12PushStyleVarEiRK6ImVec2", ExactSpelling = true)]
-        public static extern void PushStyleVar([NativeTypeName("ImGuiStyleVar")] int idx, [NativeTypeName("const ImVec2 &")] ImVec2* val);
+public static extern void PushStyleVar([NativeTypeName("ImGuiStyleVar")] int idx, [NativeTypeName("const ImVec2 &")] ImVec2* val);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13PushStyleVarXEif", ExactSpelling = true)]
         public static extern void PushStyleVarX([NativeTypeName("ImGuiStyleVar")] int idx, float val_x);
@@ -308,7 +320,7 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11GetColorU32ERK6ImVec4", ExactSpelling = true)]
         [return: NativeTypeName("ImU32")]
-        public static extern uint GetColorU32([NativeTypeName("const ImVec4 &")] ImVec4* col);
+public static extern uint GetColorU32([NativeTypeName("const ImVec4 &")] ImVec4* col);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11GetColorU32Ejf", ExactSpelling = true)]
         [return: NativeTypeName("ImU32")]
@@ -322,7 +334,7 @@ namespace ImGui4NET
         public static extern ImVec2 GetCursorScreenPos();
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui18SetCursorScreenPosERK6ImVec2", ExactSpelling = true)]
-        public static extern void SetCursorScreenPos([NativeTypeName("const ImVec2 &")] ImVec2* pos);
+public static extern void SetCursorScreenPos([NativeTypeName("const ImVec2 &")] ImVec2* pos);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui21GetContentRegionAvailEv", ExactSpelling = true)]
         public static extern ImVec2 GetContentRegionAvail();
@@ -337,7 +349,7 @@ namespace ImGui4NET
         public static extern float GetCursorPosY();
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12SetCursorPosERK6ImVec2", ExactSpelling = true)]
-        public static extern void SetCursorPos([NativeTypeName("const ImVec2 &")] ImVec2* local_pos);
+public static extern void SetCursorPos([NativeTypeName("const ImVec2 &")] ImVec2* local_pos);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13SetCursorPosXEf", ExactSpelling = true)]
         public static extern void SetCursorPosX(float local_x);
@@ -361,7 +373,7 @@ namespace ImGui4NET
         public static extern void Spacing();
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui5DummyERK6ImVec2", ExactSpelling = true)]
-        public static extern void Dummy([NativeTypeName("const ImVec2 &")] ImVec2* size);
+public static extern void Dummy([NativeTypeName("const ImVec2 &")] ImVec2* size);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui6IndentEf", ExactSpelling = true)]
         public static extern void Indent(float indent_w = 0.0f);
@@ -431,10 +443,10 @@ namespace ImGui4NET
         public static extern void TextV([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11TextColoredERK6ImVec4PKcz", ExactSpelling = true)]
-        public static extern void TextColored([NativeTypeName("const ImVec4 &")] ImVec4* col, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, __arglist);
+public static extern void TextColored([NativeTypeName("const ImVec4 &")] ImVec4* col, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, __arglist);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12TextColoredVERK6ImVec4PKcPc", ExactSpelling = true)]
-        public static extern void TextColoredV([NativeTypeName("const ImVec4 &")] ImVec4* col, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+public static extern void TextColoredV([NativeTypeName("const ImVec4 &")] ImVec4* col, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12TextDisabledEPKcz", ExactSpelling = true)]
         public static extern void TextDisabled([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, __arglist);
@@ -465,7 +477,7 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui6ButtonEPKcRK6ImVec2", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte Button([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("const ImVec2 &")] ImVec2* size);
+public static extern byte Button([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("const ImVec2 &")] ImVec2* size);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11SmallButtonEPKc", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -473,7 +485,7 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui15InvisibleButtonEPKcRK6ImVec2i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte InvisibleButton([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, [NativeTypeName("const ImVec2 &")] ImVec2* size, [NativeTypeName("ImGuiButtonFlags")] int flags = 0);
+public static extern byte InvisibleButton([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, [NativeTypeName("const ImVec2 &")] ImVec2* size, [NativeTypeName("ImGuiButtonFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11ArrowButtonEPKc8ImGuiDir", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -500,7 +512,7 @@ namespace ImGui4NET
         public static extern byte RadioButton([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* v, int v_button);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11ProgressBarEfRK6ImVec2PKc", ExactSpelling = true)]
-        public static extern void ProgressBar(float fraction, [NativeTypeName("const ImVec2 &")] ImVec2* size_arg, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?overlay);
+public static extern void ProgressBar(float fraction, [NativeTypeName("const ImVec2 &")] ImVec2* size_arg, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?overlay = null);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui6BulletEv", ExactSpelling = true)]
         public static extern void Bullet();
@@ -514,14 +526,14 @@ namespace ImGui4NET
         public static extern byte TextLinkOpenURL([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?url = null);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui5ImageE12ImTextureRefRK6ImVec2S3_S3_", ExactSpelling = true)]
-        public static extern void Image(ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* image_size, [NativeTypeName("const ImVec2 &")] ImVec2* uv0, [NativeTypeName("const ImVec2 &")] ImVec2* uv1);
+public static extern void Image(ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* image_size, [NativeTypeName("const ImVec2 &")] ImVec2* uv0, [NativeTypeName("const ImVec2 &")] ImVec2* uv1);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11ImageWithBgE12ImTextureRefRK6ImVec2S3_S3_RK6ImVec4S6_", ExactSpelling = true)]
-        public static extern void ImageWithBg(ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* image_size, [NativeTypeName("const ImVec2 &")] ImVec2* uv0, [NativeTypeName("const ImVec2 &")] ImVec2* uv1, [NativeTypeName("const ImVec4 &")] ImVec4* bg_col, [NativeTypeName("const ImVec4 &")] ImVec4* tint_col);
+public static extern void ImageWithBg(ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* image_size, [NativeTypeName("const ImVec2 &")] ImVec2* uv0, [NativeTypeName("const ImVec2 &")] ImVec2* uv1, [NativeTypeName("const ImVec4 &")] ImVec4* bg_col, [NativeTypeName("const ImVec4 &")] ImVec4* tint_col);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11ImageButtonEPKc12ImTextureRefRK6ImVec2S5_S5_RK6ImVec4S8_", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte ImageButton([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* image_size, [NativeTypeName("const ImVec2 &")] ImVec2* uv0, [NativeTypeName("const ImVec2 &")] ImVec2* uv1, [NativeTypeName("const ImVec4 &")] ImVec4* bg_col, [NativeTypeName("const ImVec4 &")] ImVec4* tint_col);
+public static extern byte ImageButton([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* image_size, [NativeTypeName("const ImVec2 &")] ImVec2* uv0, [NativeTypeName("const ImVec2 &")] ImVec2* uv1, [NativeTypeName("const ImVec4 &")] ImVec4* bg_col, [NativeTypeName("const ImVec4 &")] ImVec4* tint_col);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10BeginComboEPKcS1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -636,15 +648,15 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12VSliderFloatEPKcRK6ImVec2PfffS1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte VSliderFloat([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("const ImVec2 &")] ImVec2* size, float* v, float v_min, float v_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?format = null, [NativeTypeName("ImGuiSliderFlags")] int flags = 0);
+public static extern byte VSliderFloat([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("const ImVec2 &")] ImVec2* size, float* v, float v_min, float v_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?format = null, [NativeTypeName("ImGuiSliderFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10VSliderIntEPKcRK6ImVec2PiiiS1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte VSliderInt([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("const ImVec2 &")] ImVec2* size, int* v, int v_min, int v_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?format = null, [NativeTypeName("ImGuiSliderFlags")] int flags = 0);
+public static extern byte VSliderInt([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("const ImVec2 &")] ImVec2* size, int* v, int v_min, int v_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?format = null, [NativeTypeName("ImGuiSliderFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13VSliderScalarEPKcRK6ImVec2iPvPKvS7_S1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte VSliderScalar([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("const ImVec2 &")] ImVec2* size, [NativeTypeName("ImGuiDataType")] int data_type, void* p_data, [NativeTypeName("const void *")] void* p_min, [NativeTypeName("const void *")] void* p_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?format = null, [NativeTypeName("ImGuiSliderFlags")] int flags = 0);
+public static extern byte VSliderScalar([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("const ImVec2 &")] ImVec2* size, [NativeTypeName("ImGuiDataType")] int data_type, void* p_data, [NativeTypeName("const void *")] void* p_min, [NativeTypeName("const void *")] void* p_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?format = null, [NativeTypeName("ImGuiSliderFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui9InputTextEPKcPcyiPFiP26ImGuiInputTextCallbackDataEPv", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -652,7 +664,7 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui18InputTextMultilineEPKcPcyRK6ImVec2iPFiP26ImGuiInputTextCallbackDataEPv", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte InputTextMultiline([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [MarshalAs(UnmanagedType.LPUTF8Str)] string buf, [NativeTypeName("size_t")] nuint buf_size, [NativeTypeName("const ImVec2 &")] ImVec2* size, [NativeTypeName("ImGuiInputTextFlags")] int flags, [NativeTypeName("ImGuiInputTextCallback")] delegate* unmanaged[Cdecl]<ImGuiInputTextCallbackData*, int> callback, void* user_data);
+public static extern byte InputTextMultiline([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [MarshalAs(UnmanagedType.LPUTF8Str)] string buf, [NativeTypeName("size_t")] nuint buf_size, [NativeTypeName("const ImVec2 &")] ImVec2* size, [NativeTypeName("ImGuiInputTextFlags")] int flags = 0, [NativeTypeName("ImGuiInputTextCallback")] delegate* unmanaged[Cdecl]<ImGuiInputTextCallbackData*, int> callback = null, void* user_data = null);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui17InputTextWithHintEPKcS1_PcyiPFiP26ImGuiInputTextCallbackDataEPv", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -720,7 +732,7 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11ColorButtonEPKcRK6ImVec4iRK6ImVec2", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte ColorButton([MarshalAs(UnmanagedType.LPUTF8Str)] string desc_id, [NativeTypeName("const ImVec4 &")] ImVec4* col, [NativeTypeName("ImGuiColorEditFlags")] int flags, [NativeTypeName("const ImVec2 &")] ImVec2* size);
+public static extern byte ColorButton([MarshalAs(UnmanagedType.LPUTF8Str)] string desc_id, [NativeTypeName("const ImVec4 &")] ImVec4* col, [NativeTypeName("ImGuiColorEditFlags")] int flags, [NativeTypeName("const ImVec2 &")] ImVec2* size);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui8TreeNodeEPKc", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -794,11 +806,11 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10SelectableEPKcbiRK6ImVec2", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte Selectable([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("bool")] byte selected, [NativeTypeName("ImGuiSelectableFlags")] int flags, [NativeTypeName("const ImVec2 &")] ImVec2* size);
+public static extern byte Selectable([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("bool")] byte selected, [NativeTypeName("ImGuiSelectableFlags")] int flags, [NativeTypeName("const ImVec2 &")] ImVec2* size);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10SelectableEPKcPbiRK6ImVec2", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte Selectable([MarshalAs(UnmanagedType.LPUTF8Str)] string label, bool* p_selected, [NativeTypeName("ImGuiSelectableFlags")] int flags, [NativeTypeName("const ImVec2 &")] ImVec2* size);
+public static extern byte Selectable([MarshalAs(UnmanagedType.LPUTF8Str)] string label, bool* p_selected, [NativeTypeName("ImGuiSelectableFlags")] int flags, [NativeTypeName("const ImVec2 &")] ImVec2* size);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui16BeginMultiSelectEiii", ExactSpelling = true)]
         public static extern ImGuiMultiSelectIO* BeginMultiSelect([NativeTypeName("ImGuiMultiSelectFlags")] int flags, int selection_size = -1, int items_count = -1);
@@ -815,7 +827,7 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12BeginListBoxEPKcRK6ImVec2", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte BeginListBox([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("const ImVec2 &")] ImVec2* size);
+public static extern byte BeginListBox([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("const ImVec2 &")] ImVec2* size);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10EndListBoxEv", ExactSpelling = true)]
         public static extern void EndListBox();
@@ -948,7 +960,7 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10BeginTableEPKciiRK6ImVec2f", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte BeginTable([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, int columns, [NativeTypeName("ImGuiTableFlags")] int flags, [NativeTypeName("const ImVec2 &")] ImVec2* outer_size, float inner_width);
+public static extern byte BeginTable([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, int columns, [NativeTypeName("ImGuiTableFlags")] int flags, [NativeTypeName("const ImVec2 &")] ImVec2* outer_size, float inner_width = 0.0f);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui8EndTableEv", ExactSpelling = true)]
         public static extern void EndTable();
@@ -1055,7 +1067,7 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui9DockSpaceEjRK6ImVec2iPK16ImGuiWindowClass", ExactSpelling = true)]
         [return: NativeTypeName("ImGuiID")]
-        public static extern uint DockSpace([NativeTypeName("ImGuiID")] uint dockspace_id, [NativeTypeName("const ImVec2 &")] ImVec2* size, [NativeTypeName("ImGuiDockNodeFlags")] int flags, [NativeTypeName("const ImGuiWindowClass *")] ImGuiWindowClass* window_class);
+public static extern uint DockSpace([NativeTypeName("ImGuiID")] uint dockspace_id, [NativeTypeName("const ImVec2 &")] ImVec2* size, [NativeTypeName("ImGuiDockNodeFlags")] int flags = 0, [NativeTypeName("const ImGuiWindowClass *")] ImGuiWindowClass* window_class = null);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui21DockSpaceOverViewportEjPK13ImGuiViewportiPK16ImGuiWindowClass", ExactSpelling = true)]
         [return: NativeTypeName("ImGuiID")]
@@ -1129,7 +1141,7 @@ namespace ImGui4NET
         public static extern void EndDisabled();
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12PushClipRectERK6ImVec2S2_b", ExactSpelling = true)]
-        public static extern void PushClipRect([NativeTypeName("const ImVec2 &")] ImVec2* clip_rect_min, [NativeTypeName("const ImVec2 &")] ImVec2* clip_rect_max, [NativeTypeName("bool")] byte intersect_with_current_clip_rect);
+public static extern void PushClipRect([NativeTypeName("const ImVec2 &")] ImVec2* clip_rect_min, [NativeTypeName("const ImVec2 &")] ImVec2* clip_rect_max, [NativeTypeName("bool")] byte intersect_with_current_clip_rect);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11PopClipRectEv", ExactSpelling = true)]
         public static extern void PopClipRect();
@@ -1229,11 +1241,11 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13IsRectVisibleERK6ImVec2", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte IsRectVisible([NativeTypeName("const ImVec2 &")] ImVec2* size);
+public static extern byte IsRectVisible([NativeTypeName("const ImVec2 &")] ImVec2* size);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13IsRectVisibleERK6ImVec2S2_", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte IsRectVisible([NativeTypeName("const ImVec2 &")] ImVec2* rect_min, [NativeTypeName("const ImVec2 &")] ImVec2* rect_max);
+public static extern byte IsRectVisible([NativeTypeName("const ImVec2 &")] ImVec2* rect_min, [NativeTypeName("const ImVec2 &")] ImVec2* rect_max);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui7GetTimeEv", ExactSpelling = true)]
         public static extern double GetTime();
@@ -1262,7 +1274,7 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui23ColorConvertFloat4ToU32ERK6ImVec4", ExactSpelling = true)]
         [return: NativeTypeName("ImU32")]
-        public static extern uint ColorConvertFloat4ToU32([NativeTypeName("const ImVec4 &")] ImVec4* @in);
+public static extern uint ColorConvertFloat4ToU32([NativeTypeName("const ImVec4 &")] ImVec4* @in);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui20ColorConvertRGBtoHSVEfffRfS0_S0_", ExactSpelling = true)]
         public static extern void ColorConvertRGBtoHSV(float r, float g, float b, [NativeTypeName("float &")] float* out_h, [NativeTypeName("float &")] float* out_s, [NativeTypeName("float &")] float* out_v);
@@ -1332,7 +1344,7 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui19IsMouseHoveringRectERK6ImVec2S2_b", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte IsMouseHoveringRect([NativeTypeName("const ImVec2 &")] ImVec2* r_min, [NativeTypeName("const ImVec2 &")] ImVec2* r_max, [NativeTypeName("bool")] byte clip = 1);
+public static extern byte IsMouseHoveringRect([NativeTypeName("const ImVec2 &")] ImVec2* r_min, [NativeTypeName("const ImVec2 &")] ImVec2* r_max, [NativeTypeName("bool")] byte clip = 1);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui15IsMousePosValidEPK6ImVec2", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -1441,7 +1453,7 @@ namespace ImGui4NET
         public static extern void SetWindowFontScale(float scale);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui5ImageE12ImTextureRefRK6ImVec2S3_S3_RK6ImVec4S6_", ExactSpelling = true)]
-        public static extern void Image(ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* image_size, [NativeTypeName("const ImVec2 &")] ImVec2* uv0, [NativeTypeName("const ImVec2 &")] ImVec2* uv1, [NativeTypeName("const ImVec4 &")] ImVec4* tint_col, [NativeTypeName("const ImVec4 &")] ImVec4* border_col);
+public static extern void Image(ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* image_size, [NativeTypeName("const ImVec2 &")] ImVec2* uv0, [NativeTypeName("const ImVec2 &")] ImVec2* uv1, [NativeTypeName("const ImVec4 &")] ImVec4* tint_col, [NativeTypeName("const ImVec4 &")] ImVec4* border_col);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui19GetContentRegionMaxEv", ExactSpelling = true)]
         public static extern ImVec2 GetContentRegionMax();
@@ -1627,29 +1639,29 @@ namespace ImGui4NET
         public static extern void* ImFileLoadToMemory([MarshalAs(UnmanagedType.LPUTF8Str)] string filename, [MarshalAs(UnmanagedType.LPUTF8Str)] string mode, [NativeTypeName("size_t *")] nuint* out_file_size = null, int padding_bytes = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_Z17ImBezierCubicCalcRK6ImVec2S1_S1_S1_f", ExactSpelling = true)]
-        public static extern ImVec2 ImBezierCubicCalc([NativeTypeName("const ImVec2 &")] ImVec2* p1, [NativeTypeName("const ImVec2 &")] ImVec2* p2, [NativeTypeName("const ImVec2 &")] ImVec2* p3, [NativeTypeName("const ImVec2 &")] ImVec2* p4, float t);
+public static extern ImVec2 ImBezierCubicCalc([NativeTypeName("const ImVec2 &")] ImVec2* p1, [NativeTypeName("const ImVec2 &")] ImVec2* p2, [NativeTypeName("const ImVec2 &")] ImVec2* p3, [NativeTypeName("const ImVec2 &")] ImVec2* p4, float t);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_Z25ImBezierCubicClosestPointRK6ImVec2S1_S1_S1_S1_i", ExactSpelling = true)]
-        public static extern ImVec2 ImBezierCubicClosestPoint([NativeTypeName("const ImVec2 &")] ImVec2* p1, [NativeTypeName("const ImVec2 &")] ImVec2* p2, [NativeTypeName("const ImVec2 &")] ImVec2* p3, [NativeTypeName("const ImVec2 &")] ImVec2* p4, [NativeTypeName("const ImVec2 &")] ImVec2* p, int num_segments);
+public static extern ImVec2 ImBezierCubicClosestPoint([NativeTypeName("const ImVec2 &")] ImVec2* p1, [NativeTypeName("const ImVec2 &")] ImVec2* p2, [NativeTypeName("const ImVec2 &")] ImVec2* p3, [NativeTypeName("const ImVec2 &")] ImVec2* p4, [NativeTypeName("const ImVec2 &")] ImVec2* p, int num_segments);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_Z34ImBezierCubicClosestPointCasteljauRK6ImVec2S1_S1_S1_S1_f", ExactSpelling = true)]
-        public static extern ImVec2 ImBezierCubicClosestPointCasteljau([NativeTypeName("const ImVec2 &")] ImVec2* p1, [NativeTypeName("const ImVec2 &")] ImVec2* p2, [NativeTypeName("const ImVec2 &")] ImVec2* p3, [NativeTypeName("const ImVec2 &")] ImVec2* p4, [NativeTypeName("const ImVec2 &")] ImVec2* p, float max_error);
+public static extern ImVec2 ImBezierCubicClosestPointCasteljau([NativeTypeName("const ImVec2 &")] ImVec2* p1, [NativeTypeName("const ImVec2 &")] ImVec2* p2, [NativeTypeName("const ImVec2 &")] ImVec2* p3, [NativeTypeName("const ImVec2 &")] ImVec2* p4, [NativeTypeName("const ImVec2 &")] ImVec2* p, float max_error);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_Z21ImBezierQuadraticCalcRK6ImVec2S1_S1_f", ExactSpelling = true)]
-        public static extern ImVec2 ImBezierQuadraticCalc([NativeTypeName("const ImVec2 &")] ImVec2* p1, [NativeTypeName("const ImVec2 &")] ImVec2* p2, [NativeTypeName("const ImVec2 &")] ImVec2* p3, float t);
+public static extern ImVec2 ImBezierQuadraticCalc([NativeTypeName("const ImVec2 &")] ImVec2* p1, [NativeTypeName("const ImVec2 &")] ImVec2* p2, [NativeTypeName("const ImVec2 &")] ImVec2* p3, float t);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_Z18ImLineClosestPointRK6ImVec2S1_S1_", ExactSpelling = true)]
-        public static extern ImVec2 ImLineClosestPoint([NativeTypeName("const ImVec2 &")] ImVec2* a, [NativeTypeName("const ImVec2 &")] ImVec2* b, [NativeTypeName("const ImVec2 &")] ImVec2* p);
+public static extern ImVec2 ImLineClosestPoint([NativeTypeName("const ImVec2 &")] ImVec2* a, [NativeTypeName("const ImVec2 &")] ImVec2* b, [NativeTypeName("const ImVec2 &")] ImVec2* p);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_Z23ImTriangleContainsPointRK6ImVec2S1_S1_S1_", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte ImTriangleContainsPoint([NativeTypeName("const ImVec2 &")] ImVec2* a, [NativeTypeName("const ImVec2 &")] ImVec2* b, [NativeTypeName("const ImVec2 &")] ImVec2* c, [NativeTypeName("const ImVec2 &")] ImVec2* p);
+public static extern byte ImTriangleContainsPoint([NativeTypeName("const ImVec2 &")] ImVec2* a, [NativeTypeName("const ImVec2 &")] ImVec2* b, [NativeTypeName("const ImVec2 &")] ImVec2* c, [NativeTypeName("const ImVec2 &")] ImVec2* p);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_Z22ImTriangleClosestPointRK6ImVec2S1_S1_S1_", ExactSpelling = true)]
-        public static extern ImVec2 ImTriangleClosestPoint([NativeTypeName("const ImVec2 &")] ImVec2* a, [NativeTypeName("const ImVec2 &")] ImVec2* b, [NativeTypeName("const ImVec2 &")] ImVec2* c, [NativeTypeName("const ImVec2 &")] ImVec2* p);
+public static extern ImVec2 ImTriangleClosestPoint([NativeTypeName("const ImVec2 &")] ImVec2* a, [NativeTypeName("const ImVec2 &")] ImVec2* b, [NativeTypeName("const ImVec2 &")] ImVec2* c, [NativeTypeName("const ImVec2 &")] ImVec2* p);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_Z27ImTriangleBarycentricCoordsRK6ImVec2S1_S1_S1_RfS2_S2_", ExactSpelling = true)]
-        public static extern void ImTriangleBarycentricCoords([NativeTypeName("const ImVec2 &")] ImVec2* a, [NativeTypeName("const ImVec2 &")] ImVec2* b, [NativeTypeName("const ImVec2 &")] ImVec2* c, [NativeTypeName("const ImVec2 &")] ImVec2* p, [NativeTypeName("float &")] float* out_u, [NativeTypeName("float &")] float* out_v, [NativeTypeName("float &")] float* out_w);
+public static extern void ImTriangleBarycentricCoords([NativeTypeName("const ImVec2 &")] ImVec2* a, [NativeTypeName("const ImVec2 &")] ImVec2* b, [NativeTypeName("const ImVec2 &")] ImVec2* c, [NativeTypeName("const ImVec2 &")] ImVec2* p, [NativeTypeName("float &")] float* out_u, [NativeTypeName("float &")] float* out_v, [NativeTypeName("float &")] float* out_w);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_Z12ImLowerBoundP16ImGuiStoragePairS0_j", ExactSpelling = true)]
         public static extern ImGuiStoragePair* ImLowerBound(ImGuiStoragePair* in_begin, ImGuiStoragePair* in_end, [NativeTypeName("ImGuiID")] uint key);
@@ -1692,7 +1704,7 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12BeginTableExEPKcjiiRK6ImVec2f", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte BeginTableEx([MarshalAs(UnmanagedType.LPUTF8Str)] string name, [NativeTypeName("ImGuiID")] uint id, int columns_count, [NativeTypeName("ImGuiTableFlags")] int flags, [NativeTypeName("const ImVec2 &")] ImVec2* outer_size, float inner_width);
+public static extern byte BeginTableEx([MarshalAs(UnmanagedType.LPUTF8Str)] string name, [NativeTypeName("ImGuiID")] uint id, int columns_count, [NativeTypeName("ImGuiTableFlags")] int flags, [NativeTypeName("const ImVec2 &")] ImVec2* outer_size, float inner_width = 0.0f);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui20TableBeginInitMemoryEP10ImGuiTablei", ExactSpelling = true)]
         public static extern void TableBeginInitMemory(ImGuiTable* table, int columns_count);
@@ -1716,7 +1728,7 @@ namespace ImGui4NET
         public static extern void TableUpdateColumnsWeightFromWidth(ImGuiTable* table);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui28TableApplyExternalUnclipRectEP10ImGuiTableR6ImRect", ExactSpelling = true)]
-        public static extern void TableApplyExternalUnclipRect(ImGuiTable* table, [NativeTypeName("ImRect &")] ImRect* rect);
+public static extern void TableApplyExternalUnclipRect(ImGuiTable* table, [NativeTypeName("const ImRect &")] ImRect* rect);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui16TableDrawBordersEP10ImGuiTable", ExactSpelling = true)]
         public static extern void TableDrawBorders(ImGuiTable* table);
@@ -1830,7 +1842,7 @@ namespace ImGui4NET
         public static extern ImGuiTableSettings* TableSettingsFindByID([NativeTypeName("ImGuiID")] uint id);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui33SetWindowClipRectBeforeSetChannelEP11ImGuiWindowRK6ImRect", ExactSpelling = true)]
-        public static extern void SetWindowClipRectBeforeSetChannel(ImGuiWindow* window, [NativeTypeName("const ImRect &")] ImRect* clip_rect);
+public static extern void SetWindowClipRectBeforeSetChannel(ImGuiWindow* window, [NativeTypeName("const ImRect &")] ImRect* clip_rect);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12BeginColumnsEPKcii", ExactSpelling = true)]
         public static extern void BeginColumns([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, int count, [NativeTypeName("ImGuiOldColumnFlags")] int flags = 0);
@@ -1904,16 +1916,16 @@ namespace ImGui4NET
         public static extern byte IsWindowNavFocusable(ImGuiWindow* window);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12SetWindowPosEP11ImGuiWindowRK6ImVec2i", ExactSpelling = true)]
-        public static extern void SetWindowPos(ImGuiWindow* window, [NativeTypeName("const ImVec2 &")] ImVec2* pos, [NativeTypeName("ImGuiCond")] int cond = 0);
+public static extern void SetWindowPos(ImGuiWindow* window, [NativeTypeName("const ImVec2 &")] ImVec2* pos, [NativeTypeName("ImGuiCond")] int cond = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13SetWindowSizeEP11ImGuiWindowRK6ImVec2i", ExactSpelling = true)]
-        public static extern void SetWindowSize(ImGuiWindow* window, [NativeTypeName("const ImVec2 &")] ImVec2* size, [NativeTypeName("ImGuiCond")] int cond = 0);
+public static extern void SetWindowSize(ImGuiWindow* window, [NativeTypeName("const ImVec2 &")] ImVec2* size, [NativeTypeName("ImGuiCond")] int cond = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui18SetWindowCollapsedEP11ImGuiWindowbi", ExactSpelling = true)]
         public static extern void SetWindowCollapsed(ImGuiWindow* window, [NativeTypeName("bool")] byte collapsed, [NativeTypeName("ImGuiCond")] int cond = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui20SetWindowHitTestHoleEP11ImGuiWindowRK6ImVec2S4_", ExactSpelling = true)]
-        public static extern void SetWindowHitTestHole(ImGuiWindow* window, [NativeTypeName("const ImVec2 &")] ImVec2* pos, [NativeTypeName("const ImVec2 &")] ImVec2* size);
+public static extern void SetWindowHitTestHole(ImGuiWindow* window, [NativeTypeName("const ImVec2 &")] ImVec2* pos, [NativeTypeName("const ImVec2 &")] ImVec2* size);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui42SetWindowHiddenAndSkipItemsForCurrentFrameEP11ImGuiWindow", ExactSpelling = true)]
         public static extern void SetWindowHiddenAndSkipItemsForCurrentFrame(ImGuiWindow* window);
@@ -2007,10 +2019,10 @@ namespace ImGui4NET
         public static extern void UpdateInputEvents([NativeTypeName("bool")] byte trickle_fast_inputs);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui34UpdateHoveredWindowAndCaptureFlagsERK6ImVec2", ExactSpelling = true)]
-        public static extern void UpdateHoveredWindowAndCaptureFlags([NativeTypeName("const ImVec2 &")] ImVec2* mouse_pos);
+public static extern void UpdateHoveredWindowAndCaptureFlags([NativeTypeName("const ImVec2 &")] ImVec2* mouse_pos);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui19FindHoveredWindowExERK6ImVec2bPP11ImGuiWindowS5_", ExactSpelling = true)]
-        public static extern void FindHoveredWindowEx([NativeTypeName("const ImVec2 &")] ImVec2* pos, [NativeTypeName("bool")] byte find_first_and_in_any_viewport, ImGuiWindow** out_hovered_window, ImGuiWindow** out_hovered_window_under_moving_window);
+public static extern void FindHoveredWindowEx([NativeTypeName("const ImVec2 &")] ImVec2* pos, [NativeTypeName("bool")] byte find_first_and_in_any_viewport, ImGuiWindow** out_hovered_window, ImGuiWindow** out_hovered_window_under_moving_window);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui22StartMouseMovingWindowEP11ImGuiWindow", ExactSpelling = true)]
         public static extern void StartMouseMovingWindow(ImGuiWindow* window);
@@ -2028,7 +2040,7 @@ namespace ImGui4NET
         public static extern void UpdateMouseMovingWindowEndFrame();
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui26TranslateWindowsInViewportEP14ImGuiViewportPRK6ImVec2S4_S4_S4_", ExactSpelling = true)]
-        public static extern void TranslateWindowsInViewport(ImGuiViewportP* viewport, [NativeTypeName("const ImVec2 &")] ImVec2* old_pos, [NativeTypeName("const ImVec2 &")] ImVec2* new_pos, [NativeTypeName("const ImVec2 &")] ImVec2* old_size, [NativeTypeName("const ImVec2 &")] ImVec2* new_size);
+public static extern void TranslateWindowsInViewport(ImGuiViewportP* viewport, [NativeTypeName("const ImVec2 &")] ImVec2* old_pos, [NativeTypeName("const ImVec2 &")] ImVec2* new_pos, [NativeTypeName("const ImVec2 &")] ImVec2* old_size, [NativeTypeName("const ImVec2 &")] ImVec2* new_size);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui22ScaleWindowsInViewportEP14ImGuiViewportPf", ExactSpelling = true)]
         public static extern void ScaleWindowsInViewport(ImGuiViewportP* viewport, float scale);
@@ -2047,7 +2059,7 @@ namespace ImGui4NET
         public static extern ImGuiPlatformMonitor* GetViewportPlatformMonitor(ImGuiViewport* viewport);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui42FindHoveredViewportFromPlatformWindowStackERK6ImVec2", ExactSpelling = true)]
-        public static extern ImGuiViewportP* FindHoveredViewportFromPlatformWindowStack([NativeTypeName("const ImVec2 &")] ImVec2* mouse_platform_pos);
+public static extern ImGuiViewportP* FindHoveredViewportFromPlatformWindowStack([NativeTypeName("const ImVec2 &")] ImVec2* mouse_platform_pos);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui20MarkIniSettingsDirtyEv", ExactSpelling = true)]
         public static extern void MarkIniSettingsDirty();
@@ -2101,10 +2113,10 @@ namespace ImGui4NET
         public static extern void ScrollToItem([NativeTypeName("ImGuiScrollFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12ScrollToRectEP11ImGuiWindowRK6ImRecti", ExactSpelling = true)]
-        public static extern void ScrollToRect(ImGuiWindow* window, [NativeTypeName("const ImRect &")] ImRect* rect, [NativeTypeName("ImGuiScrollFlags")] int flags = 0);
+public static extern void ScrollToRect(ImGuiWindow* window, [NativeTypeName("const ImRect &")] ImRect* rect, [NativeTypeName("ImGuiScrollFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui14ScrollToRectExEP11ImGuiWindowRK6ImRecti", ExactSpelling = true)]
-        public static extern ImVec2 ScrollToRectEx(ImGuiWindow* window, [NativeTypeName("const ImRect &")] ImRect* rect, [NativeTypeName("ImGuiScrollFlags")] int flags = 0);
+public static extern ImVec2 ScrollToRectEx(ImGuiWindow* window, [NativeTypeName("const ImRect &")] ImRect* rect, [NativeTypeName("ImGuiScrollFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11SetActiveIDEjP11ImGuiWindow", ExactSpelling = true)]
         public static extern void SetActiveID([NativeTypeName("ImGuiID")] uint id, ImGuiWindow* window);
@@ -2140,15 +2152,15 @@ namespace ImGui4NET
         public static extern uint GetIDWithSeed(int n, [NativeTypeName("ImGuiID")] uint seed);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui8ItemSizeERK6ImVec2f", ExactSpelling = true)]
-        public static extern void ItemSize([NativeTypeName("const ImVec2 &")] ImVec2* size, float text_baseline_y = -1.0f);
+public static extern void ItemSize([NativeTypeName("const ImVec2 &")] ImVec2* size, float text_baseline_y = -1.0f);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui7ItemAddERK6ImRectjPS1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte ItemAdd([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiID")] uint id, [NativeTypeName("const ImRect *")] ImRect* nav_bb = null, [NativeTypeName("ImGuiItemFlags")] int extra_flags = 0);
+public static extern byte ItemAdd([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiID")] uint id, [NativeTypeName("const ImRect *")] ImRect* nav_bb = null, [NativeTypeName("ImGuiItemFlags")] int extra_flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13ItemHoverableERK6ImRectji", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte ItemHoverable([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiID")] uint id, [NativeTypeName("ImGuiItemFlags")] int item_flags);
+public static extern byte ItemHoverable([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiID")] uint id, [NativeTypeName("ImGuiItemFlags")] int item_flags);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui24IsWindowContentHoverableEP11ImGuiWindowi", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -2156,16 +2168,16 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11IsClippedExERK6ImRectj", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte IsClippedEx([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiID")] uint id);
+public static extern byte IsClippedEx([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiID")] uint id);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui15SetLastItemDataEjiiRK6ImRect", ExactSpelling = true)]
-        public static extern void SetLastItemData([NativeTypeName("ImGuiID")] uint item_id, [NativeTypeName("ImGuiItemFlags")] int item_flags, [NativeTypeName("ImGuiItemStatusFlags")] int status_flags, [NativeTypeName("const ImRect &")] ImRect* item_rect);
+public static extern void SetLastItemData([NativeTypeName("ImGuiID")] uint item_id, [NativeTypeName("ImGuiItemFlags")] int item_flags, [NativeTypeName("ImGuiItemStatusFlags")] int status_flags, [NativeTypeName("const ImRect &")] ImRect* item_rect);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12CalcItemSizeE6ImVec2ff", ExactSpelling = true)]
         public static extern ImVec2 CalcItemSize(ImVec2 size, float default_w, float default_h);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui19CalcWrapWidthForPosERK6ImVec2f", ExactSpelling = true)]
-        public static extern float CalcWrapWidthForPos([NativeTypeName("const ImVec2 &")] ImVec2* pos, float wrap_pos_x);
+public static extern float CalcWrapWidthForPos([NativeTypeName("const ImVec2 &")] ImVec2* pos, float wrap_pos_x);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui20PushMultiItemsWidthsEif", ExactSpelling = true)]
         public static extern void PushMultiItemsWidths(int components, float width_full);
@@ -2174,7 +2186,7 @@ namespace ImGui4NET
         public static extern void ShrinkWidths(ImGuiShrinkWidthItem* items, int count, float width_excess, float width_min);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui25CalcClipRectVisibleItemsYERK6ImRectRK6ImVec2fPiS6_", ExactSpelling = true)]
-        public static extern void CalcClipRectVisibleItemsY([NativeTypeName("const ImRect &")] ImRect* clip_rect, [NativeTypeName("const ImVec2 &")] ImVec2* pos, float items_height, int* out_visible_start, int* out_visible_end);
+public static extern void CalcClipRectVisibleItemsY([NativeTypeName("const ImRect &")] ImRect* clip_rect, [NativeTypeName("const ImVec2 &")] ImVec2* pos, float items_height, int* out_visible_start, int* out_visible_end);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui15GetStyleVarInfoEi", ExactSpelling = true)]
         [return: NativeTypeName("const ImGuiStyleVarInfo *")]
@@ -2200,7 +2212,7 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12BeginChildExEPKcjRK6ImVec2ii", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte BeginChildEx([MarshalAs(UnmanagedType.LPUTF8Str)] string name, [NativeTypeName("ImGuiID")] uint id, [NativeTypeName("const ImVec2 &")] ImVec2* size_arg, [NativeTypeName("ImGuiChildFlags")] int child_flags, [NativeTypeName("ImGuiWindowFlags")] int window_flags);
+public static extern byte BeginChildEx([MarshalAs(UnmanagedType.LPUTF8Str)] string name, [NativeTypeName("ImGuiID")] uint id, [NativeTypeName("const ImVec2 &")] ImVec2* size_arg, [NativeTypeName("ImGuiChildFlags")] int child_flags, [NativeTypeName("ImGuiWindowFlags")] int window_flags);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui31FindFrontMostVisibleChildWindowEP11ImGuiWindow", ExactSpelling = true)]
         public static extern ImGuiWindow* FindFrontMostVisibleChildWindow(ImGuiWindow* window);
@@ -2246,7 +2258,7 @@ namespace ImGui4NET
         public static extern ImVec2 FindBestWindowPosForPopup(ImGuiWindow* window);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui27FindBestWindowPosForPopupExERK6ImVec2S2_P8ImGuiDirRK6ImRectS7_24ImGuiPopupPositionPolicy", ExactSpelling = true)]
-        public static extern ImVec2 FindBestWindowPosForPopupEx([NativeTypeName("const ImVec2 &")] ImVec2* ref_pos, [NativeTypeName("const ImVec2 &")] ImVec2* size, ImGuiDir* last_dir, [NativeTypeName("const ImRect &")] ImRect* r_outer, [NativeTypeName("const ImRect &")] ImRect* r_avoid, ImGuiPopupPositionPolicy policy);
+public static extern ImVec2 FindBestWindowPosForPopupEx([NativeTypeName("const ImVec2 &")] ImVec2* ref_pos, [NativeTypeName("const ImVec2 &")] ImVec2* size, ImGuiDir* last_dir, [NativeTypeName("const ImRect &")] ImRect* r_outer, [NativeTypeName("const ImRect &")] ImRect* r_avoid, ImGuiPopupPositionPolicy policy);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui28GetMouseButtonFromPopupFlagsEi", ExactSpelling = true)]
         [return: NativeTypeName("ImGuiMouseButton")]
@@ -2282,7 +2294,7 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui15BeginComboPopupEjRK6ImRecti", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte BeginComboPopup([NativeTypeName("ImGuiID")] uint popup_id, [NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiComboFlags")] int flags);
+public static extern byte BeginComboPopup([NativeTypeName("ImGuiID")] uint popup_id, [NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiComboFlags")] int flags);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui17BeginComboPreviewEv", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -2338,7 +2350,7 @@ namespace ImGui4NET
         public static extern void SetNavWindow(ImGuiWindow* window);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui8SetNavIDEj13ImGuiNavLayerjRK6ImRect", ExactSpelling = true)]
-        public static extern void SetNavID([NativeTypeName("ImGuiID")] uint id, ImGuiNavLayer nav_layer, [NativeTypeName("ImGuiID")] uint focus_scope_id, [NativeTypeName("const ImRect &")] ImRect* rect_rel);
+public static extern void SetNavID([NativeTypeName("ImGuiID")] uint id, ImGuiNavLayer nav_layer, [NativeTypeName("ImGuiID")] uint focus_scope_id, [NativeTypeName("const ImRect &")] ImRect* rect_rel);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui16SetNavFocusScopeEj", ExactSpelling = true)]
         public static extern void SetNavFocusScope([NativeTypeName("ImGuiID")] uint focus_scope_id);
@@ -2377,7 +2389,7 @@ namespace ImGui4NET
         public static extern void GetTypematicRepeatRate([NativeTypeName("ImGuiInputFlags")] int flags, float* repeat_delay, float* repeat_rate);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui16TeleportMousePosERK6ImVec2", ExactSpelling = true)]
-        public static extern void TeleportMousePos([NativeTypeName("const ImVec2 &")] ImVec2* pos);
+public static extern void TeleportMousePos([NativeTypeName("const ImVec2 &")] ImVec2* pos);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui31SetActiveIdUsingAllKeyboardKeysEv", ExactSpelling = true)]
         public static extern void SetActiveIdUsingAllKeyboardKeys();
@@ -2577,7 +2589,7 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui25BeginDragDropTargetCustomERK6ImRectj", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte BeginDragDropTargetCustom([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiID")] uint id);
+public static extern byte BeginDragDropTargetCustom([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiID")] uint id);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui27BeginDragDropTargetViewportEP13ImGuiViewportPK6ImRect", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -2591,13 +2603,13 @@ namespace ImGui4NET
         public static extern byte IsDragDropPayloadBeingAccepted();
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui31RenderDragDropTargetRectForItemERK6ImRect", ExactSpelling = true)]
-        public static extern void RenderDragDropTargetRectForItem([NativeTypeName("const ImRect &")] ImRect* bb);
+public static extern void RenderDragDropTargetRectForItem([NativeTypeName("const ImRect &")] ImRect* bb);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui35RenderDragDropTargetRectForViewportEjRK6ImRect", ExactSpelling = true)]
-        public static extern void RenderDragDropTargetRectForViewport([NativeTypeName("ImGuiID")] uint viewport_id, [NativeTypeName("const ImRect &")] ImRect* bb);
+public static extern void RenderDragDropTargetRectForViewport([NativeTypeName("ImGuiID")] uint viewport_id, [NativeTypeName("const ImRect &")] ImRect* bb);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui26RenderDragDropTargetRectExEP10ImDrawListRK6ImRectf", ExactSpelling = true)]
-        public static extern void RenderDragDropTargetRectEx(ImDrawList* draw_list, [NativeTypeName("const ImRect &")] ImRect* bb, float rounding);
+public static extern void RenderDragDropTargetRectEx(ImDrawList* draw_list, [NativeTypeName("const ImRect &")] ImRect* bb, float rounding);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui22GetTypingSelectRequestEi", ExactSpelling = true)]
         public static extern ImGuiTypingSelectRequest* GetTypingSelectRequest([NativeTypeName("ImGuiTypingSelectFlags")] int flags = (int)(ImGuiTypingSelectFlags_None));
@@ -2613,10 +2625,10 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui14BeginBoxSelectERK6ImRectP11ImGuiWindowji", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte BeginBoxSelect([NativeTypeName("const ImRect &")] ImRect* scope_rect, ImGuiWindow* window, [NativeTypeName("ImGuiID")] uint box_select_id, [NativeTypeName("ImGuiMultiSelectFlags")] int ms_flags);
+public static extern byte BeginBoxSelect([NativeTypeName("const ImRect &")] ImRect* scope_rect, ImGuiWindow* window, [NativeTypeName("ImGuiID")] uint box_select_id, [NativeTypeName("ImGuiMultiSelectFlags")] int ms_flags);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12EndBoxSelectERK6ImRecti", ExactSpelling = true)]
-        public static extern void EndBoxSelect([NativeTypeName("const ImRect &")] ImRect* scope_rect, [NativeTypeName("ImGuiMultiSelectFlags")] int ms_flags);
+public static extern void EndBoxSelect([NativeTypeName("const ImRect &")] ImRect* scope_rect, [NativeTypeName("ImGuiMultiSelectFlags")] int ms_flags);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui21MultiSelectItemHeaderEjPbPi", ExactSpelling = true)]
         public static extern void MultiSelectItemHeader([NativeTypeName("ImGuiID")] uint id, bool* p_selected, [NativeTypeName("ImGuiButtonFlags *")] int* p_button_flags);
@@ -2638,7 +2650,7 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13BeginTabBarExEP11ImGuiTabBarRK6ImRecti", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte BeginTabBarEx(ImGuiTabBar* tab_bar, [NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiTabBarFlags")] int flags);
+public static extern byte BeginTabBarEx(ImGuiTabBar* tab_bar, [NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiTabBarFlags")] int flags);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui17TabBarFindTabByIDEP11ImGuiTabBarj", ExactSpelling = true)]
         public static extern ImGuiTabItem* TabBarFindTabByID(ImGuiTabBar* tab_bar, [NativeTypeName("ImGuiID")] uint tab_id);
@@ -2698,10 +2710,10 @@ namespace ImGui4NET
         public static extern ImVec2 TabItemCalcSize(ImGuiWindow* window);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui17TabItemBackgroundEP10ImDrawListRK6ImRectij", ExactSpelling = true)]
-        public static extern void TabItemBackground(ImDrawList* draw_list, [NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiTabItemFlags")] int flags, [NativeTypeName("ImU32")] uint col);
+public static extern void TabItemBackground(ImDrawList* draw_list, [NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiTabItemFlags")] int flags, [NativeTypeName("ImU32")] uint col);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui26TabItemLabelAndCloseButtonEP10ImDrawListRK6ImRecti6ImVec2PKcjjbPbS8_", ExactSpelling = true)]
-        public static extern void TabItemLabelAndCloseButton(ImDrawList* draw_list, [NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiTabItemFlags")] int flags, ImVec2 frame_padding, [MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("ImGuiID")] uint tab_id, [NativeTypeName("ImGuiID")] uint close_button_id, [NativeTypeName("bool")] byte is_contents_visible, bool* out_just_closed, bool* out_text_clipped);
+public static extern void TabItemLabelAndCloseButton(ImDrawList* draw_list, [NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiTabItemFlags")] int flags, ImVec2 frame_padding, [MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("ImGuiID")] uint tab_id, [NativeTypeName("ImGuiID")] uint close_button_id, [NativeTypeName("bool")] byte is_contents_visible, bool* out_just_closed, bool* out_text_clipped);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10RenderTextE6ImVec2PKcS2_b", ExactSpelling = true)]
         public static extern void RenderText(ImVec2 pos, [MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?text_end = null, [NativeTypeName("bool")] byte hide_text_after_hash = 1);
@@ -2710,13 +2722,13 @@ namespace ImGui4NET
         public static extern void RenderTextWrapped(ImVec2 pos, [MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_end, float wrap_width);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui17RenderTextClippedERK6ImVec2S2_PKcS4_PS1_S2_PK6ImRect", ExactSpelling = true)]
-        public static extern void RenderTextClipped([NativeTypeName("const ImVec2 &")] ImVec2* pos_min, [NativeTypeName("const ImVec2 &")] ImVec2* pos_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_end, [NativeTypeName("const ImVec2 *")] ImVec2* text_size_if_known, [NativeTypeName("const ImVec2 &")] ImVec2* align, [NativeTypeName("const ImRect *")] ImRect* clip_rect);
+public static extern void RenderTextClipped([NativeTypeName("const ImVec2 &")] ImVec2* pos_min, [NativeTypeName("const ImVec2 &")] ImVec2* pos_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_end, [NativeTypeName("const ImVec2 *")] ImVec2* text_size_if_known, [NativeTypeName("const ImVec2 &")] ImVec2* align, [NativeTypeName("const ImRect *")] ImRect* clip_rect = null);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui19RenderTextClippedExEP10ImDrawListRK6ImVec2S4_PKcS6_PS3_S4_PK6ImRect", ExactSpelling = true)]
-        public static extern void RenderTextClippedEx(ImDrawList* draw_list, [NativeTypeName("const ImVec2 &")] ImVec2* pos_min, [NativeTypeName("const ImVec2 &")] ImVec2* pos_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_end, [NativeTypeName("const ImVec2 *")] ImVec2* text_size_if_known, [NativeTypeName("const ImVec2 &")] ImVec2* align, [NativeTypeName("const ImRect *")] ImRect* clip_rect);
+public static extern void RenderTextClippedEx(ImDrawList* draw_list, [NativeTypeName("const ImVec2 &")] ImVec2* pos_min, [NativeTypeName("const ImVec2 &")] ImVec2* pos_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_end, [NativeTypeName("const ImVec2 *")] ImVec2* text_size_if_known, [NativeTypeName("const ImVec2 &")] ImVec2* align, [NativeTypeName("const ImRect *")] ImRect* clip_rect = null);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui18RenderTextEllipsisEP10ImDrawListRK6ImVec2S4_fPKcS6_PS3_", ExactSpelling = true)]
-        public static extern void RenderTextEllipsis(ImDrawList* draw_list, [NativeTypeName("const ImVec2 &")] ImVec2* pos_min, [NativeTypeName("const ImVec2 &")] ImVec2* pos_max, float ellipsis_max_x, [MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_end, [NativeTypeName("const ImVec2 *")] ImVec2* text_size_if_known);
+public static extern void RenderTextEllipsis(ImDrawList* draw_list, [NativeTypeName("const ImVec2 &")] ImVec2* pos_min, [NativeTypeName("const ImVec2 &")] ImVec2* pos_max, float ellipsis_max_x, [MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_end, [NativeTypeName("const ImVec2 *")] ImVec2* text_size_if_known);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11RenderFrameE6ImVec2S0_jbf", ExactSpelling = true)]
         public static extern void RenderFrame(ImVec2 p_min, ImVec2 p_max, [NativeTypeName("ImU32")] uint fill_col, [NativeTypeName("bool")] byte borders = 1, float rounding = 0.0f);
@@ -2725,13 +2737,13 @@ namespace ImGui4NET
         public static extern void RenderFrameBorder(ImVec2 p_min, ImVec2 p_max, float rounding = 0.0f);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui26RenderColorComponentMarkerERK6ImRectjf", ExactSpelling = true)]
-        public static extern void RenderColorComponentMarker([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImU32")] uint col, float rounding);
+public static extern void RenderColorComponentMarker([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImU32")] uint col, float rounding);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui36RenderColorRectWithAlphaCheckerboardEP10ImDrawList6ImVec2S2_jffS2_fi", ExactSpelling = true)]
         public static extern void RenderColorRectWithAlphaCheckerboard(ImDrawList* draw_list, ImVec2 p_min, ImVec2 p_max, [NativeTypeName("ImU32")] uint col, float alpha, float grid_step, ImVec2 grid_off, float rounding = 0.0f, [NativeTypeName("ImDrawFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui15RenderNavCursorERK6ImRectjif", ExactSpelling = true)]
-        public static extern void RenderNavCursor([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiID")] uint id, [NativeTypeName("ImGuiNavRenderCursorFlags")] int flags = (int)(ImGuiNavRenderCursorFlags_None), float rounding = -1.0f);
+public static extern void RenderNavCursor([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiID")] uint id, [NativeTypeName("ImGuiNavRenderCursorFlags")] int flags = (int)(ImGuiNavRenderCursorFlags_None), float rounding = -1.0f);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui19FindRenderedTextEndEPKcS1_", ExactSpelling = true)]
         [return: NativeTypeName("const char *")]
@@ -2756,14 +2768,14 @@ namespace ImGui4NET
         public static extern void RenderArrowDockMenu(ImDrawList* draw_list, ImVec2 p_min, float sz, [NativeTypeName("ImU32")] uint col);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui24RenderRectFilledInRangeHEP10ImDrawListRK6ImRectjfff", ExactSpelling = true)]
-        public static extern void RenderRectFilledInRangeH(ImDrawList* draw_list, [NativeTypeName("const ImRect &")] ImRect* rect, [NativeTypeName("ImU32")] uint col, float fill_x0, float fill_x1, float rounding);
+public static extern void RenderRectFilledInRangeH(ImDrawList* draw_list, [NativeTypeName("const ImRect &")] ImRect* rect, [NativeTypeName("ImU32")] uint col, float fill_x0, float fill_x1, float rounding);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui24RenderRectFilledWithHoleEP10ImDrawListRK6ImRectS4_jf", ExactSpelling = true)]
-        public static extern void RenderRectFilledWithHole(ImDrawList* draw_list, [NativeTypeName("const ImRect &")] ImRect* outer, [NativeTypeName("const ImRect &")] ImRect* inner, [NativeTypeName("ImU32")] uint col, float rounding);
+public static extern void RenderRectFilledWithHole(ImDrawList* draw_list, [NativeTypeName("const ImRect &")] ImRect* outer, [NativeTypeName("const ImRect &")] ImRect* inner, [NativeTypeName("ImU32")] uint col, float rounding);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui30CalcRoundingFlagsForRectInRectERK6ImRectS2_f", ExactSpelling = true)]
         [return: NativeTypeName("ImDrawFlags")]
-        public static extern int CalcRoundingFlagsForRectInRect([NativeTypeName("const ImRect &")] ImRect* r_in, [NativeTypeName("const ImRect &")] ImRect* r_outer, float threshold);
+public static extern int CalcRoundingFlagsForRectInRect([NativeTypeName("const ImRect &")] ImRect* r_in, [NativeTypeName("const ImRect &")] ImRect* r_outer, float threshold);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui6TextExEPKcS1_i", ExactSpelling = true)]
         public static extern void TextEx([MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?text_end = null, [NativeTypeName("ImGuiTextFlags")] int flags = 0);
@@ -2776,7 +2788,7 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui8ButtonExEPKcRK6ImVec2i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte ButtonEx([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("const ImVec2 &")] ImVec2* size_arg, [NativeTypeName("ImGuiButtonFlags")] int flags);
+public static extern byte ButtonEx([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("const ImVec2 &")] ImVec2* size_arg, [NativeTypeName("ImGuiButtonFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13ArrowButtonExEPKc8ImGuiDir6ImVec2i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -2784,7 +2796,7 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13ImageButtonExEj12ImTextureRefRK6ImVec2S3_S3_RK6ImVec4S6_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte ImageButtonEx([NativeTypeName("ImGuiID")] uint id, ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* image_size, [NativeTypeName("const ImVec2 &")] ImVec2* uv0, [NativeTypeName("const ImVec2 &")] ImVec2* uv1, [NativeTypeName("const ImVec4 &")] ImVec4* bg_col, [NativeTypeName("const ImVec4 &")] ImVec4* tint_col, [NativeTypeName("ImGuiButtonFlags")] int flags = 0);
+public static extern byte ImageButtonEx([NativeTypeName("ImGuiID")] uint id, ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* image_size, [NativeTypeName("const ImVec2 &")] ImVec2* uv0, [NativeTypeName("const ImVec2 &")] ImVec2* uv1, [NativeTypeName("const ImVec4 &")] ImVec4* bg_col, [NativeTypeName("const ImVec4 &")] ImVec4* tint_col, [NativeTypeName("ImGuiButtonFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11SeparatorExEif", ExactSpelling = true)]
         public static extern void SeparatorEx([NativeTypeName("ImGuiSeparatorFlags")] int flags, float thickness = 1.0f);
@@ -2802,18 +2814,18 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11CloseButtonEjRK6ImVec2", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte CloseButton([NativeTypeName("ImGuiID")] uint id, [NativeTypeName("const ImVec2 &")] ImVec2* pos);
+public static extern byte CloseButton([NativeTypeName("ImGuiID")] uint id, [NativeTypeName("const ImVec2 &")] ImVec2* pos);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui14CollapseButtonEjRK6ImVec2P13ImGuiDockNode", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte CollapseButton([NativeTypeName("ImGuiID")] uint id, [NativeTypeName("const ImVec2 &")] ImVec2* pos, ImGuiDockNode* dock_node);
+public static extern byte CollapseButton([NativeTypeName("ImGuiID")] uint id, [NativeTypeName("const ImVec2 &")] ImVec2* pos, ImGuiDockNode* dock_node);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui9ScrollbarE9ImGuiAxis", ExactSpelling = true)]
         public static extern void Scrollbar(ImGuiAxis axis);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11ScrollbarExERK6ImRectj9ImGuiAxisPxxxi", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte ScrollbarEx([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiID")] uint id, ImGuiAxis axis, [NativeTypeName("ImS64 *")] long* p_scroll_v, [NativeTypeName("ImS64")] long avail_v, [NativeTypeName("ImS64")] long contents_v, [NativeTypeName("ImDrawFlags")] int draw_rounding_flags = 0);
+public static extern byte ScrollbarEx([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiID")] uint id, ImGuiAxis axis, [NativeTypeName("ImS64 *")] long* p_scroll_v, [NativeTypeName("ImS64")] long avail_v, [NativeTypeName("ImS64")] long contents_v, [NativeTypeName("ImDrawFlags")] int draw_rounding_flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui22GetWindowScrollbarRectEP11ImGuiWindow9ImGuiAxis", ExactSpelling = true)]
         public static extern ImRect GetWindowScrollbarRect(ImGuiWindow* window, ImGuiAxis axis);
@@ -2835,7 +2847,7 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui14ButtonBehaviorERK6ImRectjPbS3_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte ButtonBehavior([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiID")] uint id, bool* out_hovered, bool* out_held, [NativeTypeName("ImGuiButtonFlags")] int flags = 0);
+public static extern byte ButtonBehavior([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiID")] uint id, bool* out_hovered, bool* out_held, [NativeTypeName("ImGuiButtonFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12DragBehaviorEjiPvfPKvS2_PKci", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -2843,18 +2855,18 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui14SliderBehaviorERK6ImRectjiPvPKvS5_PKciPS0_", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte SliderBehavior([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiID")] uint id, [NativeTypeName("ImGuiDataType")] int data_type, void* p_v, [NativeTypeName("const void *")] void* p_min, [NativeTypeName("const void *")] void* p_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string format, [NativeTypeName("ImGuiSliderFlags")] int flags, ImRect* out_grab_bb);
+public static extern byte SliderBehavior([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiID")] uint id, [NativeTypeName("ImGuiDataType")] int data_type, void* p_v, [NativeTypeName("const void *")] void* p_min, [NativeTypeName("const void *")] void* p_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string format, [NativeTypeName("ImGuiSliderFlags")] int flags, ImRect* out_grab_bb);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui16SplitterBehaviorERK6ImRectj9ImGuiAxisPfS4_ffffj", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte SplitterBehavior([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiID")] uint id, ImGuiAxis axis, float* size1, float* size2, float min_size1, float min_size2, float hover_extend = 0.0f, float hover_visibility_delay = 0.0f, [NativeTypeName("ImU32")] uint bg_col = 0);
+public static extern byte SplitterBehavior([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiID")] uint id, ImGuiAxis axis, float* size1, float* size2, float min_size1, float min_size2, float hover_extend = 0.0f, float hover_visibility_delay = 0.0f, [NativeTypeName("ImU32")] uint bg_col = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui16TreeNodeBehaviorEjiPKcS1_", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
         public static extern byte TreeNodeBehavior([NativeTypeName("ImGuiID")] uint id, [NativeTypeName("ImGuiTreeNodeFlags")] int flags, [MarshalAs(UnmanagedType.LPUTF8Str)] string label, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?label_end = null);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui27TreeNodeDrawLineToChildNodeERK6ImVec2", ExactSpelling = true)]
-        public static extern void TreeNodeDrawLineToChildNode([NativeTypeName("const ImVec2 &")] ImVec2* target_pos);
+public static extern void TreeNodeDrawLineToChildNode([NativeTypeName("const ImVec2 &")] ImVec2* target_pos);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui25TreeNodeDrawLineToTreePopEPK22ImGuiTreeNodeStackData", ExactSpelling = true)]
         public static extern void TreeNodeDrawLineToTreePop([NativeTypeName("const ImGuiTreeNodeStackData *")] ImGuiTreeNodeStackData* data);
@@ -2896,18 +2908,18 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11InputTextExEPKcS1_PciRK6ImVec2iPFiP26ImGuiInputTextCallbackDataEPv", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte InputTextEx([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [MarshalAs(UnmanagedType.LPUTF8Str)] string hint, [MarshalAs(UnmanagedType.LPUTF8Str)] string buf, int buf_size, [NativeTypeName("const ImVec2 &")] ImVec2* size_arg, [NativeTypeName("ImGuiInputTextFlags")] int flags, [NativeTypeName("ImGuiInputTextCallback")] delegate* unmanaged[Cdecl]<ImGuiInputTextCallbackData*, int> callback = null, void* user_data = null);
+public static extern byte InputTextEx([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [MarshalAs(UnmanagedType.LPUTF8Str)] string hint, [MarshalAs(UnmanagedType.LPUTF8Str)] string buf, int buf_size, [NativeTypeName("const ImVec2 &")] ImVec2* size_arg, [NativeTypeName("ImGuiInputTextFlags")] int flags, [NativeTypeName("ImGuiInputTextCallback")] delegate* unmanaged[Cdecl]<ImGuiInputTextCallbackData*, int> callback = null, void* user_data = null);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui23InputTextDeactivateHookEj", ExactSpelling = true)]
         public static extern void InputTextDeactivateHook([NativeTypeName("ImGuiID")] uint id);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13TempInputTextERK6ImRectjPKcPcyiPFiP26ImGuiInputTextCallbackDataEPv", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte TempInputText([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiID")] uint id, [MarshalAs(UnmanagedType.LPUTF8Str)] string label, [MarshalAs(UnmanagedType.LPUTF8Str)] string buf, [NativeTypeName("size_t")] nuint buf_size, [NativeTypeName("ImGuiInputTextFlags")] int flags = 0, [NativeTypeName("ImGuiInputTextCallback")] delegate* unmanaged[Cdecl]<ImGuiInputTextCallbackData*, int> callback = null, void* user_data = null);
+public static extern byte TempInputText([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiID")] uint id, [MarshalAs(UnmanagedType.LPUTF8Str)] string label, [MarshalAs(UnmanagedType.LPUTF8Str)] string buf, [NativeTypeName("size_t")] nuint buf_size, [NativeTypeName("ImGuiInputTextFlags")] int flags = 0, [NativeTypeName("ImGuiInputTextCallback")] delegate* unmanaged[Cdecl]<ImGuiInputTextCallbackData*, int> callback = null, void* user_data = null);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui15TempInputScalarERK6ImRectjPKciPvS4_PKvS7_", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte TempInputScalar([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiID")] uint id, [MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("ImGuiDataType")] int data_type, void* p_data, [MarshalAs(UnmanagedType.LPUTF8Str)] string format, [NativeTypeName("const void *")] void* p_clamp_min = null, [NativeTypeName("const void *")] void* p_clamp_max = null);
+public static extern byte TempInputScalar([NativeTypeName("const ImRect &")] ImRect* bb, [NativeTypeName("ImGuiID")] uint id, [MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("ImGuiDataType")] int data_type, void* p_data, [MarshalAs(UnmanagedType.LPUTF8Str)] string format, [NativeTypeName("const void *")] void* p_clamp_min = null, [NativeTypeName("const void *")] void* p_clamp_max = null);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui17SetNextItemRefValEiPv", ExactSpelling = true)]
         public static extern void SetNextItemRefVal([NativeTypeName("ImGuiDataType")] int data_type, void* p_data);
@@ -2922,16 +2934,16 @@ namespace ImGui4NET
         public static extern void ColorPickerOptionsPopup([NativeTypeName("const float *")] float* ref_col, [NativeTypeName("ImGuiColorEditFlags")] int flags);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui6PlotExE13ImGuiPlotTypePKcPFfPviES3_iiS2_ffRK6ImVec2", ExactSpelling = true)]
-        public static extern int PlotEx(ImGuiPlotType plot_type, [MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("float (*)(void *, int)")] delegate* unmanaged[Cdecl]<void*, int, float> values_getter, void* data, int values_count, int values_offset, [MarshalAs(UnmanagedType.LPUTF8Str)] string overlay_text, float scale_min, float scale_max, [NativeTypeName("const ImVec2 &")] ImVec2* size_arg);
+public static extern int PlotEx(ImGuiPlotType plot_type, [MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("float (*)(void *, int)")] delegate* unmanaged[Cdecl]<void*, int, float> values_getter, void* data, int values_count, int values_offset, [MarshalAs(UnmanagedType.LPUTF8Str)] string overlay_text, float scale_min, float scale_max, [NativeTypeName("const ImVec2 &")] ImVec2* size_arg);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui38ShadeVertsLinearColorGradientKeepAlphaEP10ImDrawListii6ImVec2S2_jj", ExactSpelling = true)]
         public static extern void ShadeVertsLinearColorGradientKeepAlpha(ImDrawList* draw_list, int vert_start_idx, int vert_end_idx, ImVec2 gradient_p0, ImVec2 gradient_p1, [NativeTypeName("ImU32")] uint col0, [NativeTypeName("ImU32")] uint col1);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui18ShadeVertsLinearUVEP10ImDrawListiiRK6ImVec2S4_S4_S4_b", ExactSpelling = true)]
-        public static extern void ShadeVertsLinearUV(ImDrawList* draw_list, int vert_start_idx, int vert_end_idx, [NativeTypeName("const ImVec2 &")] ImVec2* a, [NativeTypeName("const ImVec2 &")] ImVec2* b, [NativeTypeName("const ImVec2 &")] ImVec2* uv_a, [NativeTypeName("const ImVec2 &")] ImVec2* uv_b, [NativeTypeName("bool")] byte clamp);
+public static extern void ShadeVertsLinearUV(ImDrawList* draw_list, int vert_start_idx, int vert_end_idx, [NativeTypeName("const ImVec2 &")] ImVec2* a, [NativeTypeName("const ImVec2 &")] ImVec2* b, [NativeTypeName("const ImVec2 &")] ImVec2* uv_a, [NativeTypeName("const ImVec2 &")] ImVec2* uv_b, [NativeTypeName("bool")] byte clamp);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui22ShadeVertsTransformPosEP10ImDrawListiiRK6ImVec2ffS4_", ExactSpelling = true)]
-        public static extern void ShadeVertsTransformPos(ImDrawList* draw_list, int vert_start_idx, int vert_end_idx, [NativeTypeName("const ImVec2 &")] ImVec2* pivot_in, float cos_a, float sin_a, [NativeTypeName("const ImVec2 &")] ImVec2* pivot_out);
+public static extern void ShadeVertsTransformPos(ImDrawList* draw_list, int vert_start_idx, int vert_end_idx, [NativeTypeName("const ImVec2 &")] ImVec2* pivot_in, float cos_a, float sin_a, [NativeTypeName("const ImVec2 &")] ImVec2* pivot_out);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui29GcCompactTransientMiscBuffersEv", ExactSpelling = true)]
         public static extern void GcCompactTransientMiscBuffers();
@@ -3082,7 +3094,7 @@ namespace ImGui4NET
         public static extern void DebugRenderKeyboardPreview(ImDrawList* draw_list);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui28DebugRenderViewportThumbnailEP10ImDrawListP14ImGuiViewportPRK6ImRect", ExactSpelling = true)]
-        public static extern void DebugRenderViewportThumbnail(ImDrawList* draw_list, ImGuiViewportP* viewport, [NativeTypeName("const ImRect &")] ImRect* bb);
+public static extern void DebugRenderViewportThumbnail(ImDrawList* draw_list, ImGuiViewportP* viewport, [NativeTypeName("const ImRect &")] ImRect* bb);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_Z38ImFontAtlasGetFontLoaderForStbTruetypev", ExactSpelling = true)]
         [return: NativeTypeName("const ImFontLoader *")]
@@ -3266,5 +3278,35 @@ namespace ImGui4NET
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_Z32ImFontAtlasGetMouseCursorTexDataP11ImFontAtlasiP6ImVec2S2_S2_S2_", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
         public static extern byte ImFontAtlasGetMouseCursorTexData(ImFontAtlas* atlas, [NativeTypeName("ImGuiMouseCursor")] int cursor_type, ImVec2* out_offset, ImVec2* out_size, [NativeTypeName("ImVec2[2]")] ImVec2* out_uv_border, [NativeTypeName("ImVec2[2]")] ImVec2* out_uv_fill);
+
+    public static byte BeginChild([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, [NativeTypeName("ImGuiChildFlags")] int child_flags = 0, [NativeTypeName("ImGuiWindowFlags")] int window_flags = 0) => BeginChild(str_id, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_0f_0f)), 0, 0);
+    public static byte BeginChild([NativeTypeName("ImGuiID")] uint id, [NativeTypeName("ImGuiChildFlags")] int child_flags = 0, [NativeTypeName("ImGuiWindowFlags")] int window_flags = 0) => BeginChild(id, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_0f_0f)), 0, 0);
+    public static void SetNextWindowPos([NativeTypeName("const ImVec2 &")] ImVec2* pos, [NativeTypeName("ImGuiCond")] int cond) => SetNextWindowPos(pos, cond, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_0f_0f)));
+    public static byte Button([MarshalAs(UnmanagedType.LPUTF8Str)] string label) => Button(label, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_0f_0f)));
+    public static void ProgressBar(float fraction, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?overlay = null) => ProgressBar(fraction, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_neg1p17549435eneg38F_0f)), null);
+    public static void Image(ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* image_size, [NativeTypeName("const ImVec2 &")] ImVec2* uv0) => Image(tex_ref, image_size, uv0, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_1f_1f)));
+    public static void Image(ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* image_size) => Image(tex_ref, image_size, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_0f_0f)));
+    public static void ImageWithBg(ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* image_size, [NativeTypeName("const ImVec2 &")] ImVec2* uv0, [NativeTypeName("const ImVec2 &")] ImVec2* uv1, [NativeTypeName("const ImVec4 &")] ImVec4* bg_col) => ImageWithBg(tex_ref, image_size, uv0, uv1, bg_col, (ImVec4*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec4_1f_1f_1f_1f)));
+    public static void ImageWithBg(ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* image_size, [NativeTypeName("const ImVec2 &")] ImVec2* uv0, [NativeTypeName("const ImVec2 &")] ImVec2* uv1) => ImageWithBg(tex_ref, image_size, uv0, uv1, (ImVec4*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec4_0f_0f_0f_0f)));
+    public static void ImageWithBg(ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* image_size, [NativeTypeName("const ImVec2 &")] ImVec2* uv0) => ImageWithBg(tex_ref, image_size, uv0, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_1f_1f)));
+    public static void ImageWithBg(ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* image_size) => ImageWithBg(tex_ref, image_size, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_0f_0f)));
+    public static byte ImageButton([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* image_size, [NativeTypeName("const ImVec2 &")] ImVec2* uv0, [NativeTypeName("const ImVec2 &")] ImVec2* uv1, [NativeTypeName("const ImVec4 &")] ImVec4* bg_col) => ImageButton(str_id, tex_ref, image_size, uv0, uv1, bg_col, (ImVec4*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec4_1f_1f_1f_1f)));
+    public static byte ImageButton([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* image_size, [NativeTypeName("const ImVec2 &")] ImVec2* uv0, [NativeTypeName("const ImVec2 &")] ImVec2* uv1) => ImageButton(str_id, tex_ref, image_size, uv0, uv1, (ImVec4*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec4_0f_0f_0f_0f)));
+    public static byte ImageButton([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* image_size, [NativeTypeName("const ImVec2 &")] ImVec2* uv0) => ImageButton(str_id, tex_ref, image_size, uv0, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_1f_1f)));
+    public static byte ImageButton([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* image_size) => ImageButton(str_id, tex_ref, image_size, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_1f_1f)));
+    public static byte ImageButton([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, ImTextureRef tex_ref) => ImageButton(str_id, tex_ref, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_0f_0f)));
+    public static byte InputTextMultiline([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [MarshalAs(UnmanagedType.LPUTF8Str)] string buf, [NativeTypeName("size_t")] nuint buf_size, [NativeTypeName("ImGuiInputTextFlags")] int flags = 0, [NativeTypeName("ImGuiInputTextCallback")] delegate* unmanaged[Cdecl]<ImGuiInputTextCallbackData*, int> callback = null, void* user_data = null) => InputTextMultiline(label, buf, buf_size, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_0f_0f)), 0, null, null);
+    public static byte ColorButton([MarshalAs(UnmanagedType.LPUTF8Str)] string desc_id, [NativeTypeName("const ImVec4 &")] ImVec4* col, [NativeTypeName("ImGuiColorEditFlags")] int flags) => ColorButton(desc_id, col, flags, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_0f_0f)));
+    public static byte Selectable([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("bool")] byte selected, [NativeTypeName("ImGuiSelectableFlags")] int flags) => Selectable(label, selected, flags, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_0f_0f)));
+    public static byte Selectable([MarshalAs(UnmanagedType.LPUTF8Str)] string label, bool* p_selected, [NativeTypeName("ImGuiSelectableFlags")] int flags) => Selectable(label, p_selected, flags, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_0f_0f)));
+    public static byte BeginListBox([MarshalAs(UnmanagedType.LPUTF8Str)] string label) => BeginListBox(label, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_0f_0f)));
+    public static byte BeginTable([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, int columns, [NativeTypeName("ImGuiTableFlags")] int flags, float inner_width = 0.0f) => BeginTable(str_id, columns, flags, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_0p0f_0p0f)), 0f);
+    public static uint DockSpace([NativeTypeName("ImGuiID")] uint dockspace_id, [NativeTypeName("ImGuiDockNodeFlags")] int flags = 0, [NativeTypeName("const ImGuiWindowClass *")] ImGuiWindowClass* window_class = null) => DockSpace(dockspace_id, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_0f_0f)), 0, null);
+    public static void Image(ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* image_size, [NativeTypeName("const ImVec2 &")] ImVec2* uv0, [NativeTypeName("const ImVec4 &")] ImVec4* tint_col, [NativeTypeName("const ImVec4 &")] ImVec4* border_col) => Image(tex_ref, image_size, uv0, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_1f_1f)), tint_col, border_col);
+    public static void Image(ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* image_size, [NativeTypeName("const ImVec4 &")] ImVec4* tint_col, [NativeTypeName("const ImVec4 &")] ImVec4* border_col) => Image(tex_ref, image_size, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_0f_0f)), tint_col, border_col);
+    public static byte BeginTableEx([MarshalAs(UnmanagedType.LPUTF8Str)] string name, [NativeTypeName("ImGuiID")] uint id, int columns_count, [NativeTypeName("ImGuiTableFlags")] int flags, float inner_width = 0.0f) => BeginTableEx(name, id, columns_count, flags, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_0f_0f)), 0f);
+    public static void RenderTextClipped([NativeTypeName("const ImVec2 &")] ImVec2* pos_min, [NativeTypeName("const ImVec2 &")] ImVec2* pos_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_end, [NativeTypeName("const ImVec2 *")] ImVec2* text_size_if_known, [NativeTypeName("const ImRect *")] ImRect* clip_rect = null) => RenderTextClipped(pos_min, pos_max, text, text_end, text_size_if_known, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_0f_0f)), null);
+    public static void RenderTextClippedEx(ImDrawList* draw_list, [NativeTypeName("const ImVec2 &")] ImVec2* pos_min, [NativeTypeName("const ImVec2 &")] ImVec2* pos_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_end, [NativeTypeName("const ImVec2 *")] ImVec2* text_size_if_known, [NativeTypeName("const ImRect *")] ImRect* clip_rect = null) => RenderTextClippedEx(draw_list, pos_min, pos_max, text, text_end, text_size_if_known, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_0f_0f)), null);
+    public static byte ButtonEx([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("ImGuiButtonFlags")] int flags = 0) => ButtonEx(label, (ImVec2*)Unsafe.AsPointer(ref Unsafe.AsRef(in C_ImVec2_0f_0f)), 0);
     }
 }

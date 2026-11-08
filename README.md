@@ -80,7 +80,7 @@ prerequisites, Android cross-compilation and troubleshooting.
 
 - [docs/build.md](docs/build.md) — build pipeline, native compilation, troubleshooting ([中文](docs/build.zh-CN.md))
 - [docs/CHANGELOG.md](docs/CHANGELOG.md) — release history
-- [samples/ImGui4NET.Sample.OpenGL3](samples/ImGui4NET.Sample.OpenGL3/README.md) — a full dashboard built on the raw bindings, with screenshots
+- [samples/ImGui4NET.Sample.OpenGL3](samples/ImGui4NET.Sample.OpenGL3/README.md) — a full dashboard built on the raw bindings, with screenshots ([中文](samples/ImGui4NET.Sample.OpenGL3/README.zh-CN.md))
 
 ## Sample
 
