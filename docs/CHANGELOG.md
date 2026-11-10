@@ -26,6 +26,19 @@ Drops `net8.0`, adds macOS support, and removes `ImGui4NET.Backend.Null`.
   architectures.
 - Backends for macOS: `OpenGL2`, `OpenGL3`, `Glut`, `Metal`, `Metal4` and `OSX`.
   GLFW, SDL2/3 and Vulkan need headers that are not part of the SDK.
+- **Fix: `MemoryEditor` crashed with `0xC0000005`.** `Button("Options", null)`
+  and `BeginChild("##scrolling", null, ...)` passed a null pointer to a
+  `const ImVec2&` parameter, which Dear ImGui dereferences unconditionally. Both
+  now pass a zeroed `ImVec2`, matching what `ImGui::Button(label)` does in C++.
+  C++ references are generated as nullable pointers, so the compiler could not
+  catch this; a by-reference parameter would be `in ImVec2`/`ref ImVec2` instead.
+- `Glut.MouseWheelFunc` is marked `[Obsolete]` with an explanation. Dear ImGui
+  declares it unconditionally in `imgui_impl_glut.h` but compiles the body only
+  under `__FREEGLUT_EXT_H__`, which Apple's GLUT framework does not define, so
+  the macOS dylibs export 11 of the 12 declared entry points. One binding
+  assembly serves every RID, so the method stays — calling it on macOS throws
+  `EntryPointNotFoundException`, and the attribute makes that a compile-time
+  warning at the call site instead of a runtime surprise.
 - **New package `ImGui4NET.Backend.Metal4`.** Metal 4 renderer backend for
   `osx-arm64` only. Unlike every other backend it records `minos=26.0`
   (`-mmacosx-version-min=26.0`), because `imgui_impl_metal4.mm` binds
@@ -58,6 +71,9 @@ Drops `net8.0`, adds macOS support, and removes `ImGui4NET.Backend.Null`.
   - `ImTextureQueue`'s per-texture records stay in native memory: their address
     is stored in `ImTextureData.QueueUserData` and dereferenced by the render
     thread.
+    - `ImDrawDataSnapshot` reuses one key buffer instead of allocating a new
+      `uint[]` on every `NewFrame`, so the steady-state snapshot path is
+      allocation-free.
 - `Metal` and `OSX` are Objective-C++. Their bindings come from
   `tools/gen-objc-backend.sh`, which parses with `-x objective-c++` and hands the
   header to `postprocess.py --macho-symbols`: a Mach-O symbol table stores every

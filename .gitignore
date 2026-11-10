@@ -31,6 +31,7 @@ __pycache__/
 *.pyc
 
 docs/dependency-tree.md
+docs/TODO.md
 
 # NuGet packages produced by dotnet pack
 artifacts/

@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using OpenTK.Graphics.OpenGL4;
 using GlPixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 
@@ -11,6 +12,7 @@ namespace ImGui4NET.Sample.OpenGL3;
 /// inspected without a live window. Press F12, or pass a path on the command
 /// line to grab a frame automatically.
 /// </summary>
+[SupportedOSPlatform("windows")]
 internal static class Screenshot
 {
     /// <summary>Reads the current back buffer and writes it as a PNG.</summary>

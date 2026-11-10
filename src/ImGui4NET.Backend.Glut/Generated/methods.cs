@@ -33,6 +33,13 @@ namespace ImGui4NET.Backend.Glut
         [DllImport("imgui_backend_glut", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_Z24ImGui_ImplGLUT_MouseFunciiii", ExactSpelling = true)]
         public static extern void MouseFunc(int button, int state, int x, int y);
 
+        /// <remarks>
+        /// Unavailable on macOS: <c>imgui_impl_glut.cpp</c> compiles the body
+        /// only under <c>__FREEGLUT_EXT_H__</c>, which Apple's GLUT framework
+        /// does not define, so the symbol is missing from the macOS dylib.
+        /// Calling this there throws <see cref="EntryPointNotFoundException"/>.
+        /// </remarks>
+        [Obsolete("MouseWheelFunc is not available on macOS.")]
         [DllImport("imgui_backend_glut", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_Z29ImGui_ImplGLUT_MouseWheelFunciiii", ExactSpelling = true)]
         public static extern void MouseWheelFunc(int button, int dir, int x, int y);
 

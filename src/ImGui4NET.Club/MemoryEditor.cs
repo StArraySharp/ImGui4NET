@@ -113,6 +113,24 @@ public sealed unsafe class MemoryEditor : IDisposable
     private sbyte* _dataInputBuf;
     private sbyte* _addrInputBuf;
 
+    /// <summary>
+    /// Per-call payload handed to <see cref="DataInputCallback"/>.
+    /// </summary>
+    /// <remarks>
+    /// The address of an instance is passed as <c>user_data</c>, so it lives on
+    /// the stack for the duration of one <c>InputText</c> call and must stay
+    /// blittable.
+    /// <para>
+    /// <see cref="DataInputUserData.CurrentBufOverwrite"/> is <c>char[3]</c> in
+    /// C++ and holds the two hex digits plus a terminator.
+    /// </para>
+    /// </remarks>
+    private struct DataInputUserData
+    {
+        public fixed sbyte CurrentBufOverwrite[3];
+        public int CursorPos;
+    }
+
     private bool _disposed;
 
     // Scratch buffer for the data preview; needs no persistence.
@@ -310,7 +328,11 @@ public sealed unsafe class MemoryEditor : IDisposable
                 + ImGui.GetTextLineHeightWithSpacing() * 3f;
         }
 
-        ImVec2 scrollingSize = new() { x = -float.MinValue, y = -footerHeight };
+        // C++ writes this as ImVec2(-FLT_MIN, -footer_height): -FLT_MIN is the
+        // smallest positive normal negated, a sentinel meaning "fill the
+        // remaining width". C#'s float.MinValue is -FLT_MAX instead, which
+        // would make BeginChild clamp the width to 4 pixels and hide the data.
+        ImVec2 scrollingSize = new() { x = -1.17549435e-38f, y = -footerHeight };
         int childFlags = (int)ImGuiChildFlags.ImGuiChildFlags_None;
         int childWindowFlags = (int)ImGuiWindowFlags.ImGuiWindowFlags_NoMove
             | (int)ImGuiWindowFlags.ImGuiWindowFlags_NoNav;
@@ -393,9 +415,10 @@ public sealed unsafe class MemoryEditor : IDisposable
             ? ImGui.GetColorU32((int)ImGuiCol.ImGuiCol_TextDisabled)
             : colorText;
 
-        string addressFormat = OptUpperCaseHex ? "X" : "x";
+        // .NET has no "%02X " equivalent: a trailing space turns "X2 " into a
+        // custom format string that is emitted literally. The separator is
+        // appended after formatting instead.
         string byteFormat = OptUpperCaseHex ? "X2" : "x2";
-        string byteSpaceFormat = OptUpperCaseHex ? "X2 " : "x2 ";
 
         MouseHovered = false;
         MouseHoveredAddr = 0;
@@ -406,11 +429,11 @@ public sealed unsafe class MemoryEditor : IDisposable
             {
                 nuint addr = (nuint)lineI * (nuint)Cols;
 
-                DrawAddressLine(drawList, s, lineI, baseDisplayAddr, addr, colorText, addressFormat);
+                DrawAddressLine(drawList, s, lineI, baseDisplayAddr, addr, colorText, OptUpperCaseHex);
 
                 addr = (nuint)lineI * (nuint)Cols;
                 DrawHexCells(drawList, memData, memSize, s, ref addr, colorText, colorDisabled,
-                    byteFormat, byteSpaceFormat, previewDataTypeSize, ref dataNext, ref dataEditingAddrNext);
+                    byteFormat, previewDataTypeSize, ref dataNext, ref dataEditingAddrNext);
 
                 if (OptShowAscii)
                 {
@@ -469,7 +492,8 @@ public sealed unsafe class MemoryEditor : IDisposable
 
         if (_gotoAddr < memSize)
         {
-            ImGui.BeginChild("##scrolling", null, 0, 0);
+            ImVec2 scrollingSize = new() { x = 0f, y = 0f };
+            ImGui.BeginChild("##scrolling", &scrollingSize, 0, 0);
             ImGui.SetScrollY((_gotoAddr / (nuint)Cols) * ImGui.GetTextLineHeight() - availSize.y * 0.5f);
             ImGui.EndChild();
 
@@ -543,18 +567,18 @@ public sealed unsafe class MemoryEditor : IDisposable
     // -----------------------------------------------------------------------
 
     private void DrawAddressLine(ImDrawList* drawList, Sizes s, int lineI, nuint baseDisplayAddr,
-        nuint addr, uint colorText, string digitsFormat)
+            nuint addr, uint colorText, bool upperCase)
     {
         _ = drawList;
         _ = colorText;
 
         nuint displayAddr = baseDisplayAddr + addr;
-        string text = FormatHex(displayAddr, s.AddrDigitsCount) + ": ";
+        string text = FormatHex(displayAddr, s.AddrDigitsCount, OptUpperCaseHex) + ": ";
         ImGui.TextUnformatted(text);
     }
 
     private void DrawHexCells(ImDrawList* drawList, byte* memData, nuint memSize, Sizes s,
-        ref nuint addr, uint colorText, uint colorDisabled, string byteFormat, string byteSpaceFormat,
+            ref nuint addr, uint colorText, uint colorDisabled, string byteFormat,
         nuint previewDataTypeSize, ref bool dataNext, ref nuint dataEditingAddrNext)
     {
         for (int n = 0; n < Cols && addr < memSize; n++, addr++)
@@ -617,13 +641,13 @@ public sealed unsafe class MemoryEditor : IDisposable
             }
             else
             {
-                DrawStaticByte(memData, addr, colorDisabled, byteFormat, byteSpaceFormat, ref dataEditingAddrNext);
+                DrawStaticByte(memData, addr, colorDisabled, byteFormat, ref dataEditingAddrNext);
             }
         }
     }
 
     private void DrawStaticByte(byte* memData, nuint addr, uint colorDisabled,
-        string byteFormat, string byteSpaceFormat, ref nuint dataEditingAddrNext)
+            string byteFormat, ref nuint dataEditingAddrNext)
     {
         byte b = ReadFn != null ? ReadFn(memData, addr, UserData) : memData[addr];
 
@@ -645,7 +669,7 @@ public sealed unsafe class MemoryEditor : IDisposable
             }
             else
             {
-                ImGui.TextUnformatted(b.ToString(byteSpaceFormat));
+                ImGui.TextUnformatted(b.ToString(byteFormat) + " ");
             }
         }
         else if (b == 0 && OptGreyOutZeroes)
@@ -656,7 +680,7 @@ public sealed unsafe class MemoryEditor : IDisposable
         }
         else
         {
-            ImGui.TextUnformatted(b.ToString(byteSpaceFormat));
+            ImGui.TextUnformatted(b.ToString(byteFormat) + " ");
         }
 
         if (ImGui.IsItemHovered() != 0)
@@ -672,11 +696,50 @@ public sealed unsafe class MemoryEditor : IDisposable
         }
     }
 
+    // Mirrors ImGuiInputTextCallbackData's HasSelection(). Kept as a helper
+    // because the generated struct exposes fields only.
+    private static bool HasSelection(ImGuiInputTextCallbackData* data)
+        => data->SelectionStart != data->SelectionEnd;
+
+    /// <summary>
+    /// Port of the <c>InputTextUserData::Callback</c> in the C++ original.
+    /// </summary>
+    /// <remarks>
+    /// <c>InputText</c> owns the master copy of the text it edits, so when the
+    /// user is not selecting anything the content is forced back to the byte
+    /// currently in memory. Without this the widget would keep whatever was
+    /// typed before the editor scrolled that address out of view.
+    /// <para>
+    /// The callback only runs because <c>CallbackAlways</c> is requested; Dear
+    /// ImGui asserts the pointer is non-null in that case, so passing a flag
+    /// without a callback aborts the process.
+    /// </para>
+    /// </remarks>
+    [UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
+    private static int DataInputCallback(ImGuiInputTextCallbackData* data)
+    {
+        DataInputUserData* userData = (DataInputUserData*)data->UserData;
+        if (!HasSelection(data))
+        {
+            userData->CursorPos = data->CursorPos;
+        }
+
+        if (data->SelectionStart == 0 && data->SelectionEnd == data->BufTextLen)
+        {
+            ImGuiInputTextCallbackData.DeleteChars(data, 0, data->BufTextLen);
+            ImGuiInputTextCallbackData.InsertChars(data, 0, new string(userData->CurrentBufOverwrite));
+            data->SelectionStart = 0;
+            data->SelectionEnd = 2;
+            data->CursorPos = 0;
+        }
+
+        return 0;
+    }
+
     private void DrawEditingByte(ImDrawList* drawList, byte* memData, Sizes s, nuint addr,
         string byteFormat, ref bool dataNext, ref nuint dataEditingAddrNext)
     {
         _ = drawList;
-        _ = s;
 
         bool dataWrite = false;
         ImGui.PushID((void*)addr);
@@ -684,7 +747,7 @@ public sealed unsafe class MemoryEditor : IDisposable
         if (_dataEditingTakeFocus)
         {
             ImGui.SetKeyboardFocusHere(0);
-            WriteCString(_addrInputBuf, InputBufSize, FormatHex(addr, s.AddrDigitsCount));
+            WriteCString(_addrInputBuf, InputBufSize, FormatHex(addr, s.AddrDigitsCount, OptUpperCaseHex));
 
             byte current = ReadFn != null ? ReadFn(memData, addr, UserData) : memData[addr];
             WriteCString(_dataInputBuf, InputBufSize, current.ToString(byteFormat));
@@ -704,7 +767,12 @@ public sealed unsafe class MemoryEditor : IDisposable
 
         ImGui.SetNextItemWidth(s.GlyphWidth * 2f);
 
-        if (ImGui.InputText("##data", _dataInputBuf, InputBufSize, flags) != 0)
+        DataInputUserData userData = default;
+        userData.CursorPos = -1;
+        byte live = ReadFn != null ? ReadFn(memData, addr, UserData) : memData[addr];
+        WriteCString(userData.CurrentBufOverwrite, 3, live.ToString(byteFormat));
+
+        if (ImGui.InputText("##data", _dataInputBuf, InputBufSize, flags, &DataInputCallback, &userData) != 0)
         {
             dataWrite = dataNext = true;
         }
@@ -718,6 +786,12 @@ public sealed unsafe class MemoryEditor : IDisposable
         if (dataEditingAddrNext != NoAddress)
         {
             dataWrite = dataNext = false;
+        }
+
+        // A cursor past the first digit means the user finished the byte.
+        if (userData.CursorPos >= 2)
+        {
+            dataWrite = dataNext = true;
         }
 
         if (!ReadOnly && dataWrite && TryParseHexByte(_dataInputBuf, out byte value))
@@ -811,10 +885,11 @@ public sealed unsafe class MemoryEditor : IDisposable
 
         ImGuiStyle* style = ImGui.GetStyle();
         string rangeFormat = OptUpperCaseHex
-            ? $"Range {FormatHex(baseDisplayAddr, s.AddrDigitsCount)}.."
-            : $"Range {FormatHex(baseDisplayAddr, s.AddrDigitsCount)}..";
+            ? $"Range {FormatHex(baseDisplayAddr, s.AddrDigitsCount, OptUpperCaseHex)}.."
+                        : $"Range {FormatHex(baseDisplayAddr, s.AddrDigitsCount, OptUpperCaseHex)}..";
 
-        if (ImGui.Button("Options", null) != 0)
+        ImVec2 optionsButtonSize = new() { x = 0f, y = 0f };
+        if (ImGui.Button("Options", &optionsButtonSize) != 0)
         {
             ImGui.OpenPopup("OptionsPopup");
         }
@@ -822,7 +897,7 @@ public sealed unsafe class MemoryEditor : IDisposable
         ImGui.SameLine(0f, -1f);
         _ = rangeFormat;
         ImGui.TextUnformatted(
-            $"Range {FormatHex(baseDisplayAddr, s.AddrDigitsCount)}..{FormatHex(baseDisplayAddr + memSize - 1, s.AddrDigitsCount)}");
+            $"Range {FormatHex(baseDisplayAddr, s.AddrDigitsCount, OptUpperCaseHex)}..{FormatHex(baseDisplayAddr + memSize - 1, s.AddrDigitsCount, OptUpperCaseHex)}");
 
         ImGui.SameLine(0f, -1f);
         ImGui.SetNextItemWidth((s.AddrDigitsCount + 1) * s.GlyphWidth + style->FramePadding.x * 2f);
@@ -1055,8 +1130,8 @@ public sealed unsafe class MemoryEditor : IDisposable
     // Small helpers
     // -----------------------------------------------------------------------
 
-    private static string FormatHex(nuint value, int digits)
-        => value.ToString("X" + digits.ToString());
+    private static string FormatHex(nuint value, int digits, bool upper)
+            => value.ToString((upper ? "X" : "x") + digits.ToString());
 
     private static void WriteCString(sbyte* buffer, int size, string text)
     {

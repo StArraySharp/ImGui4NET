@@ -45,6 +45,10 @@ public sealed unsafe class ImDrawDataSnapshot
 
     private readonly Dictionary<uint, Entry> _cache = [];
 
+    // Scratch buffer reused by CompactUnused so a steady-state snapshot does not
+    // allocate a fresh key array every frame.
+    private uint[] _compactKeys = [];
+
     /// <summary>
     /// Releases every copied draw list and clears the snapshot.
     /// </summary>
@@ -123,21 +127,34 @@ public sealed unsafe class ImDrawDataSnapshot
     {
         double threshold = currentTime - MemoryCompactTimer;
 
-        uint[] keys = new uint[_cache.Count];
-        _cache.Keys.CopyTo(keys, 0);
-
-        foreach (uint key in keys)
-        {
-            Entry entry = _cache[key];
-            if (entry.LastUsedTime > threshold)
+            int count = _cache.Count;
+            if (count == 0)
             {
-                continue;
+                return;
             }
 
-            FreeDrawList(entry.OurCopy);
-            _cache.Remove(key);
+            uint[] keys = _compactKeys;
+            if (keys.Length < count)
+            {
+                keys = new uint[count * 2];
+                _compactKeys = keys;
+            }
+
+            _cache.Keys.CopyTo(keys, 0);
+
+            for (int index = 0; index < count; index++)
+            {
+                uint key = keys[index];
+                Entry entry = _cache[key];
+                if (entry.LastUsedTime > threshold)
+                {
+                    continue;
+                }
+
+                FreeDrawList(entry.OurCopy);
+                _cache.Remove(key);
+            }
         }
-    }
 
     /// <summary>Mirror of <c>ImDrawDataSnapshot::GetDrawListID</c>: hash of the pointer.</summary>
     private static uint GetDrawListID(ImDrawList* srcList)
