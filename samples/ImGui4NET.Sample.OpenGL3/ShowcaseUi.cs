@@ -73,7 +73,7 @@ internal static unsafe class ShowcaseUi
     static readonly float[] Spark4 = [30, 28, 32, 27, 25, 29, 24, 26, 22, 24, 20, 21];
 
     static byte* _memData;
-    static MemoryEditor* _memEditor;
+        static MemoryEditor? _memEditor;
     const int MemorySize = 0x800;
 
     const float TopBarHeight = 64f;
@@ -132,38 +132,35 @@ internal static unsafe class ShowcaseUi
         _fontsLoaded = true;
 
         _memData = (byte*)NativeMemory.AllocZeroed(MemorySize);
-        for (int i = 0; i < MemorySize; i++)
-        {
-            _memData[i] = (byte)((i * 37) ^ (i >> 3));
-        }
+                for (int i = 0; i < MemorySize; i++)
+                {
+                    _memData[i] = (byte)((i * 37) ^ (i >> 3));
+                }
 
-        _memEditor = (MemoryEditor*)NativeMemory.AllocZeroed((nuint)sizeof(MemoryEditor));
-        ClubNative.MemoryEditor_Ctor(_memEditor);
-        _memEditor->Cols = 16;
-        _memEditor->OptShowOptions = 1;
-        _memEditor->OptShowDataPreview = 1;
-        _memEditor->OptShowAscii = 1;
-        _memEditor->OptGreyOutZeroes = 1;
-        _memEditor->OptUpperCaseHex = 1;
-        _memEditor->OptMidColsCount = 8;
-    }
+                _memEditor = new MemoryEditor
+                {
+                    Cols = 16,
+                    OptShowOptions = true,
+                    OptShowDataPreview = true,
+                    OptShowAscii = true,
+                    OptGreyOutZeroes = true,
+                    OptUpperCaseHex = true,
+                    OptMidColsCount = 8,
+                };
+            }
 
-    public static void Shutdown()
-    {
-        if (_memEditor != null)
-        {
-            NativeMemory.Free(_memEditor);
-            _memEditor = null;
-        }
+            public static void Shutdown()
+            {
+                _memEditor?.Dispose();
+                _memEditor = null;
 
-        if (_memData != null)
-        {
-            NativeMemory.Free(_memData);
-            _memData = null;
-        }
-    }
+                if (_memData != null)
+                {
+                    NativeMemory.Free(_memData);
+                    _memData = null;
+                }
+            }
 
-    /// <summary>Selects a tab programmatically (used by the screenshot harness).</summary>
     public static void SetActiveTab(int index)
     {
         _activeTab = Math.Clamp(index, 0, TabLabels.Length - 1);
@@ -893,7 +890,7 @@ internal static unsafe class ShowcaseUi
             {
                 ImGui.TextUnformatted("ImGui4NET   core bindings");
                 ImGui.TextUnformatted("ImGui4NET.Club   imgui_club extensions");
-                ImGui.TextUnformatted("ImGui4NET.Backend.*   15 backends");
+                ImGui.TextUnformatted("ImGui4NET.Backend.*   14 backends");
                 ImGui.TreePop();
             }
 
@@ -997,15 +994,12 @@ internal static unsafe class ShowcaseUi
 
         Text(dl, V2(start.x, start.y), Rgba(0xE8, 0xEA, 0xF2), "imgui_club  Memory Editor", 15f);
         Text(dl, V2(start.x, start.y + 23f), TextDim,
-            "由 ClubNative 直接调用原生入口点，支持十六进制/ASCII 双视图与数据预览。", 11f);
+                    "托管移植版（MemoryEditor），支持十六进制/ASCII 双视图与数据预览。", 11f);
 
-        SetCursorScreen(start.x, start.y + 52f);
+                SetCursorScreen(start.x, start.y + 52f);
 
-        if (_memEditor != null)
-        {
-            ClubNative.MemoryEditor_DrawContents(_memEditor, _memData, MemorySize, 0);
-        }
-    }
+                _memEditor?.DrawContents(_memData, MemorySize, 0);
+            }
 
     static void DrawSettingsTab()
     {
@@ -1022,7 +1016,7 @@ internal static unsafe class ShowcaseUi
 
         SetCursorScreen(min.x + 18f, min.y + 48f);
         ImGui.TextUnformatted("目标框架      net10.0");
-        ImGui.TextUnformatted("原生库        imgui.dll / imgui_club.dll");
+        ImGui.TextUnformatted("原生库        imgui.dll");
         ImGui.TextUnformatted($"字体          {(_fontIsYahei ? "Microsoft YaHei (msyh.ttc)" : "fallback")}");
         ImGui.TextUnformatted($"帧时间        {_frameMs:F2} ms");
         ImGui.TextUnformatted($"帧率          {_fps:F1} FPS");

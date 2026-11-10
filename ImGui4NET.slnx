@@ -14,8 +14,10 @@
     <Project Path="src/ImGui4NET.Backend.Sdl3/ImGui4NET.Backend.Sdl3.csproj" />
     <Project Path="src/ImGui4NET.Backend.SdlGpu3/ImGui4NET.Backend.SdlGpu3.csproj" />
     <Project Path="src/ImGui4NET.Backend.Glut/ImGui4NET.Backend.Glut.csproj" />
+    <Project Path="src/ImGui4NET.Backend.Metal/ImGui4NET.Backend.Metal.csproj" />
+    <Project Path="src/ImGui4NET.Backend.Metal4/ImGui4NET.Backend.Metal4.csproj" />
+    <Project Path="src/ImGui4NET.Backend.OSX/ImGui4NET.Backend.OSX.csproj" />
     <Project Path="src/ImGui4NET.Backend.Allegro5/ImGui4NET.Backend.Allegro5.csproj" />
-    <Project Path="src/ImGui4NET.Backend.Null/ImGui4NET.Backend.Null.csproj" />
     <Project Path="src/ImGui4NET.Backend.Android/ImGui4NET.Backend.Android.csproj" />
   </Folder>
   <Folder Name="/samples/">

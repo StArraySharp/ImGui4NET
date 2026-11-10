@@ -17,12 +17,14 @@ dotnet add package ImGui4NET.Backend.Glfw       # platform
 dotnet add package ImGui4NET.Backend.OpenGL3    # renderer
 ```
 
-Native libraries for `win-x64`, `linux-x64` and `android-arm64` ship inside the
-packages under `runtimes/`, so no extra build step is needed.
+Native libraries for `win-x64`, `linux-x64`, `osx-x64`, `osx-arm64` and
+`android-arm64` ship inside the packages under `runtimes/`, so no extra build
+step is needed. Every package targets `net10.0`; the Direct3D and Win32
+backends also ship a `net10.0-windows` build.
 
 ### Prerequisites
 
-- .NET 8.0 or later.
+- .NET 10.0 or later.
 - The native platform library the chosen backend links against (GLFW, SDL2/3,
   Vulkan loader, Direct3D, ...) must be resolvable at run time. Packages that
   need one already depend on the matching Silk.NET package, which supplies it.
@@ -55,7 +57,7 @@ unsafe
 | Package | Contents |
 |---|---|
 | `ImGui4NET` | Core Dear ImGui bindings plus the native `imgui` library |
-| `ImGui4NET.Club` | Official `ocornut/imgui_club` extensions: Memory Editor, Multi-Context Compositor, Threaded Rendering |
+| `ImGui4NET.Club` | Pure C# ports of the `ocornut/imgui_club` extensions: Memory Editor, Multi-Context Compositor, Threaded Rendering (no native library) |
 | `ImGui4NET.Backend.OpenGL2` | OpenGL2 renderer backend |
 | `ImGui4NET.Backend.OpenGL3` | OpenGL3 renderer backend |
 | `ImGui4NET.Backend.DirectX9` | Direct3D 9 renderer backend |
@@ -68,8 +70,10 @@ unsafe
 | `ImGui4NET.Backend.Sdl3` | SDL3 platform backend |
 | `ImGui4NET.Backend.SdlGpu3` | SDL3 GPU renderer backend |
 | `ImGui4NET.Backend.Glut` | GLUT platform backend |
+| `ImGui4NET.Backend.Metal` | Metal renderer backend (macOS) |
+| `ImGui4NET.Backend.Metal4` | Metal 4 renderer backend (macOS 26+, Apple Silicon) |
+| `ImGui4NET.Backend.OSX` | macOS/Cocoa platform backend |
 | `ImGui4NET.Backend.Allegro5` | Allegro5 platform backend |
-| `ImGui4NET.Backend.Null` | Headless platform backend |
 | `ImGui4NET.Backend.Android` | Android platform backend (arm64) |
 
 Each backend package ships its own native library and depends only on the core

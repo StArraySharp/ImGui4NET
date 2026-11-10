@@ -15,10 +15,15 @@
 #   ./tools/generate.sh              # regenerate bindings only
 #   ./tools/generate.sh --native     # also rebuild desktop native libraries
 #   ./tools/generate.sh --android    # also rebuild the Android arm64 libraries
-#   ./tools/generate.sh --all        # desktop + Android
+#   ./tools/generate.sh --macos      # also cross-build the macOS libraries
+#   ./tools/generate.sh --all        # desktop + Android + macOS
 #   ./tools/generate.sh --native --no-generate
 #                                    # build libraries only, keep existing bindings
 #   ./tools/generate.sh --help
+#
+# macOS cross-builds run on any host that has clang and ld64.lld (the MSYS2
+# clang package provides both). The SDK is fetched on demand; see
+# tools/fetch-macos-sdk.sh.
 
 set -euo pipefail
 
@@ -37,23 +42,33 @@ TOOL="$SCRIPT_DIR/postprocess.py"
 #   third_party/libs/allegro/{build/native,...}
 EXTERNAL_LIBS_DIR="$REPO_ROOT/third_party/libs"
 
+# macOS cross-compilation inputs. The SDK is unpacked by tools/fetch-macos-sdk.sh
+# into third_party/macos-sdk/<version>/MacOSX<version>.sdk; point
+# MACOS_SDK_DIR at an existing SDK to reuse one that is already on disk.
+MACOS_SDK_VERSION="${MACOS_SDK_VERSION:-26.0}"
+MACOS_SDK_ROOT="$REPO_ROOT/third_party/macos-sdk"
+MACOS_MIN_VERSION="${MACOS_MIN_VERSION:-11.0}"
+MACOS_ARCHES="${MACOS_ARCHES:-x64 arm64}"
+
 NAMESPACE="ImGui4NET"
 BACKEND_NAMESPACE_PREFIX="ImGui4NET.Backend"
 
 BUILD_NATIVE=0
 BUILD_ANDROID=0
+BUILD_MACOS=0
 SKIP_GENERATE=0
 for arg in "$@"; do
     case "$arg" in
         --native) BUILD_NATIVE=1 ;;
         --android) BUILD_ANDROID=1 ;;
-        --all) BUILD_NATIVE=1; BUILD_ANDROID=1 ;;
+        --macos) BUILD_MACOS=1 ;;
+        --all) BUILD_NATIVE=1; BUILD_ANDROID=1; BUILD_MACOS=1 ;;
         # Native-only: build the libraries without regenerating bindings. Used
         # when cross-building on a machine whose target triple differs from the
         # one the checked-in bindings were generated with.
         --no-generate) SKIP_GENERATE=1 ;;
         --help|-h)
-            sed -n '2,24p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+            sed -n '2,32p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
             exit 0
             ;;
         *)
@@ -246,46 +261,19 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# imgui_club bindings
+# imgui_club
 # ---------------------------------------------------------------------------
 #
-# The club extensions are separate C++ structs with their own translation unit
-# requirements: imgui_memory_editor.h uses ImU8/ImU32/IM_ASSERT without
-# including anything, so imgui.h must come first.
-#
-# imgui.h is deliberately NOT passed as -t: it is a dependency to parse, not
-# output to generate. Listing it would duplicate every core type in this
-# package and collide with ImGui4NET.
-CLUB_TU="$TU_DIR/club_tu.h"
-cat >"$CLUB_TU" <<'EOF'
-#include "imgui.h"
-#include "imgui_memory_editor.h"
-#include "imgui_threaded_rendering.h"
-#include "imgui_multicontext_compositor.h"
-EOF
-
-echo "==> Generating imgui_club bindings"
-if [ "$SKIP_GENERATE" = "1" ]; then
-    echo "    (skipped: --no-generate)"
-else
-    generate "$SRC_DIR/ImGui4NET.Club/Generated" "ImGui4NET.Club" "$CLUB_TU" \
-        "imgui_club" "ImGuiClub" \
-        -t "$CLUB_TU" \
-        -t "$CLUB_DIR/imgui_memory_editor/imgui_memory_editor.h" \
-        -t "$CLUB_DIR/imgui_threaded_rendering/imgui_threaded_rendering.h" \
-        -t "$CLUB_DIR/imgui_multicontext_compositor/imgui_multicontext_compositor.h" \
-        -a "-isystem" -a "$CLUB_DIR/imgui_memory_editor" \
-        -a "-isystem" -a "$CLUB_DIR/imgui_threaded_rendering" \
-        -a "-isystem" -a "$CLUB_DIR/imgui_multicontext_compositor"
-fi
+# The club extensions are bound as a pure C# port and need no generator step:
+# imgui_memory_editor.h, imgui_threaded_rendering.h and
+# imgui_multicontext_compositor.h all define their methods inline, and
+# ClangSharp emits nothing for a function whose body lives in a header it
+# traverses. Rather than forcing those definitions out of a native library, the
+# logic lives in src/ImGui4NET.Club/*.cs and calls only the public Dear ImGui
+# entry points via ImGui4NET.
+echo "==> imgui_club: pure C# port, nothing to generate"
 
 rm -rf "$TU_DIR"
-
-echo "==> imgui_club note:"
-echo "    MemoryEditor/ImDrawDataSnapshot/ImTextureQueue methods are defined"
-echo "    inline in their headers. ClangSharp only emits externs for functions"
-echo "    whose definition lives in a header it traverses, so the struct layout"
-echo "    is generated here and the externs are provided by ClubNative.cs."
 
 # ---------------------------------------------------------------------------
 # Backend bindings
@@ -299,9 +287,14 @@ echo "    is generated here and the externs are provided by ClubNative.cs."
 # so OpenGL3 builds against GLESv2/EGL and Vulkan needs the api-24 toolchain.
 # OpenGL2 (fixed-function GL), GLFW, SDL2/3, Glut and Allegro5 have no NDK
 # headers and are therefore skipped there.
+#
+# macOS notes: only the backends whose dependencies ship inside the macOS SDK
+# are built. OpenGL2/OpenGL3 need OpenGL.framework, Glut needs GLUT.framework.
+# GLFW, SDL2/3 and Vulkan would need their own headers, and Metal is
+# Objective-C++ (.mm) which this build does not drive.
 BACKENDS=(
-    "OpenGL2|imgui_impl_opengl2.h|||ImGui_ImplOpenGL2_|windows,linux"
-    "OpenGL3|imgui_impl_opengl3.h|||ImGui_ImplOpenGL3_|windows,linux,android"
+    "OpenGL2|imgui_impl_opengl2.h|||ImGui_ImplOpenGL2_|windows,linux,osx"
+    "OpenGL3|imgui_impl_opengl3.h|||ImGui_ImplOpenGL3_|windows,linux,android,osx"
     "DirectX9|imgui_impl_dx9.h||D3D9|ImGui_ImplDX9_|windows"
     "DirectX11|imgui_impl_dx11.h||D3D11|ImGui_ImplDX11_|windows"
     "DirectX12|imgui_impl_dx12.h|-a -isystem -a $STUB_DIR/d3d12|D3D12|ImGui_ImplDX12_|windows"
@@ -311,10 +304,31 @@ BACKENDS=(
     "Sdl2|imgui_impl_sdl2.h||SDL2|ImGui_ImplSDL2_|windows,linux"
     "Sdl3|imgui_impl_sdl3.h|||ImGui_ImplSDL3_|windows,linux"
     "SdlGpu3|imgui_impl_sdlgpu3.h|-a -isystem -a $STUB_DIR -t $IMGUI_DIR/backends/imgui_impl_sdlgpu3.h -t $STUB_DIR/SDL3/SDL_gpu.h||ImGui_ImplSDLGPU3_|windows,linux"
-    "Glut|imgui_impl_glut.h|||ImGui_ImplGLUT_|windows,linux"
+    "Glut|imgui_impl_glut.h|||ImGui_ImplGLUT_|windows,linux,osx"
     "Allegro5|imgui_impl_allegro5.h|||ImGui_ImplAllegro5_ ALLEGRO_|windows,linux"
-    "Null|imgui_impl_null.h|||ImGui_ImplNull_|windows,linux,android"
     "Android|imgui_impl_android.h|-a -include -a stdint.h||ImGui_ImplAndroid_|android"
+    # Objective-C++ sources: these are built by the macOS section only, and the
+    # bindings come from tools/gen-objc-backend.sh rather than the generic
+    # generator path (see the OBJC_BACKENDS table).
+    "Metal|imgui_impl_metal.h|||ImGui_ImplMetal_|osx"
+    "Metal4|imgui_impl_metal4.h|||ImGui_ImplMetal4_|osx"
+    "OSX|imgui_impl_osx.h|||ImGui_ImplOSX_|osx"
+)
+
+# Objective-C++ backends have their own generation path and link requirements.
+# name|header|frameworks|opaque ObjC types|deployment target|architectures
+#
+# ``deployment target`` overrides MACOS_MIN_VERSION for that backend only.
+# Metal4 is the reason this exists: it binds MTL4 symbols that are declared
+# API_AVAILABLE(macos(26.0)), so an 11.0 floor would produce a dylib that loads
+# on older systems and then fails to resolve those symbols at import time.
+#
+# ``architectures`` limits the backend to the architectures it can actually run
+# on. Metal4 needs Apple Silicon, so x64 is skipped even though it would link.
+OBJC_BACKENDS=(
+    "Metal|imgui_impl_metal.h|-framework Metal -framework MetalKit -framework Cocoa -framework QuartzCore|MTLRenderPassDescriptor MTLDevice MTLCommandBuffer MTLRenderCommandEncoder|$MACOS_MIN_VERSION|x64,arm64"
+    "Metal4|imgui_impl_metal4.h|-framework Metal -framework QuartzCore -framework Cocoa|MTL4RenderPassDescriptor MTLDevice MTL4CommandQueue MTL4CommandBuffer MTL4RenderCommandEncoder|26.0|arm64"
+    "OSX|imgui_impl_osx.h|-framework Cocoa -framework GameController -framework Metal -framework QuartzCore|NSView|$MACOS_MIN_VERSION|x64,arm64"
 )
 
 # Remaps the generator cannot infer: C++ names that already exist in Silk.NET.
@@ -408,7 +422,13 @@ if [ "$SKIP_GENERATE" = "1" ]; then
     echo "    (skipped: --no-generate)"
 else
     for entry in "${BACKENDS[@]}"; do
-        IFS='|' read -r name header extra remap type_prefixes _rest <<<"$entry"
+        IFS='|' read -r name header extra remap type_prefixes hosts <<<"$entry"
+
+        # Objective-C++ backends are handled by gen-objc-backend.sh below.
+        case "$name" in
+            Metal|Metal4|OSX) continue ;;
+        esac
+
         header_path="$IMGUI_DIR/backends/$header"
         if [ ! -f "$header_path" ]; then
             echo "    skipping $name (no $header)"
@@ -432,6 +452,35 @@ else
             -t "$header_path" \
             $extra
     done
+
+    # Objective-C++ backends. Their headers declare the API only under
+    # #ifdef __OBJC__, the native code is .mm, and Mach-O symbol tables add a
+    # leading underscore that dlsym() does not want - all handled by the
+    # dedicated script.
+    for entry in "${OBJC_BACKENDS[@]}"; do
+        IFS='|' read -r name header _frameworks opaque min_version arches <<<"$entry"
+        header_path="$IMGUI_DIR/backends/$header"
+        if [ ! -f "$header_path" ]; then
+            echo "    skipping $name (no $header)"
+            continue
+        fi
+
+        library="imgui_backend_$(echo "$name" | tr '[:upper:]' '[:lower:]')"
+        # A backend with a newer deployment target than the toolchain default
+        # must generate against that target too: the generator's
+        # -mmacosx-version-min decides which API_AVAILABLE declarations are
+        # visible, and Metal4's symbols only exist at 26.0.
+        # shellcheck disable=SC2086
+        MACOS_MIN_VERSION="${min_version:-$MACOS_MIN_VERSION}" \
+            "${BASH:-/bin/bash}" "$SCRIPT_DIR/gen-objc-backend.sh" \
+            "$header_path" \
+            "$BACKEND_NAMESPACE_PREFIX.$name" \
+            "$library" \
+            "$SRC_DIR/ImGui4NET.Backend.$name/Generated" \
+            "ImGui_Impl$name" \
+            "ImGui_Impl${name}_" \
+            $opaque
+    done
 fi
 
 # ---------------------------------------------------------------------------
@@ -439,7 +488,8 @@ fi
 # ---------------------------------------------------------------------------
 
 # Every backend build log goes here. Kept out of src/ so nothing stray ends up
-# inside a packed runtimes folder.
+# inside a packed runtimes folder. Created unconditionally: the Android and
+# macOS sections write here too and can be requested on their own.
 BUILD_LOG_DIR="$REPO_ROOT/build/logs"
 mkdir -p "$BUILD_LOG_DIR"
 
@@ -553,68 +603,68 @@ if [ "$BUILD_NATIVE" = "1" ]; then
 
     # Extra include directories per backend (some SDKs nest their headers).
     platform_includes() {
-            case "$HOST:$1" in
-                windows:Sdl2) echo "-I$TOOLCHAIN_PREFIX/include/SDL2" ;;
-                linux:Sdl2)   echo "-I/usr/include/SDL2" ;;
-                *)            echo "" ;;
-            esac
-        }
+        case "$HOST:$1" in
+            windows:Sdl2) echo "-I$TOOLCHAIN_PREFIX/include/SDL2" ;;
+            linux:Sdl2)   echo "-I/usr/include/SDL2" ;;
+            *)            echo "" ;;
+        esac
+    }
 
-        # External import libraries pulled from NuGet packages instead of the
-                # toolchain. On Windows these are MSVC-built but MinGW links them fine;
-                # on Linux the same packages exist in the system prefix.
-                external_libs() {
-                    case "$HOST:$1" in
-                        windows:Glut)     echo "-L$EXTERNAL_LIBS_DIR/freeglut/runtimes/win-x64/native/Release -l:freeglut.lib" ;;
-                        windows:Allegro5) echo "-L$EXTERNAL_LIBS_DIR/allegro/build/native/v143/x64/lib -l:allegro.lib -l:allegro_primitives.lib" ;;
-                        linux:Glut)       echo "-lGL -lglut" ;;
-                        linux:Allegro5)   echo "-lallegro -lallegro_primitives" ;;
-                        *)                echo "" ;;
-                    esac
-                }
+    # External import libraries pulled from NuGet packages instead of the
+    # toolchain. On Windows these are MSVC-built but MinGW links them fine;
+    # on Linux the same packages exist in the system prefix.
+    external_libs() {
+        case "$HOST:$1" in
+            windows:Glut)     echo "-L$EXTERNAL_LIBS_DIR/freeglut/runtimes/win-x64/native/Release -l:freeglut.lib" ;;
+            windows:Allegro5) echo "-L$EXTERNAL_LIBS_DIR/allegro/build/native/v143/x64/lib -l:allegro.lib -l:allegro_primitives.lib" ;;
+            linux:Glut)       echo "-lGL -lglut" ;;
+            linux:Allegro5)   echo "-lallegro -lallegro_primitives" ;;
+            *)                echo "" ;;
+        esac
+    }
 
-                external_includes() {
-                    case "$HOST:$1" in
-                        windows:Glut)     echo "-I$EXTERNAL_LIBS_DIR/freeglut/sources" ;;
-                        windows:Allegro5) echo "-I$EXTERNAL_LIBS_DIR/allegro/build/native/include" ;;
-                        *)                echo "" ;;
-                    esac
-                }
+    external_includes() {
+        case "$HOST:$1" in
+            windows:Glut)     echo "-I$EXTERNAL_LIBS_DIR/freeglut/sources" ;;
+            windows:Allegro5) echo "-I$EXTERNAL_LIBS_DIR/allegro/build/native/include" ;;
+            *)                echo "" ;;
+        esac
+    }
 
-                # Runtime DLLs the backend links against must ship next to our library.
-                # Linux resolves shared libraries through the system loader, so only
-                # Windows needs the DLLs copied.
-                external_runtime_copies() {
-                    case "$HOST:$1" in
-                        windows:Glut)
-                            echo "$EXTERNAL_LIBS_DIR/freeglut/runtimes/win-x64/native/Release/freeglut.dll"
-                            ;;
-                        windows:Allegro5)
-                            local dir="$EXTERNAL_LIBS_DIR/allegro/build/native/v143/x64/bin"
-                            if [ -d "$dir" ]; then
-                                # Dear ImGui's Allegro5 backend needs the core and the
-                                # primitives addon.
-                                echo "$dir/allegro-5.2.dll"
-                                echo "$dir/allegro_primitives-5.2.dll"
-                            fi
-                            ;;
-                        *) echo "" ;;
-                    esac
-                }
+    # Runtime DLLs the backend links against must ship next to our library.
+    # Linux resolves shared libraries through the system loader, so only
+    # Windows needs the DLLs copied.
+    external_runtime_copies() {
+        case "$HOST:$1" in
+            windows:Glut)
+                echo "$EXTERNAL_LIBS_DIR/freeglut/runtimes/win-x64/native/Release/freeglut.dll"
+                ;;
+            windows:Allegro5)
+                local dir="$EXTERNAL_LIBS_DIR/allegro/build/native/v143/x64/bin"
+                if [ -d "$dir" ]; then
+                    # Dear ImGui's Allegro5 backend needs the core and the
+                    # primitives addon.
+                    echo "$dir/allegro-5.2.dll"
+                    echo "$dir/allegro_primitives-5.2.dll"
+                fi
+                ;;
+            *) echo "" ;;
+        esac
+    }
 
     # Returns non-zero when the backend cannot be linked on this host because
-        # its SDK is missing. Checked before building so an absent optional SDK
-        # is reported as "skipped" rather than a hard failure.
-        backend_available() {
-            case "$HOST:$1" in
-                linux:Sdl3|linux:SdlGpu3)
-                    pkg-config --exists sdl3 2>/dev/null || return 1
-                    ;;
-            esac
-            return 0
-        }
+    # its SDK is missing. Checked before building so an absent optional SDK
+    # is reported as "skipped" rather than a hard failure.
+    backend_available() {
+        case "$HOST:$1" in
+            linux:Sdl3|linux:SdlGpu3)
+                pkg-config --exists sdl3 2>/dev/null || return 1
+                ;;
+        esac
+        return 0
+    }
 
-        for entry in "${BACKENDS[@]}"; do
+    for entry in "${BACKENDS[@]}"; do
         IFS='|' read -r name header _ _ _ hosts <<<"$entry"
         source="$IMGUI_DIR/backends/${header%.h}.cpp"
         [ -f "$source" ] || continue
@@ -653,81 +703,302 @@ if [ "$BUILD_NATIVE" = "1" ]; then
         rm -f "$build_log"
         echo "    $name backend"
 
-                # Copy the third-party runtime DLLs the backend depends on.
-                for dll in $(external_runtime_copies "$name"); do
-                    [ -f "$dll" ] && cp -f "$dll" "$backend_out/"
-                done
-            done
-
-    # -----------------------------------------------------------------------
-    # imgui_club
-    # -----------------------------------------------------------------------
-    #
-    # Every club method is defined inline, so nothing is emitted unless the code
-    # is forced out. -fkeep-inline-functions plus tools/club-instantiate.cpp
-    # guarantees the symbols ClubNative.cs binds to exist.
-    #
-    # -O0 matters: at -O2 the compiler inlines or drops the instantiation calls
-    # in club-instantiate.cpp, leaving the constructors unemitted.
-    if [ -d "$CLUB_DIR" ]; then
-        club_out="$SRC_DIR/ImGui4NET.Club/runtimes/$RID/native"
-        mkdir -p "$club_out"
-        club_lib="imgui_club"
-        if [ "$HOST" = "windows" ]; then club_lib="$club_lib.dll"; else club_lib="lib$club_lib.so"; fi
-
-        club_src=(
-            "$REPO_ROOT/tools/club-instantiate.cpp"
-            "$CLUB_DIR/imgui_multicontext_compositor/imgui_multicontext_compositor.cpp"
-        )
-        club_inc=(
-            -I"$CLUB_DIR/imgui_memory_editor"
-            -I"$CLUB_DIR/imgui_threaded_rendering"
-            -I"$CLUB_DIR/imgui_multicontext_compositor"
-        )
-        club_log="$BUILD_LOG_DIR/imgui_club.log"
-
-        # Flat flags: no -O2 so the instantiation bodies survive.
-        club_flags=(-shared -O0 -DNDEBUG -fPIC -fkeep-inline-functions)
-        if [ "$HOST" = "windows" ]; then
-            club_flags+=("-Wl,--export-all-symbols" -static-libgcc -static-libstdc++
-                         "-Wl,--allow-multiple-definition")
-        else
-            club_flags+=("-Wl,--export-dynamic")
-        fi
-
-        club_aliases=()
-        for attempt in 1 2 3 4; do
-            (cd "$IMGUI_DIR" && "$CXX" -std=c++17 "${club_flags[@]}" \
-                -I. "${club_inc[@]}" \
-                -o "$club_out/$club_lib" \
-                "${club_aliases[@]}" "${club_src[@]}" \
-                "-L$CORE_OUT" -limgui) 2>"$club_log" || {
-                    echo "    imgui_club FAILED (see $club_log)"
-                    break
-                }
-
-            [ "$HOST" = "windows" ] && break
-
-            new_aliases=()
-            while IFS= read -r alias; do
-                [ -n "$alias" ] && new_aliases+=("$alias")
-            done < <("$PYTHON" "$SCRIPT_DIR/lp64-aliases.py" \
-                       --entrypoints "$SRC_DIR/ImGui4NET.Club" \
-                       --library "$club_out/$club_lib" \
-                       --nm "$(command -v llvm-nm || command -v nm)" 2>/dev/null)
-
-            if [ "${#new_aliases[@]}" -eq 0 ] || [ "${#new_aliases[@]}" -eq "${#club_aliases[@]}" ]; then
-                club_aliases=("${new_aliases[@]}")
-                break
-            fi
-            club_aliases=("${new_aliases[@]}")
+        # Copy the third-party runtime DLLs the backend depends on.
+        for dll in $(external_runtime_copies "$name"); do
+            [ -f "$dll" ] && cp -f "$dll" "$backend_out/"
         done
-
-        [ -f "$club_out/$club_lib" ] && rm -f "$club_log" && echo "    imgui_club"
-    fi
+    done
 fi
 
-echo "==> Done"
+# ---------------------------------------------------------------------------
+# macOS (osx-x64, osx-arm64)
+# ---------------------------------------------------------------------------
+#
+# Cross-built with the same clang that drives the bindings plus ld64.lld. The
+# interesting part is the SDK: a Mach-O link needs Apple's headers, the libc++
+# headers and the .tbd stubs, none of which are part of the host toolchain.
+# tools/fetch-macos-sdk.sh downloads the republished SDK tarball.
+#
+# Three platform specifics are handled below:
+#
+#   * LP64 ABI. The bindings carry the Windows (LLP64) mangling, where size_t
+#     mangles to 'y'. On Darwin it mangles to 'm' and FILE becomes __sFILE, so
+#     the alias table differs per architecture. ld64's -alias cannot bind to a
+#     symbol defined by an object file, hence the generated assembly file.
+#   * va_list. x86_64 spells it P13__va_list_tag, arm64 spells it Pc. Both are
+#     already covered by tools/lp64-aliases.py.
+#   * install_name. Backends sit next to the core library in the same runtimes
+#     folder, so @loader_path resolves it regardless of where the package is
+#     unpacked.
+
+if [ "$BUILD_MACOS" = "1" ]; then
+    echo "==> Building macOS native libraries"
+
+    MACOS_SDK_DIR="${MACOS_SDK_DIR:-$MACOS_SDK_ROOT/$MACOS_SDK_VERSION/MacOSX$MACOS_SDK_VERSION.sdk}"
+    if [ ! -d "$MACOS_SDK_DIR/usr/include" ]; then
+        echo "    SDK not found at $MACOS_SDK_DIR"
+        echo "    fetching it now (set MACOS_SDK_DIR to reuse an existing SDK)"
+        # Re-invoke with the shell that is already running this script. A bare
+        # "bash" would resolve through PATH, where Windows' WSL bash.exe comes
+        # first and cannot open an MSYS path such as /d/repo/tools/x.sh.
+        "${BASH:-/bin/bash}" "$SCRIPT_DIR/fetch-macos-sdk.sh" \
+            "$MACOS_SDK_ROOT/$MACOS_SDK_VERSION"
+    fi
+    if [ ! -d "$MACOS_SDK_DIR/System/Library/Frameworks" ]; then
+        echo "error: $MACOS_SDK_DIR is not a usable macOS SDK" >&2
+        exit 1
+    fi
+
+    MACOS_CXX="${MACOS_CXX:-}"
+    if [ -z "$MACOS_CXX" ]; then
+        for candidate in clang clang++ c++; do
+            if command -v "$candidate" >/dev/null 2>&1; then
+                MACOS_CXX="$(command -v "$candidate")"; break
+            fi
+        done
+    fi
+    if [ -z "$MACOS_CXX" ]; then
+        echo "error: no clang found for the macOS build (set MACOS_CXX)" >&2
+        exit 1
+    fi
+
+    # ld64.lld ships with clang on MSYS2 but is not on PATH under its own name
+    # everywhere, so accept an explicit override.
+    MACOS_LD="${MACOS_LD:-}"
+    if [ -z "$MACOS_LD" ]; then
+        for candidate in ld64.lld ld64.lld.exe; do
+            if command -v "$candidate" >/dev/null 2>&1; then
+                MACOS_LD="$(command -v "$candidate")"; break
+            fi
+            local_dir="$(dirname "$MACOS_CXX")"
+            if [ -x "$local_dir/$candidate" ]; then MACOS_LD="$local_dir/$candidate"; break; fi
+        done
+    fi
+    if [ -z "$MACOS_LD" ]; then
+        cat >&2 <<'EOF'
+error: ld64.lld not found.
+
+Install it next to clang (MSYS2: pacman -S mingw-w64-x86_64-lld) or set
+MACOS_LD to the executable.
+EOF
+        exit 1
+    fi
+
+    MACOS_FRAMEWORKS="$MACOS_SDK_DIR/System/Library/Frameworks"
+    MACOS_SDK_LIB="$MACOS_SDK_DIR/usr/lib"
+
+    echo "    sdk=$MACOS_SDK_DIR"
+    echo "    cxx=$MACOS_CXX ld=$MACOS_LD min=$MACOS_MIN_VERSION"
+
+    # Mach-O counterparts of the ELF ``-Wl,--export-dynamic`` used above: every
+    # symbol the bindings reference must stay in the dynamic table.
+    macos_arch_triple() {
+        case "$1" in
+            x64)   echo "x86_64-apple-darwin" ;;
+            arm64) echo "arm64-apple-darwin" ;;
+            *)     echo "error: unknown macOS arch $1" >&2; exit 1 ;;
+        esac
+    }
+
+    macos_arch_ld() {
+        case "$1" in
+            x64)   echo "x86_64" ;;
+            arm64) echo "arm64" ;;
+        esac
+    }
+
+    # Frameworks each backend needs to link against, mirroring the upstream
+    # examples/ CMake rules.
+    macos_backend_frameworks() {
+        case "$1" in
+            OpenGL2|OpenGL3) echo "-framework OpenGL" ;;
+            Glut)            echo "-framework OpenGL -framework GLUT -framework Cocoa" ;;
+            *)               echo "" ;;
+        esac
+    }
+
+    # Objective-C++ compiler flags. -fobjc-arc is what the upstream examples
+    # use, and the .mm sources rely on ARC for their object lifetime handling.
+    macos_objc_flags=(-fobjc-arc)
+
+    for arch in $MACOS_ARCHES; do
+        case "$arch" in
+            x64)   MACOS_RID="osx-x64" ;;
+            arm64) MACOS_RID="osx-arm64" ;;
+            *) echo "error: unknown MACOS_ARCHES entry '$arch'" >&2; exit 1 ;;
+        esac
+
+        triple="$(macos_arch_triple "$arch")"
+        ld_arch="$(macos_arch_ld "$arch")"
+        core_out="$SRC_DIR/ImGui4NET/runtimes/$MACOS_RID/native"
+        mkdir -p "$core_out"
+        core_lib="$core_out/libimgui.dylib"
+        obj_dir="$REPO_ROOT/build/macos-obj/$arch"
+        mkdir -p "$obj_dir"
+        log="$BUILD_LOG_DIR/macos-$arch-core.log"
+
+        echo "    [$arch] core"
+
+        # -mmacosx-version-min stamps the objects with the deployment target so
+        # the linker does not warn about them being newer than the platform
+        # version. MACOSX_DEPLOYMENT_TARGET would not reach the ld64.lld call.
+        # The min-version flag is not part of macos_cflags because Objective-C++
+        # backends may need a newer one (Metal4: 26.0).
+        macos_cflags=(-target "$triple" -isysroot "$MACOS_SDK_DIR"
+                      -std=c++17 -O2 -DNDEBUG -fPIC)
+
+        core_objs=()
+        for unit in imgui.cpp imgui_draw.cpp imgui_tables.cpp imgui_widgets.cpp imgui_demo.cpp; do
+            obj="$obj_dir/${unit%.cpp}.o"
+            core_objs+=("$obj")
+            (cd "$IMGUI_DIR" && "$MACOS_CXX" "${macos_cflags[@]}" \
+                -mmacosx-version-min="$MACOS_MIN_VERSION" -I. \
+                -c "$unit" -o "$obj") 2>>"$log" || {
+                    echo "error: [$arch] $unit failed (see $log)" >&2
+                    exit 1
+                }
+        done
+
+        ( "$MACOS_LD" -dylib -arch "$ld_arch" \
+            -platform_version macos "$MACOS_MIN_VERSION" "$MACOS_MIN_VERSION" \
+            -install_name '@loader_path/libimgui.dylib' \
+            -L "$MACOS_SDK_LIB" -lSystem -lc++ -lc++abi \
+            -o "$core_lib" "${core_objs[@]}" ) 2>>"$log" || {
+                echo "error: [$arch] core link failed (see $log)" >&2
+                exit 1
+            }
+
+        # Publish the LLP64 spellings the bindings use as aliases of the real
+        # LP64 symbols. This is a single pass: the alias set is fixed by the
+        # object files, and adding aliases cannot change which symbols are
+        # missing.
+        aliases_src="$obj_dir/lp64-aliases.s"
+        aliases_obj="$obj_dir/lp64-aliases.o"
+        alias_count=0
+
+        "$PYTHON" "$SCRIPT_DIR/lp64-aliases.py" \
+            --entrypoints "$SRC_DIR/ImGui4NET/Generated" \
+            --library "$core_lib" \
+            --format asm --output "$aliases_src" 2>>"$log" || true
+
+        if [ -s "$aliases_src" ] && grep -q '\.globl' "$aliases_src"; then
+            "$MACOS_CXX" -target "$triple" -isysroot "$MACOS_SDK_DIR" \
+                -c "$aliases_src" -o "$aliases_obj" 2>>"$log" || {
+                    echo "error: [$arch] assembling LP64 aliases failed (see $log)" >&2
+                    exit 1
+                }
+
+            ( "$MACOS_LD" -dylib -arch "$ld_arch" \
+                -platform_version macos "$MACOS_MIN_VERSION" "$MACOS_MIN_VERSION" \
+                -install_name '@loader_path/libimgui.dylib' \
+                -L "$MACOS_SDK_LIB" -lSystem -lc++ -lc++abi \
+                -o "$core_lib" "${core_objs[@]}" "$aliases_obj" ) 2>>"$log" || {
+                    echo "error: [$arch] core relink failed (see $log)" >&2
+                    exit 1
+                }
+
+            alias_count="$(grep -c '\.globl' "$aliases_src")"
+        fi
+
+        rm -f "$log"
+        echo "    [$arch] core -> $core_lib ($alias_count LP64 aliases)"
+
+        # Backends. Each links against the core dylib rather than its objects so
+        # the dependency is recorded as @loader_path/libimgui.dylib.
+        for entry in "${BACKENDS[@]}"; do
+            IFS='|' read -r name header _ _ _ hosts <<<"$entry"
+            case ",$hosts," in
+                *",osx,"*) ;;
+                *) continue ;;
+            esac
+
+            source="$IMGUI_DIR/backends/${header%.h}.cpp"
+            [ -f "$source" ] || continue
+
+            backend_out="$SRC_DIR/ImGui4NET.Backend.$name/runtimes/$MACOS_RID/native"
+            mkdir -p "$backend_out"
+            backend_lib="libimgui_backend_$(echo "$name" | tr '[:upper:]' '[:lower:]').dylib"
+            backend_obj="$obj_dir/${name}.o"
+            backend_log="$BUILD_LOG_DIR/macos-$arch-$name.log"
+
+            # shellcheck disable=SC2046
+            (cd "$IMGUI_DIR" && "$MACOS_CXX" "${macos_cflags[@]}" \
+                -mmacosx-version-min="$MACOS_MIN_VERSION" -I. \
+                -c "backends/${header%.h}.cpp" -o "$backend_obj") 2>"$backend_log" || {
+                    echo "    [$arch] $name FAILED (see $backend_log)"
+                    continue
+                }
+
+            # shellcheck disable=SC2046
+            ( "$MACOS_LD" -dylib -arch "$ld_arch" \
+                -platform_version macos "$MACOS_MIN_VERSION" "$MACOS_MIN_VERSION" \
+                -install_name "@loader_path/$backend_lib" \
+                -L "$MACOS_SDK_LIB" -lSystem -lc++ -lc++abi \
+                -F "$MACOS_FRAMEWORKS" $(macos_backend_frameworks "$name") \
+                -o "$backend_out/$backend_lib" "$backend_obj" "$core_lib" ) 2>>"$backend_log" || {
+                    echo "    [$arch] $name FAILED (see $backend_log)"
+                    continue
+                }
+
+            rm -f "$backend_log"
+            echo "    [$arch] $name backend"
+        done
+
+        # Objective-C++ backends. They compile from .mm sources with ARC and
+        # link against their own frameworks; everything else matches the C++
+        # backends above.
+        for entry in "${OBJC_BACKENDS[@]}"; do
+            IFS='|' read -r name header frameworks _opaque entry_min entry_arches <<<"$entry"
+
+            # Backends can be limited to the architectures they run on: Metal4
+            # requires Apple Silicon and is therefore arm64-only.
+            case ",${entry_arches:-x64,arm64}," in
+                *",$arch,"*) ;;
+                *) continue ;;
+            esac
+
+            source="$IMGUI_DIR/backends/${header%.h}.mm"
+            [ -f "$source" ] || continue
+
+            backend_min="${entry_min:-$MACOS_MIN_VERSION}"
+
+            backend_out="$SRC_DIR/ImGui4NET.Backend.$name/runtimes/$MACOS_RID/native"
+            mkdir -p "$backend_out"
+            backend_lib="libimgui_backend_$(echo "$name" | tr '[:upper:]' '[:lower:]').dylib"
+            backend_obj="$obj_dir/${name}.o"
+            backend_log="$BUILD_LOG_DIR/macos-$arch-$name.log"
+
+            # The deployment target is per backend: a backend that binds
+            # API_AVAILABLE(macos(26.0)) symbols has to record 26.0 in
+            # LC_BUILD_VERSION, or the dynamic loader would accept it on an
+            # older system and then fail on the first symbol lookup.
+            # shellcheck disable=SC2086
+            (cd "$IMGUI_DIR" && "$MACOS_CXX" "${macos_cflags[@]}" \
+                -mmacosx-version-min="$backend_min" \
+                "${macos_objc_flags[@]}" -I. \
+                -c "backends/${header%.h}.mm" -o "$backend_obj") 2>"$backend_log" || {
+                    echo "    [$arch] $name FAILED (see $backend_log)"
+                    continue
+                }
+
+            # shellcheck disable=SC2046,SC2086
+            ( "$MACOS_LD" -dylib -arch "$ld_arch" \
+                -platform_version macos "$backend_min" "$backend_min" \
+                -install_name "@loader_path/$backend_lib" \
+                -L "$MACOS_SDK_LIB" -lSystem -lc++ -lc++abi \
+                -F "$MACOS_FRAMEWORKS" $frameworks \
+                -o "$backend_out/$backend_lib" "$backend_obj" "$core_lib" ) 2>>"$backend_log" || {
+                    echo "    [$arch] $name FAILED (see $backend_log)"
+                    continue
+                }
+
+            rm -f "$backend_log"
+            echo "    [$arch] $name backend (objective-c++, min=$backend_min)"
+        done
+    done
+
+    echo "    macos done"
+fi
 
 # ---------------------------------------------------------------------------
 # Android (arm64)
@@ -873,70 +1144,7 @@ EOF
         echo "    $name backend"
     done
 
-    # imgui_club on Android.
-    # Clang has no -fkeep-inline-functions, so the inline definitions are forced
-    # out by tools/club-instantiate.cpp instead. -fvisibility=default plus
-    # --export-dynamic put the resulting symbols in the dynamic table where the
-    # CLR can resolve them.
-    if [ -d "$CLUB_DIR" ]; then
-        club_out="$SRC_DIR/ImGui4NET.Club/runtimes/$ANDROID_RID/native"
-        mkdir -p "$club_out"
-        log="$BUILD_LOG_DIR/android-imgui_club.log"
-        club_src=(
-            "$REPO_ROOT/tools/club-instantiate.cpp"
-            "$CLUB_DIR/imgui_multicontext_compositor/imgui_multicontext_compositor.cpp"
-        )
-        club_inc=(
-            -I"$CLUB_DIR/imgui_memory_editor"
-            -I"$CLUB_DIR/imgui_threaded_rendering"
-            -I"$CLUB_DIR/imgui_multicontext_compositor"
-        )
-
-        # Iterate to a fixed point: each relink publishes the aliases for the
-        # symbols present at that moment, and the next sweep may find more
-        # (the alias table grows as the compiler emits more inline bodies).
-        club_aliases=()
-        for attempt in 1 2 3 4; do
-            (cd "$IMGUI_DIR" && "$ANDROID_CXX" -std=c++17 -shared -O0 -DNDEBUG -fPIC \
-                -fvisibility=default -femit-all-decls -Wl,--export-dynamic -I. "${club_inc[@]}" \
-                -o "$club_out/libimgui_club.so" \
-                "${club_aliases[@]}" "${club_src[@]}" \
-                "-L$ANDROID_CORE" -limgui) 2>"$log" || {
-                    echo "    imgui_club FAILED (see $log)"
-                    break
-                }
-
-            # Recompute from the freshly linked file. Each relink can expose more
-            # symbols (aliases are additive), so loop until the list is stable.
-            new_aliases=()
-            while IFS= read -r alias; do
-                [ -n "$alias" ] && new_aliases+=("$alias")
-            done < <("$PYTHON" "$SCRIPT_DIR/lp64-aliases.py" \
-                       --entrypoints "$SRC_DIR/ImGui4NET.Club" \
-                       --library "$club_out/libimgui_club.so" \
-                       --nm "$ANDROID_NM" 2>/dev/null)
-
-            if [ "${#new_aliases[@]}" -eq 0 ]; then
-                club_aliases=()
-                break
-            fi
-            if [ "${#new_aliases[@]}" -eq "${#club_aliases[@]}" ]; then
-                club_aliases=("${new_aliases[@]}")
-                break
-            fi
-            club_aliases=("${new_aliases[@]}")
-        done
-
-        if [ -f "$club_out/libimgui_club.so" ]; then
-            rm -f "$log"
-            echo "    imgui_club (${#club_aliases[@]} LP64 aliases)"
-        fi
-    fi
-
     echo "    android done"
 fi
 
 echo "==> Done"
-
-
-

@@ -17,17 +17,19 @@ dotnet add package ImGui4NET.Backend.Glfw       # platform backend
 dotnet add package ImGui4NET.Backend.OpenGL3    # renderer backend
 ```
 
-Native libraries for `win-x64`, `linux-x64` and `android-arm64` ship inside the
-packages under `runtimes/`. Packages target `net8.0` and `net10.0`; the
-Direct3D and Win32 backends target `net8.0-windows` and `net10.0-windows`.
-All packages are trim- and NativeAOT-compatible.
+Native libraries for `win-x64`, `linux-x64`, `osx-x64`, `osx-arm64` and
+`android-arm64` ship inside the packages under `runtimes/`. Every package
+targets `net10.0`. The Direct3D and Win32 backends additionally ship a
+`net10.0-windows` build, which is what a Windows-targeted project resolves;
+the plain `net10.0` asset keeps them usable from a project that is not
+Windows-specific. All packages are trim- and NativeAOT-compatible.
 
 ## Packages
 
 | Package | Contents |
 |---|---|
 | `ImGui4NET` | Core Dear ImGui bindings plus the native `imgui` library |
-| `ImGui4NET.Club` | Official `ocornut/imgui_club` extensions: Memory Editor, Multi-Context Compositor, Threaded Rendering |
+| `ImGui4NET.Club` | Pure C# ports of the `ocornut/imgui_club` extensions: Memory Editor, Multi-Context Compositor, Threaded Rendering (no native library) |
 | `ImGui4NET.Backend.OpenGL2` | OpenGL2 renderer backend |
 | `ImGui4NET.Backend.OpenGL3` | OpenGL3 renderer backend |
 | `ImGui4NET.Backend.DirectX9` | Direct3D 9 renderer backend |
@@ -40,8 +42,10 @@ All packages are trim- and NativeAOT-compatible.
 | `ImGui4NET.Backend.Sdl3` | SDL3 platform backend |
 | `ImGui4NET.Backend.SdlGpu3` | SDL3 GPU renderer backend |
 | `ImGui4NET.Backend.Glut` | GLUT platform backend |
+| `ImGui4NET.Backend.Metal` | Metal renderer backend (macOS) |
+| `ImGui4NET.Backend.Metal4` | Metal 4 renderer backend (macOS 26+, Apple Silicon) |
+| `ImGui4NET.Backend.OSX` | macOS/Cocoa platform backend |
 | `ImGui4NET.Backend.Allegro5` | Allegro5 platform backend |
-| `ImGui4NET.Backend.Null` | Headless platform backend |
 | `ImGui4NET.Backend.Android` | Android platform backend (arm64) |
 
 Each backend package ships its own native library and depends only on the core

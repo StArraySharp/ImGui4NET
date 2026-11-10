@@ -59,8 +59,8 @@ window so the stock widgets flow normally inside it.
 
 ### Memory
 
-The `imgui_club` Memory Editor, driven through the hand-written
-`ClubNative.MemoryEditor_DrawContents` entry point.
+The `imgui_club` Memory Editor, driven through its pure C# port
+(`MemoryEditor.DrawContents`).
 
 ![Memory](docs/memory.png)
 

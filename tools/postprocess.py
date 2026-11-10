@@ -115,9 +115,16 @@ ENTRY_POINT = re.compile(r'EntryPoint = "[^"]*"')
 
 # Parameters declared as ``sbyte*`` with a C string annotation become managed
 # strings. ``const char **`` and ``va_list`` keep their pointer form.
+# A C++ ``const char*`` parameter is a read-only string, so marshalling it as a
+# managed ``string`` is correct and allocation-free.
+#
+# A non-const ``char*`` is an OUTPUT buffer: Dear ImGui writes into it
+# (InputText, InputTextMultiline, InputTextWithHint, ...). Marshalling those as
+# ``string`` makes the write land on a temporary copy that is immediately
+# discarded, so the caller never observes an edit. They must stay ``sbyte*``.
 STRING_PARAM = re.compile(
-    r'\[NativeTypeName\("(?:const )?char \*"\)\]\s*sbyte\*\s+'
-    r'(?P<name>@?[A-Za-z_][A-Za-z0-9_]*)'
+    r'\[NativeTypeName\("const char \*"\)\]\s*sbyte\*\s+'
+    r"(?P<name>@?[A-Za-z_][A-Za-z0-9_]*)"
 )
 
 # ``sbyte* x = "%.3f"u8`` -> ``string? x = null``. Dear ImGui treats a NULL
@@ -179,6 +186,16 @@ def rewrite_string_params(text: str) -> str:
     for token, original in protected.items():
         text = text.replace(token, original)
     return text
+
+
+def drop_vec_constructor_defaults(text: str) -> str:
+    """Replace a default-constructed vector with ``default``.
+
+    ClangSharp renders the C++ default argument ``ImVec2(0, 0)`` as
+    ``new ImVec2(0, 0)``, but the generated ``ImVec2`` is a plain two-field
+    struct with no constructor. ``default`` is the same value.
+    """
+    return VEC2_CONSTRUCTOR_DEFAULT.sub("= default", text)
 
 
 def drop_string_literal_defaults(text: str) -> str:
@@ -262,6 +279,9 @@ class RefDefaultTable:
         return name
 
     def emit(self, text: str) -> str:
+        if not self.fields:
+            return text
+
         lines = [
             "",
             "    /// <summary>",
@@ -361,8 +381,10 @@ def fix_reference_params(text: str, defaults: RefDefaultTable) -> str:
             out.append(line)
             continue
 
-        # Collect the parameters of this signature.
-        match = re.search(r"(public static extern [\w\*]+ \w+\()(.*)(\);)", line)
+        # Collect the parameters of this signature. The leading indentation is part
+        # of the match: `prefix` is written back verbatim, so dropping it would
+        # unindent the declaration.
+        match = re.search(r"(^[ \t]*public static extern [\w\*]+ \w+\()(.*)(\);)", line)
         if match is None:
             out.append(line)
             continue
@@ -624,9 +646,14 @@ def strip_method_prefix(text: str, prefix: str) -> str:
     ``OpenGL3.Init`` reads better than ``ImGui_ImplOpenGL3.ImGui_ImplOpenGL3_Init``.
     Only the method container is touched; type declarations are handled by
     :func:`strip_type_prefixes`.
+
+    A trailing underscore in ``prefix`` is dropped first: the Objective-C++
+    backends pass ``ImGui_ImplMetal4_`` (the full C prefix including the
+    separator) while the generic path passes ``ImGui_ImplOpenGL3``.
     """
     if not prefix:
         return text
+    prefix = prefix.rstrip("_")
     return re.sub(rf"\b{re.escape(prefix)}_([A-Za-z]\w*)\b", r"\1", text)
 
 
@@ -691,8 +718,243 @@ def rewrite_namespace(text: str, namespace: str) -> str:
 
 
 def collapse_blank_lines(text: str) -> str:
-    return re.sub(r"\n{3,}", "\n\n", text)
+    # Wrappers are inserted as "native decl\n\nwrapper"; inside a class body a
+    # single blank line separates members, and whitespace-only lines left behind
+    # by the removed reference-default comment block are dropped too.
+    text = re.sub(r"(?m)^[ \t]+$", "", text)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text
 
+
+def normalise_comma_spacing(text: str) -> str:
+    """Ensure a single space after a comma, but only within a parameter list.
+
+    The native declaration of a wrapped Objective-C function is rebuilt by
+    joining its parameters, which can leave ``a,[Attr] b``. Enum members are
+    separated by commas too, so the rewrite is limited to something that looks
+    like a call or declaration.
+    """
+    return re.sub(r"(?<=,)(?=\[NativeTypeName)", " ", text)
+
+
+# Mach-O symbol tables store every C symbol with a leading underscore, and
+# ClangSharp reads the linker's spelling rather than the C name. dlsym() wants
+# the C spelling: its manual page states the name passed to dlsym "must NOT be
+# prepended with an underscore". Only the EntryPoint string is affected - the
+# mangled body (`_Z...`) is left exactly as generated.
+MACHO_ENTRY_POINT = re.compile(r'EntryPoint = "(__Z[^"]*)"')
+
+
+def strip_macho_underscore(text: str) -> str:
+    # A replacement function rather than a "\1" template: the backreference is
+    # followed by no delimiter here, and a template would have to be re-escaped
+    # at two levels (regex string and replacement string).
+    return MACHO_ENTRY_POINT.sub(
+        lambda m: 'EntryPoint = "' + m.group(1)[1:] + '"', text
+    )
+
+
+# Objective-C types referenced by an ObjC++ header. ClangSharp does not emit a
+# declaration for a class or protocol it only sees forward-declared, so the
+# binding would not compile. A single-pointer struct gives the pointer a
+# distinct type without claiming anything about the object, which is exactly
+# what an opaque handle needs.
+#
+# The struct is passed to the extern by value: it holds one machine word and is
+# therefore blittable, so the ABI hands the native function the pointer it
+# expects without any marshalling or wrapper method.
+OBJC_OPAQUE_TEMPLATE = '''    /// <summary>
+    /// Handle to the Objective-C <c>{name}</c> object.
+    /// </summary>
+    /// <remarks>
+    /// ClangSharp emits no declaration for an Objective-C type it only sees
+    /// forward-declared, so the native signature degrades to <c>void*</c>. This
+    /// struct restores a distinct type: it carries only the pointer, is
+    /// blittable, and is passed to the native function exactly like the pointer
+    /// the header declares.
+    /// </remarks>
+    public readonly partial struct {name}
+    {{
+        private readonly nint _h;
+
+        /// <summary>Wraps a native object pointer.</summary>
+        public {name}(nint handle) => _h = handle;
+
+        /// <summary>The native object pointer.</summary>
+        public nint Handle => _h;
+
+        /// <summary>Whether this handle is null.</summary>
+        public bool IsNull => _h == 0;
+
+        /// <summary>
+        /// A null handle. Pass this for parameters the header marks
+        /// <c>_Nullable</c>.
+        /// </summary>
+        public static {name} Null => default;
+    }}
+'''
+
+
+def add_objc_opaque_types(text: str, names: list[str]) -> str:
+    if not names:
+        return text
+
+    # Only add a type the file actually references and does not already define.
+    additions = []
+    for name in names:
+        if not re.search(rf"\b{re.escape(name)}\b", text):
+            continue
+        if re.search(rf"\b(?:struct|class) {re.escape(name)}\b", text):
+            continue
+        additions.append(OBJC_OPAQUE_TEMPLATE.format(name=name))
+
+    if not additions:
+        return text
+
+    # Append inside the namespace, before its closing brace.
+    closing = text.rfind("}")
+    if closing < 0:
+        return text
+    block = "\n".join(additions)
+    return text[:closing] + block + text[closing:]
+
+
+# ``[DllImport(...)] public static extern <ret> <Name>(<params>);`` as emitted
+# for one function. The parameter list cannot be matched with ``[^)]*`` because
+# Objective-C types such as ``id<MTLCommandBuffer>`` appear inside
+# ``NativeTypeName("...")`` attributes; it is scanned by paren depth instead.
+EXTERN_HEAD = re.compile(
+    r"(?P<attrs>(?:^[ \t]*\[[^\n]*\n)+)"
+    r"^[ \t]*public static extern (?P<ret>[A-Za-z_][A-Za-z0-9_* ]*?) "
+    r"(?P<name>[A-Za-z_][A-Za-z0-9_]*)\(",
+    re.M,
+)
+
+
+def _match_paren(text: str, open_index: int) -> int:
+    """Return the index of the ``)`` that closes the one at ``open_index``.
+
+    String literals are skipped: a ``NativeTypeName("id<MTLDevice>")`` attribute
+    contains no parentheses, but a future one might, and quotes inside the
+    attribute must not be treated as structure.
+    """
+    depth = 0
+    index = open_index
+    in_string = False
+    while index < len(text):
+        char = text[index]
+        if in_string:
+            if char == "\\":
+                index += 2
+                continue
+            if char == '"':
+                in_string = False
+        elif char == '"':
+            in_string = True
+        elif char == "(":
+            depth += 1
+        elif char == ")":
+            depth -= 1
+            if depth == 0:
+                return index
+        index += 1
+    return -1
+
+
+def _objc_type_of(param: str, known: list[str]) -> str | None:
+    """Return the opaque type a parameter really represents.
+
+    Two spellings reach this point: ``void*`` with a ``NativeTypeName`` of
+    ``id<Protocol>`` (what ClangSharp emits for a forward-declared Objective-C
+    protocol), and a pointer to a forward-declared class, which ClangSharp keeps
+    as ``SomeClass*`` even though it emitted no body for the struct.
+    """
+    native = re.search(r'NativeTypeName\("([^"]+)"\)', param)
+    raw = native.group(1) if native else param
+
+    protocol = re.search(r"id<([A-Za-z0-9_]+)>", raw)
+    if protocol and protocol.group(1) in known:
+        return protocol.group(1)
+
+    for name in known:
+        if re.search(rf"\b{re.escape(name)}\b", raw):
+            return name
+    return None
+
+
+def retype_objc_handles(text: str, known: list[str]) -> str:
+    """Give the Objective-C handle parameters their real types.
+
+    ClangSharp degrades ``id<MTLDevice>`` and ``NSView*`` to ``void*`` because the
+    Objective-C class is only forward-declared, which would make the binding
+    indistinguishable from any other pointer. The declared type is swapped for
+    the opaque handle struct instead, in place: the struct carries nothing but
+    the pointer, so it is blittable and the extern keeps its public name and its
+    DllImport, with no wrapper method of any kind.
+    """
+    if not known:
+        return text
+
+    replacements: list[tuple[str, str]] = []
+
+    position = 0
+    while True:
+        match = EXTERN_HEAD.search(text, position)
+        if match is None:
+            break
+        open_paren = match.end() - 1
+        close_paren = _match_paren(text, open_paren)
+        if close_paren < 0:
+            position = match.end()
+            continue
+
+        params = text[open_paren + 1:close_paren]
+        position = close_paren
+
+        if "void*" not in params and not any(
+            re.search(rf"\b{re.escape(name)}\s*\*", params) for name in known
+        ):
+            continue
+
+        rewritten: list[str] = []
+        changed = False
+        for param in _split_top_level(params):
+            objc = _objc_type_of(param, known)
+            if objc is None:
+                rewritten.append(param)
+                continue
+            changed = True
+            rewritten.append(_retype_objc_param(param, objc))
+
+        if not changed:
+            continue
+
+        new_params = ",".join(rewritten)
+        replacements.append((
+            text[open_paren + 1:close_paren],
+            new_params,
+        ))
+        # Skip past what was just rewritten so the same span is not revisited.
+        position = close_paren
+
+    for original, replacement in replacements:
+        text = text.replace(original, replacement, 1)
+
+    return text
+
+
+def _retype_objc_param(param: str, objc: str) -> str:
+    """Swap a parameter's ``void*`` for the opaque handle type.
+
+    Parameters the header marks ``_Nullable`` / ``_Nonnull`` keep that fact in
+    their ``NativeTypeName`` attribute only: the handle is a value type, so a
+    null one is expressed as ``default`` rather than a nullable reference.
+    """
+    attribute = re.search(r'\[NativeTypeName\("([^"]+)"\)\]\s*', param)
+    prefix = attribute.group(0) if attribute else ""
+    rest = param[attribute.end():] if attribute else param
+    name = rest.strip().split()[-1].lstrip("*").strip()
+    return f"{prefix}{objc} {name}"
 
 def apply_rewrites(
     text: str,
@@ -704,9 +966,13 @@ def apply_rewrites(
     usings: list[str] | None = None,
     method_prefix: str | None = None,
     type_prefixes: list[str] | None = None,
+    macho_symbols: bool = False,
+    objc_opaque_types: list[str] | None = None,
 ) -> str:
     if strip_underscore:
         text = strip_trailing_underscore(text)
+    if macho_symbols:
+        text = strip_macho_underscore(text)
     if namespace:
         text = rewrite_namespace(text, namespace)
     if library:
@@ -727,6 +993,7 @@ def apply_rewrites(
     # nullable pointer defaults with forwarding overloads.
     reference_defaults = RefDefaultTable()
     text = fix_reference_params(text, reference_defaults)
+    text = drop_vec_constructor_defaults(text)
     text = drop_string_literal_defaults(text)
     text = reference_defaults.emit(text)
     text = fix_pointer_type_arguments(text)
@@ -735,6 +1002,12 @@ def apply_rewrites(
     text = rename_methods_class(text, methods_class)
     text = remove_helper_types(text)
     text = remove_assembly_attributes(text)
+    if objc_opaque_types:
+        # Types first: the parameter retyping needs to know which names are
+        # Objective-C handles.
+        text = add_objc_opaque_types(text, objc_opaque_types)
+        text = retype_objc_handles(text, objc_opaque_types)
+        text = normalise_comma_spacing(text)
     text = collapse_blank_lines(text)
     return text
 
@@ -749,7 +1022,7 @@ def apply_rewrites(
 # Matches a namespace-level type declaration. Used only to find the start of a
 # type; the extent is then found by tracking brace depth.
 TYPE_DECL = re.compile(
-    r"^ {4}(?:public (?:static )?(?:unsafe )?partial (?:struct|class) (?P<name>[A-Za-z_][A-Za-z0-9_]*)"
+    r"^ {4}(?:public (?:static )?(?:unsafe )?(?:readonly )?partial (?:struct|class) (?P<name>[A-Za-z_][A-Za-z0-9_]*)"
     r"|public enum (?P<ename>[A-Za-z_][A-Za-z0-9_]*))",
     re.M,
 )
@@ -886,6 +1159,18 @@ def main(argv: list[str]) -> int:
         action="store_true",
         help="do not strip trailing underscores from type names",
     )
+    parser.add_argument(
+        "--macho-symbols",
+        action="store_true",
+        help="drop the Mach-O leading underscore from EntryPoint strings",
+    )
+    parser.add_argument(
+        "--objc-opaque-type",
+        dest="objc_opaque_types",
+        action="append",
+        default=[],
+        help="Objective-C class/protocol to declare as an opaque struct (repeatable)",
+    )
     args = parser.parse_args(argv)
 
     text = args.input.read_text(encoding="utf-8")
@@ -898,6 +1183,8 @@ def main(argv: list[str]) -> int:
         usings=args.usings,
         method_prefix=args.method_prefix,
         type_prefixes=args.type_prefixes,
+        macho_symbols=args.macho_symbols,
+        objc_opaque_types=args.objc_opaque_types,
     )
 
     if args.output_dir:

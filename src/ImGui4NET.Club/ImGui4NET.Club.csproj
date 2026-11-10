@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+    <TargetFrameworks>net10.0</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -9,8 +9,8 @@
     <AssemblyName>ImGui4NET.Club</AssemblyName>
     <RootNamespace>ImGui4NET.Club</RootNamespace>
     <PackageId>ImGui4NET.Club</PackageId>
-    <Description>Bindings for the official Dear ImGui extensions in ocornut/imgui_club: Memory Editor, Multi-Context Compositor and Threaded Rendering.</Description>
-    <PackageTags>imgui;dear-imgui;club;bindings;memory-editor;extensions</PackageTags>
+        <Description>Pure C# ports of the official Dear ImGui extensions in ocornut/imgui_club: Memory Editor, Multi-Context Compositor and Threaded Rendering. No native library.</Description>
+        <PackageTags>imgui;dear-imgui;club;bindings;memory-editor;extensions;managed</PackageTags>
     <IsPackable>true</IsPackable>
 
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

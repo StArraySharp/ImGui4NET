@@ -52,8 +52,8 @@ dotnet run --project samples/ImGui4NET.Sample.OpenGL3
 
 ### 内存 Memory
 
-`imgui_club` 的 Memory Editor，通过手写的
-`ClubNative.MemoryEditor_DrawContents` 入口点驱动。
+`imgui_club` 的 Memory Editor，通过其纯 C# 移植
+（`MemoryEditor.DrawContents`）驱动。
 
 ![内存](docs/memory.png)
 

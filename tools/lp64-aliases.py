@@ -1,33 +1,48 @@
 #!/usr/bin/env python3
-"""Generate linker ``--defsym`` aliases for LP64 size_t mangling.
+"""Generate linker aliases for LP64 size_t mangling.
 
 The bindings are generated with a Windows target triple, where ``size_t`` is
-``unsigned long long`` and mangles to ``y``. Android and Linux use the LP64
-model, where ``size_t`` is ``unsigned long`` and mangles to ``m``. The C
+``unsigned long long`` and mangles to ``y``. Android, Linux and macOS use the
+LP64 model, where ``size_t`` is ``unsigned long`` and mangles to ``m``. The C
 runtime's ``FILE`` type also differs: ``_iobuf`` under MSVC, ``__sFILE``
-under bionic/glibc.
+under bionic/glibc/Darwin.
 
-Rather than maintain a second set of bindings, the Android build tells the
-linker to publish both spellings:
+Rather than maintain a second set of bindings, the native build publishes both
+spellings. ELF (see ``--format linker``) uses a ``--defsym`` argument:
 
     -Wl,--defsym=_ZN5ImGui8MemAllocEy=_ZN5ImGui8MemAllocEm
+
+Mach-O has no equivalent linker switch that resolves against an object-file
+symbol, so ``--format asm`` emits an assembly file the toolchain assembles:
+
+    .globl __ZN5ImGui8MemAllocEy
+    .set __ZN5ImGui8MemAllocEy, __ZN5ImGui8MemAllocEm
 
 This script diffs the entry points the bindings expect against the symbols a
 built library actually exports, and prints the aliases needed.
 
 Usage:
-    python3 tools/lp64-aliases.py --entrypoints <dir-of-generated-cs> --library <lib.so>
+    python3 tools/lp64-aliases.py --entrypoints <dir> --library <lib.so>
+    python3 tools/lp64-aliases.py --entrypoints <dir> --library <lib.dylib> \\
+        --format asm --output aliases.s
 """
 
 from __future__ import annotations
 
 import argparse
 import re
+import struct
 import subprocess
 import sys
 from pathlib import Path
 
 ENTRY_POINT = re.compile(r'EntryPoint = "(_Z[^"]+)"')
+
+MH_MAGIC_64 = 0xFEEDFACF
+LC_SYMTAB = 0x2
+N_EXT = 0x01
+N_TYPE = 0x0E
+N_SECT = 0x0E
 
 
 def binding_entrypoints(source_dir: Path) -> set[str]:
@@ -38,6 +53,14 @@ def binding_entrypoints(source_dir: Path) -> set[str]:
 
 
 def library_symbols(library: Path, nm: str) -> set[str]:
+    """Return the global defined symbols a built library exports.
+
+    Mach-O libraries are parsed directly: llvm-nm is not part of the MSYS2
+    clang package, and the GNU nm bundled there only understands PE/ELF.
+    """
+    if library.suffix == ".dylib":
+        return _macho_symbols(library)
+
     out = subprocess.run(
         [nm, "--dynamic", "--defined-only", str(library)],
         capture_output=True,
@@ -49,6 +72,41 @@ def library_symbols(library: Path, nm: str) -> set[str]:
         parts = line.split()
         if parts and parts[-1].startswith("_Z"):
             symbols.add(parts[-1])
+    return symbols
+
+
+def _macho_symbols(library: Path) -> set[str]:
+    data = library.read_bytes()
+    magic = struct.unpack_from("<I", data, 0)[0]
+    if magic != MH_MAGIC_64:
+        raise SystemExit(f"error: {library} is not a 64-bit Mach-O file")
+
+    ncmds = struct.unpack_from("<I", data, 16)[0]
+    symoff = nsyms = stroff = 0
+    offset = 32
+    for _ in range(ncmds):
+        cmd, cmdsize = struct.unpack_from("<II", data, offset)
+        if cmd == LC_SYMTAB:
+            symoff, nsyms, stroff, _ = struct.unpack_from("<IIII", data, offset + 8)
+        offset += cmdsize
+
+    symbols: set[str] = set()
+    for index in range(nsyms):
+        entry = symoff + index * 16
+        strx, n_type, _, _, _ = struct.unpack_from("<IBBHQ", data, entry)
+        if strx == 0:
+            continue
+        # Only external symbols defined in a section are exported. Undefined
+        # imports and local (static) symbols would produce bogus aliases.
+        if not (n_type & N_EXT) or (n_type & N_TYPE) != N_SECT:
+            continue
+        end = data.index(b"\0", stroff + strx)
+        name = data[stroff + strx:end].decode("utf-8", "replace")
+        # Mach-O prefixes every C symbol with an underscore.
+        if name.startswith("_"):
+            name = name[1:]
+        if name.startswith("_Z"):
+            symbols.add(name)
     return symbols
 
 
@@ -184,8 +242,11 @@ def main(argv: list[str]) -> int:
                         help="built .so/.dylib to inspect")
     parser.add_argument("--nm", default="llvm-nm",
                         help="nm-compatible tool (default: llvm-nm)")
-    parser.add_argument("--format", choices=["linker", "list"], default="linker",
-                        help="'linker' prints -Wl,--defsym=..., 'list' prints pairs")
+    parser.add_argument("--format", choices=["linker", "list", "asm"], default="linker",
+                        help="'linker' prints -Wl,--defsym=..., 'list' prints pairs, "
+                             "'asm' prints a Mach-O assembly file")
+    parser.add_argument("--output", type=Path,
+                        help="write the result to this file instead of stdout")
     args = parser.parse_args(argv)
 
     expected = binding_entrypoints(args.entrypoints)
@@ -202,12 +263,25 @@ def main(argv: list[str]) -> int:
         else:
             unresolved.append(symbol)
 
+    lines: list[str] = []
     if args.format == "linker":
+        lines.extend(f"-Wl,--defsym={alias}={target}" for alias, target in aliases)
+    elif args.format == "asm":
+        # ld64's -alias cannot bind to a symbol defined by an object file, so the
+        # alias is established by the assembler instead. Mach-O prefixes C
+        # symbols with an underscore, hence the leading _ on both names.
+        lines.append("\t.section __TEXT,__text,regular,pure_instructions")
         for alias, target in aliases:
-            print(f"-Wl,--defsym={alias}={target}")
+            lines.append(f"\t.globl _{alias}")
+            lines.append(f"\t.set _{alias}, _{target}")
     else:
-        for alias, target in aliases:
-            print(f"{alias} {target}")
+        lines.extend(f"{alias} {target}" for alias, target in aliases)
+
+    text = "\n".join(lines) + ("\n" if lines else "")
+    if args.output:
+        args.output.write_text(text, encoding="ascii")
+    else:
+        sys.stdout.write(text)
 
     for symbol in unresolved:
         print(f"warning: no LP64 equivalent for {symbol}", file=sys.stderr)

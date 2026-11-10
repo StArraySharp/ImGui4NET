@@ -223,11 +223,11 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN11ImFontAtlas22AddCustomRectFontGlyphEP6ImFonttiifRK6ImVec2", ExactSpelling = true)]
         [return: NativeTypeName("ImFontAtlasRectId")]
-        public static extern int AddCustomRectFontGlyph(ImFontAtlas* pThis, ImFont* font, [NativeTypeName("ImWchar")] ushort codepoint, int w, int h, float advance_x, [NativeTypeName("const ImVec2 &")] ImVec2* offset = null);
+        public static extern int AddCustomRectFontGlyph(ImFontAtlas* pThis, ImFont* font, [NativeTypeName("ImWchar")] ushort codepoint, int w, int h, float advance_x, [NativeTypeName("const ImVec2 &")] ImVec2* offset);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN11ImFontAtlas29AddCustomRectFontGlyphForSizeEP6ImFontftiifRK6ImVec2", ExactSpelling = true)]
         [return: NativeTypeName("ImFontAtlasRectId")]
-        public static extern int AddCustomRectFontGlyphForSize(ImFontAtlas* pThis, ImFont* font, float font_size, [NativeTypeName("ImWchar")] ushort codepoint, int w, int h, float advance_x, [NativeTypeName("const ImVec2 &")] ImVec2* offset = null);
+        public static extern int AddCustomRectFontGlyphForSize(ImFontAtlas* pThis, ImFont* font, float font_size, [NativeTypeName("ImWchar")] ushort codepoint, int w, int h, float advance_x, [NativeTypeName("const ImVec2 &")] ImVec2* offset);
 
         [StructLayout(LayoutKind.Explicit)]
         public partial struct _Anonymous_e__Union

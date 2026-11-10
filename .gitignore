@@ -20,6 +20,9 @@ obj/
 # Third-party native libraries fetched by tools/fetch-deps.sh
 third_party/libs/
 
+# macOS SDK unpacked by tools/fetch-macos-sdk.sh (~1.4 GB)
+third_party/macos-sdk/
+
 # Native build artifacts (import libraries, logs)
 /build/
 
