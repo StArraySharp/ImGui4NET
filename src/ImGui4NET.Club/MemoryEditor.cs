@@ -264,11 +264,11 @@ public sealed unsafe class MemoryEditor : IDisposable
 
         ImVec2 defaultSize = new() { x = s.WindowWidth, y = s.WindowWidth * 0.60f };
         int firstUse = (int)ImGuiCond.ImGuiCond_FirstUseEver;
-        ImGui.SetNextWindowSize(&defaultSize, firstUse);
+        ImGui.SetNextWindowSize(in defaultSize, firstUse);
 
         ImVec2 minSize = new() { x = 0f, y = 0f };
         ImVec2 maxSize = new() { x = s.WindowWidth, y = float.MaxValue };
-        ImGui.SetNextWindowSizeConstraints(&minSize, &maxSize, null, null);
+        ImGui.SetNextWindowSizeConstraints(in minSize, in maxSize, null, null);
 
         Open = true;
         bool openFlag = Open;
@@ -282,7 +282,7 @@ public sealed unsafe class MemoryEditor : IDisposable
             {
                 CalcSizes(out s, memSize, baseDisplayAddr);
                 ImVec2 newSize = new() { x = s.WindowWidth, y = ImGui.GetWindowSize().y };
-                ImGui.SetWindowSize(&newSize, 0);
+                ImGui.SetWindowSize(in newSize, 0);
             }
         }
 
@@ -337,12 +337,12 @@ public sealed unsafe class MemoryEditor : IDisposable
         int childWindowFlags = (int)ImGuiWindowFlags.ImGuiWindowFlags_NoMove
             | (int)ImGuiWindowFlags.ImGuiWindowFlags_NoNav;
 
-        ImGui.BeginChild("##scrolling", &scrollingSize, childFlags, childWindowFlags);
+        ImGui.BeginChild("##scrolling", in scrollingSize, childFlags, childWindowFlags);
         ImDrawList* drawList = ImGui.GetWindowDrawList();
 
         ImVec2 zeroPad = new() { x = 0f, y = 0f };
-        ImGui.PushStyleVar((int)ImGuiStyleVar.ImGuiStyleVar_FramePadding, &zeroPad);
-        ImGui.PushStyleVar((int)ImGuiStyleVar.ImGuiStyleVar_ItemSpacing, &zeroPad);
+        ImGui.PushStyleVar((int)ImGuiStyleVar.ImGuiStyleVar_FramePadding, in zeroPad);
+        ImGui.PushStyleVar((int)ImGuiStyleVar.ImGuiStyleVar_ItemSpacing, in zeroPad);
 
         ImVec2 availSize = ImGui.GetContentRegionAvail();
         int lineTotalCount = (int)((memSize + (nuint)Cols - 1) / (nuint)Cols);
@@ -407,7 +407,7 @@ public sealed unsafe class MemoryEditor : IDisposable
                 y = windowPos.y + ImGui.GetWindowSize().y,
             };
 
-            ImDrawList.AddLine(drawList, &from, &to, ImGui.GetColorU32((int)ImGuiCol.ImGuiCol_Border), 1f);
+            ImDrawList.AddLine(drawList, in from, in to, ImGui.GetColorU32((int)ImGuiCol.ImGuiCol_Border), 1f);
         }
 
         uint colorText = ImGui.GetColorU32((int)ImGuiCol.ImGuiCol_Text);
@@ -453,8 +453,8 @@ public sealed unsafe class MemoryEditor : IDisposable
         ImVec2 backupPos = ImGui.GetCursorScreenPos();
         ImGui.SetCursorPosX(s.WindowWidth);
         ImVec2 zero = new() { x = 0f, y = 0f };
-        ImGui.Dummy(&zero);
-        ImGui.SetCursorScreenPos(&backupPos);
+        ImGui.Dummy(in zero);
+        ImGui.SetCursorScreenPos(in backupPos);
 
         ApplyPendingNavigation(memSize, ref dataNext, dataEditingAddrNext);
 
@@ -493,7 +493,7 @@ public sealed unsafe class MemoryEditor : IDisposable
         if (_gotoAddr < memSize)
         {
             ImVec2 scrollingSize = new() { x = 0f, y = 0f };
-            ImGui.BeginChild("##scrolling", &scrollingSize, 0, 0);
+            ImGui.BeginChild("##scrolling", in scrollingSize, 0, 0);
             ImGui.SetScrollY((_gotoAddr / (nuint)Cols) * ImGui.GetTextLineHeight() - availSize.y * 0.5f);
             ImGui.EndChild();
 
@@ -525,7 +525,7 @@ public sealed unsafe class MemoryEditor : IDisposable
             ImVec2 from = contentsPosStart;
             ImVec2 to = contentsPosEnd;
 
-            if (ImGui.IsMouseHoveringRect(&from, &to, 1) != 0)
+            if (ImGui.IsMouseHoveringRect(in from, in to, 1) != 0)
             {
                 int childWindows = (int)ImGuiHoveredFlags.ImGuiHoveredFlags_ChildWindows;
                 if (ImGui.IsWindowHovered(childWindows) != 0
@@ -632,7 +632,7 @@ public sealed unsafe class MemoryEditor : IDisposable
 
                 ImVec2 pos = ImGui.GetCursorScreenPos();
                 ImVec2 posMax = new() { x = pos.x + bgWidth, y = pos.y + s.LineHeight };
-                ImDrawList.AddRectFilled(drawList, &pos, &posMax, bgColor, 0f);
+                ImDrawList.AddRectFilled(drawList, in pos, in posMax, bgColor, 0f);
             }
 
             if (_dataEditingAddr == addr)
@@ -835,7 +835,7 @@ public sealed unsafe class MemoryEditor : IDisposable
             y = s.LineHeight,
         };
 
-        if (ImGui.InvisibleButton("ascii", &buttonSize) != 0)
+        if (ImGui.InvisibleButton("ascii", in buttonSize) != 0)
         {
             _dataEditingAddr = _dataPreviewAddr = mouseAddr;
             _dataEditingTakeFocus = true;
@@ -854,22 +854,22 @@ public sealed unsafe class MemoryEditor : IDisposable
             if (addr == _dataEditingAddr)
             {
                 ImVec2 cellMax = new() { x = pos.x + s.GlyphWidth, y = pos.y + s.LineHeight };
-                ImDrawList.AddRectFilled(drawList, &pos, &cellMax,
+                ImDrawList.AddRectFilled(drawList, in pos, in cellMax,
                     ImGui.GetColorU32((int)ImGuiCol.ImGuiCol_FrameBg, 1f), 0f);
-                ImDrawList.AddRectFilled(drawList, &pos, &cellMax,
+                ImDrawList.AddRectFilled(drawList, in pos, in cellMax,
                     ImGui.GetColorU32((int)ImGuiCol.ImGuiCol_TextSelectedBg, 1f), 0f);
             }
             else if (BgColorFn != null)
             {
                 ImVec2 cellMax = new() { x = pos.x + s.GlyphWidth, y = pos.y + s.LineHeight };
-                ImDrawList.AddRectFilled(drawList, &pos, &cellMax, BgColorFn(memData, addr, UserData), 0f);
+                ImDrawList.AddRectFilled(drawList, in pos, in cellMax, BgColorFn(memData, addr, UserData), 0f);
             }
 
             byte c = ReadFn != null ? ReadFn(memData, addr, UserData) : memData[addr];
             char display = c < 32 || c >= 128 ? '.' : (char)c;
             uint color = display == (char)c ? colorText : colorDisabled;
 
-            ImDrawList.AddText(drawList, &pos, color, display.ToString(), null);
+            ImDrawList.AddText(drawList, in pos, color, display.ToString(), null);
 
             pos.x += s.GlyphWidth;
         }
@@ -889,7 +889,7 @@ public sealed unsafe class MemoryEditor : IDisposable
                         : $"Range {FormatHex(baseDisplayAddr, s.AddrDigitsCount, OptUpperCaseHex)}..";
 
         ImVec2 optionsButtonSize = new() { x = 0f, y = 0f };
-        if (ImGui.Button("Options", &optionsButtonSize) != 0)
+        if (ImGui.Button("Options", in optionsButtonSize) != 0)
         {
             ImGui.OpenPopup("OptionsPopup");
         }
@@ -931,7 +931,7 @@ public sealed unsafe class MemoryEditor : IDisposable
             {
                 int dataType = SupportedDataTypes[n];
                 ImVec2 selSize = new() { x = 0f, y = 0f };
-                if (ImGui.Selectable(DataTypeGetDesc(dataType), dataType == _previewDataType ? (byte)1 : (byte)0, 0, &selSize) != 0)
+                if (ImGui.Selectable(DataTypeGetDesc(dataType), dataType == _previewDataType ? (byte)1 : (byte)0, 0, in selSize) != 0)
                 {
                     _previewDataType = dataType;
                 }
@@ -1173,6 +1173,6 @@ public sealed unsafe class MemoryEditor : IDisposable
     private static void PushDisabledText()
     {
         ImVec4 c = ImGui.GetStyle()->Colors[(int)ImGuiCol.ImGuiCol_TextDisabled];
-        ImGui.PushStyleColor((int)ImGuiCol.ImGuiCol_Text, &c);
+        ImGui.PushStyleColor((int)ImGuiCol.ImGuiCol_Text, in c);
     }
 }

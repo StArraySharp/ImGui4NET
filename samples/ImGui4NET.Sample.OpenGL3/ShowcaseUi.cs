@@ -266,8 +266,8 @@ internal static unsafe class ShowcaseUi
         // pivot must not be null: the native signature takes an ImVec2& whose
         // default constructs a temporary, but the generated binding exposes it
         // as a nullable pointer that the native side dereferences directly.
-        ImGui.SetNextWindowPos(&zero, CondAlways, &pivot);
-        ImGui.SetNextWindowSize(&displaySize, CondAlways);
+        ImGui.SetNextWindowPos(in zero, CondAlways, in pivot);
+        ImGui.SetNextWindowSize(in displaySize, CondAlways);
 
         int rootFlags = (int)ImGuiWindowFlags.ImGuiWindowFlags_NoDecoration
             | (int)ImGuiWindowFlags.ImGuiWindowFlags_NoMove
@@ -279,7 +279,7 @@ internal static unsafe class ShowcaseUi
             | (int)ImGuiWindowFlags.ImGuiWindowFlags_NoScrollWithMouse;
 
         ImVec2 rootPadding = V2(0f, 0f);
-        ImGui.PushStyleVar((int)ImGuiStyleVar.ImGuiStyleVar_WindowPadding, &rootPadding);
+        ImGui.PushStyleVar((int)ImGuiStyleVar.ImGuiStyleVar_WindowPadding, in rootPadding);
         ImGui.PushStyleVar((int)ImGuiStyleVar.ImGuiStyleVar_WindowRounding, 0f);
         ImGui.PushStyleVar((int)ImGuiStyleVar.ImGuiStyleVar_WindowBorderSize, 0f);
 
@@ -366,7 +366,7 @@ internal static unsafe class ShowcaseUi
             float itemWidth = Measure(NavLabels[i], 13f).x + 26f;
             ImVec2 pos = V2(navX, navY);
 
-            ImGui.SetCursorScreenPos(&pos);
+            ImGui.SetCursorScreenPos(in pos);
             bool clicked = InvisibleButton($"##nav{i}", itemWidth, 26f);
             bool hovered = ImGui.IsItemHovered() != 0;
 
@@ -439,7 +439,7 @@ internal static unsafe class ShowcaseUi
             ImVec2 pos = ImGui.GetCursorScreenPos();
             float w = RailWidth - 28f;
 
-            ImGui.SetCursorScreenPos(&pos);
+            ImGui.SetCursorScreenPos(in pos);
             bool clicked = InvisibleButton($"##rail{i}", w, 38f);
             bool hovered = ImGui.IsItemHovered() != 0;
 
@@ -530,7 +530,7 @@ internal static unsafe class ShowcaseUi
             float w = Measure(TabLabels[i], 13f).x + 30f;
             ImVec2 pos = V2(x, start.y);
 
-            ImGui.SetCursorScreenPos(&pos);
+            ImGui.SetCursorScreenPos(in pos);
             bool clicked = InvisibleButton($"##tab{i}", w, 30f);
             bool hovered = ImGui.IsItemHovered() != 0;
 
@@ -734,7 +734,7 @@ internal static unsafe class ShowcaseUi
             | (int)ImGuiTableFlags.ImGuiTableFlags_NoSavedSettings;
 
         ImVec2 outerSize = V2(0f, 0f);
-        if (ImGui.BeginTable("##builds", 5, tableFlags, &outerSize, 0f) != 0)
+        if (ImGui.BeginTable("##builds", 5, tableFlags, in outerSize, 0f) != 0)
         {
             int stretch = (int)ImGuiTableColumnFlags.ImGuiTableColumnFlags_WidthStretch;
             ImGui.TableSetupColumn("目标 Target", stretch, 1.6f);
@@ -820,7 +820,7 @@ internal static unsafe class ShowcaseUi
             for (int i = 0; i < profiles.Length; i++)
             {
                 ImVec2 selSize = V2(0f, 0f);
-                if (ImGui.Selectable(profiles[i], i == _comboProfile ? (byte)1 : (byte)0, 0, &selSize) != 0)
+                if (ImGui.Selectable(profiles[i], i == _comboProfile ? (byte)1 : (byte)0, 0, in selSize) != 0)
                 {
                     _comboProfile = i;
                 }
@@ -856,7 +856,7 @@ internal static unsafe class ShowcaseUi
         for (int i = 0; i < 8; i++)
         {
             ImVec2 p = V2(swatch.x + 44f + i * 24f, swatch.y + 2f);
-            ImGui.SetCursorScreenPos(&p);
+            ImGui.SetCursorScreenPos(in p);
             bool hit = InvisibleButton($"##swatch{i}", 18f, 18f);
 
             float hue = i / 8f;
@@ -920,7 +920,7 @@ internal static unsafe class ShowcaseUi
         ImGui.PushStyleColor((int)ImGuiCol.ImGuiCol_Border, Border);
 
         ImVec2 size = V2(width, height);
-        ImGui.BeginChild(id, &size, (int)ImGuiChildFlags.ImGuiChildFlags_Borders, 0);
+        ImGui.BeginChild(id, in size, (int)ImGuiChildFlags.ImGuiChildFlags_Borders, 0);
     }
 
     /// <summary>Pops everything pushed by <see cref="CardBegin"/>.</summary>
@@ -1165,7 +1165,7 @@ internal static unsafe class ShowcaseUi
     {
         ImVec2 p = pos;
         // cpu_fine_clip_rect is null-checked natively, so null is safe here.
-        ImDrawList.AddText(dl, null, size, &p, color, text, null, 0f, null);
+        ImDrawList.AddText(dl, null, size, in p, color, text, null, 0f, null);
     }
 
     // Measuring text requires pushing a font size, which is relatively costly.
@@ -1191,46 +1191,46 @@ internal static unsafe class ShowcaseUi
     {
         ImVec2 a = min;
         ImVec2 b = max;
-        ImDrawList.AddRectFilled(dl, &a, &b, color, rounding);
+        ImDrawList.AddRectFilled(dl, in a, in b, color, rounding);
     }
 
     static void RectOutline(ImDrawList* dl, ImVec2 min, ImVec2 max, uint color, float rounding, float thickness)
     {
         ImVec2 a = min;
         ImVec2 b = max;
-        ImDrawList.AddRect(dl, &a, &b, color, rounding, thickness);
+        ImDrawList.AddRect(dl, in a, in b, color, rounding, thickness);
     }
 
     static void RectGrad(ImDrawList* dl, ImVec2 min, ImVec2 max, uint ul, uint ur, uint br, uint bl)
     {
         ImVec2 a = min;
         ImVec2 b = max;
-        ImDrawList.AddRectFilledMultiColor(dl, &a, &b, ul, ur, br, bl);
+        ImDrawList.AddRectFilledMultiColor(dl, in a, in b, ul, ur, br, bl);
     }
 
     static void Line(ImDrawList* dl, ImVec2 a, ImVec2 b, uint color, float thickness)
     {
         ImVec2 p1 = a;
         ImVec2 p2 = b;
-        ImDrawList.AddLine(dl, &p1, &p2, color, thickness);
+        ImDrawList.AddLine(dl, in p1, in p2, color, thickness);
     }
 
     static void CircleFill(ImDrawList* dl, ImVec2 center, float radius, uint color, int segments)
     {
         ImVec2 c = center;
-        ImDrawList.AddCircleFilled(dl, &c, radius, color, segments);
+        ImDrawList.AddCircleFilled(dl, in c, radius, color, segments);
     }
 
     static void CircleOutline(ImDrawList* dl, ImVec2 center, float radius, uint color, float thickness, int segments)
     {
         ImVec2 c = center;
-        ImDrawList.AddCircle(dl, &c, radius, color, segments, thickness);
+        ImDrawList.AddCircle(dl, in c, radius, color, segments, thickness);
     }
 
     static void Quad(ImDrawList* dl, ImVec2 a, ImVec2 b, ImVec2 c, ImVec2 d, uint color)
     {
         ImVec2 p1 = a, p2 = b, p3 = c, p4 = d;
-        ImDrawList.AddQuadFilled(dl, &p1, &p2, &p3, &p4, color);
+        ImDrawList.AddQuadFilled(dl, in p1, in p2, in p3, in p4, color);
     }
 
     static void DrawArc(ImDrawList* dl, ImVec2 center, float radius, float a0, float a1,
@@ -1267,31 +1267,31 @@ internal static unsafe class ShowcaseUi
     static bool InvisibleButton(string id, float width, float height)
     {
         ImVec2 size = V2(width, height);
-        return ImGui.InvisibleButton(id, &size) != 0;
+        return ImGui.InvisibleButton(id, in size) != 0;
     }
 
     static void SetCursor(float x, float y)
     {
         ImVec2 pos = V2(x, y);
-        ImGui.SetCursorPos(&pos);
+        ImGui.SetCursorPos(in pos);
     }
 
     static void SetCursorScreen(float x, float y)
     {
         ImVec2 pos = V2(x, y);
-        ImGui.SetCursorScreenPos(&pos);
+        ImGui.SetCursorScreenPos(in pos);
     }
 
     static void Dummy(float width, float height)
     {
         ImVec2 size = V2(width, height);
-        ImGui.Dummy(&size);
+        ImGui.Dummy(in size);
     }
 
     static void BeginChild(string id, float width, float height)
     {
         ImVec2 size = V2(width, height);
-        ImGui.BeginChild(id, &size, 0, 0);
+        ImGui.BeginChild(id, in size, 0, 0);
     }
 
     static bool SliderF(string label, ref float value, float min, float max, string? format = null)
@@ -1352,7 +1352,7 @@ internal static unsafe class ShowcaseUi
     static void PushChildBg(ImVec4 color)
     {
         ImVec4 c = color;
-        ImGui.PushStyleColor((int)ImGuiCol.ImGuiCol_ChildBg, &c);
+        ImGui.PushStyleColor((int)ImGuiCol.ImGuiCol_ChildBg, in c);
     }
 
     static void PopChildBg() => ImGui.PopStyleColor();
@@ -1360,7 +1360,7 @@ internal static unsafe class ShowcaseUi
     static void PushWindowPadding(float x, float y)
     {
         ImVec2 pad = V2(x, y);
-        ImGui.PushStyleVar((int)ImGuiStyleVar.ImGuiStyleVar_WindowPadding, &pad);
+        ImGui.PushStyleVar((int)ImGuiStyleVar.ImGuiStyleVar_WindowPadding, in pad);
     }
 
     static void PopWindowPadding() => ImGui.PopStyleVar();
@@ -1368,7 +1368,7 @@ internal static unsafe class ShowcaseUi
     static void PushCellPadding(float x, float y)
     {
         ImVec2 pad = V2(x, y);
-        ImGui.PushStyleVar((int)ImGuiStyleVar.ImGuiStyleVar_CellPadding, &pad);
+        ImGui.PushStyleVar((int)ImGuiStyleVar.ImGuiStyleVar_CellPadding, in pad);
     }
 
     static void PopCellPadding() => ImGui.PopStyleVar();

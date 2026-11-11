@@ -58,6 +58,6 @@ namespace ImGui4NET
         public static extern void DeIndexAllBuffers(ImDrawData* pThis);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawData14ScaleClipRectsERK6ImVec2", ExactSpelling = true)]
-        public static extern void ScaleClipRects(ImDrawData* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* fb_scale);
+        public static extern void ScaleClipRects(ImDrawData* pThis, in ImVec2 fb_scale);
     }
 }

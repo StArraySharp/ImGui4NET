@@ -51,7 +51,7 @@ namespace ImGui4NET
         public static extern void Clear(ImGuiSelectionBasicStorage* pThis);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN26ImGuiSelectionBasicStorage4SwapERS_", ExactSpelling = true)]
-        public static extern void Swap(ImGuiSelectionBasicStorage* pThis, [NativeTypeName("ImGuiSelectionBasicStorage &")] ImGuiSelectionBasicStorage* r);
+        public static extern void Swap(ImGuiSelectionBasicStorage* pThis, ref ImGuiSelectionBasicStorage r);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN26ImGuiSelectionBasicStorage15SetItemSelectedEjb", ExactSpelling = true)]
         public static extern void SetItemSelected(ImGuiSelectionBasicStorage* pThis, [NativeTypeName("ImGuiID")] uint id, [NativeTypeName("bool")] byte selected);

@@ -450,11 +450,11 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN11ImGuiWindow12GetIDFromPosERK6ImVec2", ExactSpelling = true)]
         [return: NativeTypeName("ImGuiID")]
-        public static extern uint GetIDFromPos(ImGuiWindow* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* p_abs);
+        public static extern uint GetIDFromPos(ImGuiWindow* pThis, in ImVec2 p_abs);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN11ImGuiWindow18GetIDFromRectangleERK6ImRect", ExactSpelling = true)]
         [return: NativeTypeName("ImGuiID")]
-        public static extern uint GetIDFromRectangle(ImGuiWindow* pThis, [NativeTypeName("const ImRect &")] ImRect* r_abs);
+        public static extern uint GetIDFromRectangle(ImGuiWindow* pThis, in ImRect r_abs);
 
         [InlineArray(2)]
         public partial struct _NavLastIds_e__FixedBuffer

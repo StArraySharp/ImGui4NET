@@ -7,6 +7,25 @@ moving to a new Dear ImGui tag.
 
 ## 1.93.0.4
 
+**C++ reference parameters are now `in` / `ref` instead of nullable pointers.**
+This is the breaking change in this release: call sites pass `in x` where they
+used to pass `&x`.
+
+- `const T&` becomes `in T`, `T&` becomes `ref T`. Both pass the address, so the
+  ABI is unchanged, but neither accepts `null`, which turns the mistake that
+  used to be a runtime access violation into a compile-time error. Two crashes
+  in the `imgui_club` port were exactly this: `Button("Options", null)` and
+  `BeginChild("##scrolling", null, ...)` passed null to a `const ImVec2&` that
+  Dear ImGui dereferences unconditionally.
+- Defaults are preserved. A C++ default of `ImVec2(0, 0)` becomes
+  `in ImVec2 size = default`; a non-zero one (`Image`'s `uv1 = ImVec2(1, 1)`,
+  `ProgressBar`'s `size_arg = ImVec2(-FLT_MIN, 0)`) becomes a `static readonly`
+  field plus a forwarding overload, so omitting the argument keeps the upstream
+  meaning instead of silently zeroing it.
+- The defaults are read from `imgui/*.h` at generation time, keyed by the whole
+  parameter list, so two overloads of the same function cannot leak values into
+  each other (`Image` has a 4-argument and a 6-argument form).
+
 Drops `net8.0`, adds macOS support, and removes `ImGui4NET.Backend.Null`.
 
 - **Target framework is now `net10.0` only.** `net8.0` is gone from every

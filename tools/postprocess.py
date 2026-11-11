@@ -203,27 +203,28 @@ def drop_string_literal_defaults(text: str) -> str:
     return text
 
 
-# ClangSharp turns a C++ reference parameter (``const ImVec2& v``) into a
-# pointer (``ImVec2* v``), which is the correct ABI. The default argument is the
-# problem: C++ constructs a temporary for the default so the reference is never
-# null, while the generated pointer default is ``null`` and the native code
-# dereferences it unconditionally. Every call that omits the argument then dies
-# with an access violation (0xC0000005).
+# ClangSharp turns a C++ reference parameter into a pointer: ``const ImVec2& v``
+# and ``float& out`` both become ``T*``. That is the right ABI but the wrong
+# type, because a pointer is nullable and a C++ reference is not. The generated
+# default was ``null``, and every call site that relied on it died with an access
+# violation (0xC0000005) the moment the native code dereferenced it.
 #
-# A pointer cannot be a C# default argument (defaults must be compile-time
-# constants), so the value is carried by a static readonly field instead and the
-# parameter is moved into an overload that omits it:
+# A reference maps to ``in`` (read-only) or ``ref`` (writable): both pass the
+# address, so the ABI is unchanged, and neither accepts null, so the compiler
+# rejects the mistake that used to be a runtime crash. ``in`` additionally
+# accepts a compile-time default and an rvalue, which is exactly what a C++
+# default argument needs:
 #
-#   ImVec2* pivot = null
-#     -> overload: Foo(..., ImGui.C_ImVec2_0_0)
-#        core:     Foo(..., ImVec2* pivot)
+#   const ImVec2& size = ImVec2(0, 0)   ->  in ImVec2 size = default
+#   float& out_h                        ->  ref float out_h
 #
-# The constant keeps the exact C++ value, so ``ProgressBar``'s
-# ``ImVec2(-FLT_MIN, 0)`` and ``Image``'s ``ImVec2(1, 1)`` behave like upstream
-# instead of silently becoming zero.
+# ``default`` is not always the C++ value: ``ProgressBar``'s ``size_arg``
+# defaults to ``ImVec2(-FLT_MIN, 0)`` and ``Image``'s ``uv1`` to ``ImVec2(1, 1)``.
+# Those are carried by a ``static readonly`` field and a forwarding overload, so
+# omitting the argument keeps the upstream meaning instead of silently zeroing.
 REF_PARAM = re.compile(
-    r'\[NativeTypeName\("(?P<native>const )?(?P<type>ImVec2|ImVec4|ImRect) &"\)\]\s*'
-    r"(?P<ctype>ImVec2|ImVec4|ImRect)\*\s+"
+    r'\[NativeTypeName\("(?P<const>const )?(?P<type>[A-Za-z_][A-Za-z0-9_]*) &"\)\]\s*'
+    r"(?P=type)\*\s+"
     r"(?P<name>@?[A-Za-z_][A-Za-z0-9_]*)"
     r"(?P<default>\s*=\s*(?:null|default|new\s+\w+\([^)]*\)))?"
 )
@@ -264,7 +265,12 @@ class RefDefaultTable:
 
     def __init__(self, headers: list[Path] | None = None) -> None:
         self.fields: dict[str, tuple[str, str]] = {}
-        self._native = _load_native_defaults(headers or [])
+        self._native = _load_native_defaults(
+            headers if headers is not None else _default_headers()
+        )
+
+    def lookup(self, signature: str, param: str) -> tuple[str, list[str]] | None:
+        return self._native.get((signature, param))
 
     def key(self, type_name: str, args: list[str]) -> str:
         slug = "_".join(
@@ -311,7 +317,7 @@ class RefDefaultTable:
 
 NATIVE_DECL = re.compile(r"IMGUI_API\s+[^;{(]*?\b(?P<name>\w+)\s*\((?P<params>[^;]*?)\)\s*;", re.S)
 NATIVE_PARAM = re.compile(
-    r"^\s*(?P<type>const\s+[\w:]+\s*&|[\w:]+\s*[&*]?)\s*(?P<name>\w+)"
+    r"^\s*(?P<type>(?:const\s+)*[\w:]+(?:\s*[&*])?)\s*(?P<name>\w+)"
     r"\s*(?:=\s*(?P<default>.+))?$",
     re.S,
 )
@@ -338,13 +344,26 @@ def _split_top_level(params: str) -> list[str]:
     return parts
 
 
-def _load_native_defaults(headers: list[Path]) -> dict[tuple[str, int], tuple[str, list[str]]]:
-    """Map ``(function, parameter index)`` to the C++ struct default.
+def _load_native_defaults(headers: list[Path]) -> dict[tuple[str, str], tuple[str, list[str]]]:
+    """Map ``(signature, parameter name)`` to the C++ struct default.
 
     Only ``ImVec2``/``ImVec4``/``ImRect`` constructor defaults are collected:
     those are the reference parameters whose null default is unsafe.
+
+    The key is the *full parameter name list* plus the parameter's own name, not
+    its position. Two reasons:
+
+    * ClangSharp inserts a leading ``pThis`` for a struct's instance methods, so
+      the generated index no longer matches the header.
+    * Dear ImGui overloads the same function name with and without defaults
+      (``Image`` and ``ImageButton`` do). Keying on the name alone would let one
+      overload's defaults leak into the other.
+
+    Parameters declared without a name cannot be keyed and are skipped. None of
+    the struct defaults in Dear ImGui are, but the guard keeps a future
+    anonymous parameter from silently taking its neighbour's value.
     """
-    table: dict[tuple[str, int], tuple[str, list[str]]] = {}
+    table: dict[tuple[str, str], tuple[str, list[str]]] = {}
 
     for header in headers:
         if not header.exists():
@@ -353,8 +372,17 @@ def _load_native_defaults(headers: list[Path]) -> dict[tuple[str, int], tuple[st
         text = header.read_text(encoding="utf-8", errors="replace")
         for decl in NATIVE_DECL.finditer(text):
             name = decl.group("name")
-            for index, raw in enumerate(_split_top_level(decl.group("params"))):
+            raws = _split_top_level(decl.group("params"))
+
+            names: list[str] = []
+            for raw in raws:
                 param = NATIVE_PARAM.match(raw)
+                names.append(param.group("name").lstrip("@") if param else "")
+
+            signature = f"{name}({','.join(names)})"
+            for param, raw in zip(
+                [NATIVE_PARAM.match(item) for item in raws], raws
+            ):
                 if param is None:
                     continue
                 default = (param.group("default") or "").strip()
@@ -362,15 +390,46 @@ def _load_native_defaults(headers: list[Path]) -> dict[tuple[str, int], tuple[st
                 if ctor is None:
                     continue
                 args = [a.strip() for a in ctor.group("args").split(",")]
-                table[(name, index)] = (ctor.group("type"), args)
+                key = (signature, param.group("name").lstrip("@"))
+                table[key] = (ctor.group("type"), args)
 
     return table
 
 
-def fix_reference_params(text: str, defaults: RefDefaultTable) -> str:
-    """Route reference parameters with defaults through a static constant.
+def _default_headers() -> list[Path]:
+    """Locate the Dear ImGui headers relative to this script.
 
-    See :data:`REF_PARAM` for the reasoning.
+    The generated input file lives in a scratch directory, so its own location
+    says nothing about the repository. ``tools/postprocess.py`` does: the
+    submodule sits at ``<repo>/imgui``. Reading the defaults from disk keeps
+    them exact instead of hardcoding a table that drifts with the submodule.
+    """
+    root = Path(__file__).resolve().parent.parent / "imgui"
+    if not root.is_dir():
+        return []
+    # imgui.h carries the public API; imgui_internal.h adds the helpers the
+    # core binding also exposes (ButtonEx, BeginTableEx, RenderTextClipped).
+    return sorted(root.glob("*.h"))
+
+
+def _is_zero_default(args: list[str]) -> bool:
+    """Whether a C++ struct default equals ``default`` in C#."""
+    for arg in args:
+        text = _literal_to_csharp(arg).rstrip("fF")
+        try:
+            if float(text) != 0.0:
+                return False
+        except ValueError:
+            return False
+    return True
+
+
+def fix_reference_params(text: str, defaults: RefDefaultTable) -> str:
+    """Turn ``T*`` reference parameters into ``in T`` / ``ref T``.
+
+    See :data:`REF_PARAM` for the reasoning. A parameter keeps a
+    ``= default`` argument when the header default is all zeros, and gets a
+    forwarding overload when it is not (``ImVec2(1, 1)``, ``-FLT_MIN``, ...).
     """
     lines = text.split("\n")
     out: list[str] = []
@@ -390,104 +449,149 @@ def fix_reference_params(text: str, defaults: RefDefaultTable) -> str:
             continue
 
         prefix, params, suffix = match.group(1), match.group(2), match.group(3)
-        parts: list[str] = []
-        depth = 0
-        cur = ""
-        for ch in params:
-            if ch in "<(":
-                depth += 1
-            elif ch in ">)":
-                depth -= 1
-            if ch == "," and depth == 0:
-                parts.append(cur)
-                cur = ""
-            else:
-                cur += ch
-        if cur.strip():
-            parts.append(cur)
+        parts = _split_top_level(params)
 
-        # Every reference parameter becomes a required pointer in the core
-        # signature; the defaults are supplied by the overload chain below.
-        stripped_parts = list(parts)
-        for index, part in enumerate(stripped_parts):
-            stripped_parts[index] = REF_PARAM.sub(
-                lambda m: f'[NativeTypeName("const {m.group("type")} &")] {m.group("ctype")}* {m.group("name")}',
-                part,
-            )
-
-        # C# forbids an optional parameter before a required one, so any default
-        # that now precedes a newly-required reference parameter is dropped too.
-        seen_required = False
-        for index in range(len(stripped_parts) - 1, -1, -1):
-            part = stripped_parts[index]
-            if REF_PARAM.search(parts[index]):
-                seen_required = True
-            elif seen_required:
-                stripped_parts[index] = re.sub(r"\s*=\s*[^,()]+(?=\s*[,)]|$)", "", part)
-
-        out.append(prefix + ",".join(stripped_parts) + suffix)
-
-        # Build one overload per reference parameter that has a native default,
-        # from the rightmost to the leftmost, so each level only supplies the
-        # defaults for the parameters it drops.
-        ret_match = re.search(r"public static extern (\w+)(\*?)\s", line)
-        ret_type = (ret_match.group(1) + (ret_match.group(2) or "")) if ret_match else "void"
         method_name = re.search(r"extern [\w\*]+ (\w+)\(", line).group(1)
+        ret_match = re.search(r"public static extern ([\w\*]+) ", line)
+        ret_type = ret_match.group(1) if ret_match else "void"
 
-        missing = [
-            index
-            for index, part in enumerate(parts)
-            if REF_PARAM.search(part) and (method_name, index) in defaults._native
-        ]
+        # Names first: the C++ default is keyed by the whole signature, so every
+        # parameter name must be known before any lookup happens.
+        param_names: list[str] = []
+        for part in parts:
+            found = REF_PARAM.search(part)
+            if found is not None:
+                param_names.append(found.group("name").lstrip("@"))
+                continue
+            plain = re.search(r"(\w+)(?:\s*=\s*\S+)?$", part.strip().rstrip(")"))
+            param_names.append(plain.group(1) if plain else "")
+        signature_key = f"{method_name}({','.join(param_names)})"
 
-        while missing:
-            index = missing.pop()
-            native_type, native_args = defaults._native[(method_name, index)]
-            constant = defaults.add(native_type, native_args)
+        converted: list[str] = []
+        supplied: list[str | None] = []
+        custom: list[tuple[int, tuple[str, list[str]]]] = []
 
-            call_args = []
-            for position, part in enumerate(stripped_parts):
-                if position == index:
-                    # The extern takes a pointer and the default lives in a
-                    # static field, so hand out its address. A `fixed` statement
-                    # would need a block, and the field is not on the GC heap, so
-                    # Unsafe.AsPointer is both legal and allocation free.
-                    call_args.append(
-                        f"({native_type}*)Unsafe.AsPointer(ref Unsafe.AsRef(in {constant}))"
-                    )
-                else:
-                    name_match = re.search(r"(\w+)\s*$", part.strip())
-                    call_args.append(name_match.group(1) if name_match else "")
+        for index, part in enumerate(parts):
+            found = REF_PARAM.search(part)
+            if found is None:
+                converted.append(part)
+                supplied.append(None)
+                continue
 
-            overload_params = [p for i, p in enumerate(stripped_parts) if i != index]
+            modifier = "in" if found.group("const") else "ref"
+            name = found.group("name")
+            # Preserve the leading space so the joined list reads ", x" not ",x".
+            lead = part[: len(part) - len(part.lstrip())]
+            converted.append(f"{lead}{modifier} {found.group('type')} {name}")
+
+            if not found.group("const"):
+                # A writable reference never has a default.
+                supplied.append(None)
+                continue
+
+            native = defaults.lookup(signature_key, name.lstrip("@"))
+            if native is None:
+                supplied.append(None)
+            elif _is_zero_default(native[1]):
+                supplied.append("zero")
+            else:
+                supplied.append("custom")
+                custom.append((index, native))
+
+        defaulted = [i for i, kind in enumerate(supplied) if kind is not None]
+
+        if not custom:
+            out.append(prefix + ",".join(converted) + suffix)
+            continue
+
+        # Every parameter defaulted by a non-zero C++ value becomes required;
+        # the chain below supplies it. `fix_optional_order` then removes any
+        # default that would now precede a required parameter.
+        required = list(converted)
+        for index, _ in custom:
+            required[index] = re.sub(r"\s*=\s*default$", "", required[index])
+
+        out.append(prefix + ",".join(required) + suffix)
+
+        # Each level omits one more trailing defaulted parameter than the last,
+        # supplying it from the C++ value (a static field, or ``default`` for
+        # zeros). ``in`` parameters accept a value, so the argument is passed
+        # directly and the chain reads like the C++ signature.
+        fixed: dict[int, str] = {}
+
+        for drop in sorted(defaulted, reverse=True):
+            if supplied[drop] == "custom":
+                native_type, native_args = next(v for i, v in custom if i == drop)
+                fixed[drop] = f"in {defaults.add(native_type, native_args)}"
+            else:
+                fixed[drop] = "default"
+
+            params: list[str] = []
+            args: list[str] = []
+            for position, part in enumerate(required):
+                if position in fixed:
+                    args.append(fixed[position])
+                    continue
+                name = re.search(r"(\w+)$", part.strip())
+                params.append(part)
+                args.append(name.group(1) if name else "")
+
+            joined_params = ",".join(params)
+            joined_args = ", ".join(args)
             overloads.append(
-                f"    public static {ret_type} {method_name}({','.join(overload_params)}) "
-                f"=> {method_name}({', '.join(call_args)});"
+                f"    public static {ret_type} {method_name}({joined_params}) "
+                f"=> {method_name}({joined_args});"
             )
-
-            stripped_parts = overload_params
-            missing = [m - 1 if m > index else m for m in missing]
 
     if overloads:
-        # The overloads must sit inside the static class, next to the externs.
-        # The class closes with the last "    }" before the namespace brace.
         out_text = "\n".join(out)
-        class_end = out_text.rfind("\n    }")
-        if class_end == -1:
-            out_text += "\n" + "\n".join(overloads)
-        else:
-            out_text = (
-                out_text[:class_end]
-                + "\n\n"
-                + "\n".join(overloads)
-                + out_text[class_end:]
-            )
-        return out_text
+        anchor = re.search(
+            r"^    public static unsafe partial class \w+\s*\n    \{\n", out_text, re.M
+        )
+        if anchor is None:
+            return out_text + "\n" + "\n".join(overloads) + "\n"
+        return (
+            out_text[: anchor.end()]
+            + "\n".join(overloads)
+            + "\n"
+            + out_text[anchor.end() :]
+        )
 
     return "\n".join(out)
 
 
 POINTER_TYPE_ARG = re.compile(r"ImVector<(?P<t>[A-Za-z_]\w*)\*>")
+
+
+def fix_optional_order(text: str) -> str:
+    """Drop defaults that would precede a required parameter.
+
+    C# rejects ``M(int a = 1, int b)``. The generator can produce that shape as
+    soon as a reference parameter loses its default, so every extern is checked:
+    a default is kept only when every parameter after it also has one.
+    """
+    out: list[str] = []
+
+    for line in text.split("\n"):
+        match = re.search(r"(^[ \t]*public static extern [\w\*]+ \w+\()(.*)(\);)", line)
+        if match is None or "=" not in match.group(2):
+            out.append(line)
+            continue
+
+        parts = _split_top_level(match.group(2))
+
+        # Walk right to left: once a required parameter is seen, no parameter to
+        # its left may keep a default.
+        seen_required = False
+        for index in range(len(parts) - 1, -1, -1):
+            if "=" not in parts[index]:
+                seen_required = True
+            elif seen_required:
+                parts[index] = re.sub(r"\s*=\s*[^,]+$", "", parts[index])
+
+        out.append(match.group(1) + ",".join(parts) + match.group(3))
+
+    return "\n".join(out)
 
 
 def fix_pointer_type_arguments(text: str) -> str:
@@ -996,6 +1100,7 @@ def apply_rewrites(
     text = drop_vec_constructor_defaults(text)
     text = drop_string_literal_defaults(text)
     text = reference_defaults.emit(text)
+    text = fix_optional_order(text)
     text = fix_pointer_type_arguments(text)
     text = rename_constructors(text)
     text = nullable_string_params(text)

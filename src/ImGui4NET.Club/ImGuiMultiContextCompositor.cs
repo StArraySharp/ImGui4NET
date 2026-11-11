@@ -436,14 +436,14 @@ public sealed unsafe class MultiContextCompositor
         {
             ImVec2 pos = mainViewport->Pos;
             ImVec2 pivot = new() { x = 0f, y = 0f };
-            ImGui.SetNextWindowPos(&pos, 0, &pivot);
+            ImGui.SetNextWindowPos(in pos, 0, in pivot);
         }
 
         ImVec4 windowBg = new() { x = 1f, y = 1f, z = 1f, w = 0.5f };
         ImVec4 textCol = new() { x = 0f, y = 0f, z = 0f, w = 1f };
 
-        ImGui.PushStyleColor((int)ImGuiCol.ImGuiCol_WindowBg, &windowBg);
-        ImGui.PushStyleColor((int)ImGuiCol.ImGuiCol_Text, &textCol);
+        ImGui.PushStyleColor((int)ImGuiCol.ImGuiCol_WindowBg, in windowBg);
+        ImGui.PushStyleColor((int)ImGuiCol.ImGuiCol_Text, in textCol);
 
         int flags = (int)ImGuiWindowFlags.ImGuiWindowFlags_NoDecoration
             | (int)ImGuiWindowFlags.ImGuiWindowFlags_AlwaysAutoResize

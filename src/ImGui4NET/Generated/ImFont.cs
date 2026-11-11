@@ -77,10 +77,10 @@ namespace ImGui4NET
         public static extern sbyte* CalcWordWrapPosition(ImFont* pThis, float size, [MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_end, float wrap_width);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN6ImFont10RenderCharEP10ImDrawListfRK6ImVec2jtPK6ImVec4", ExactSpelling = true)]
-        public static extern void RenderChar(ImFont* pThis, ImDrawList* draw_list, float size, [NativeTypeName("const ImVec2 &")] ImVec2* pos, [NativeTypeName("ImU32")] uint col, [NativeTypeName("ImWchar")] ushort c, [NativeTypeName("const ImVec4 *")] ImVec4* cpu_fine_clip = null);
+        public static extern void RenderChar(ImFont* pThis, ImDrawList* draw_list, float size, in ImVec2 pos, [NativeTypeName("ImU32")] uint col, [NativeTypeName("ImWchar")] ushort c, [NativeTypeName("const ImVec4 *")] ImVec4* cpu_fine_clip = null);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN6ImFont10RenderTextEP10ImDrawListfRK6ImVec2jRK6ImVec4PKcS9_fi", ExactSpelling = true)]
-        public static extern void RenderText(ImFont* pThis, ImDrawList* draw_list, float size, [NativeTypeName("const ImVec2 &")] ImVec2* pos, [NativeTypeName("ImU32")] uint col, [NativeTypeName("const ImVec4 &")] ImVec4* clip_rect, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_begin, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_end, float wrap_width = 0.0f, [NativeTypeName("ImDrawTextFlags")] int flags = 0);
+        public static extern void RenderText(ImFont* pThis, ImDrawList* draw_list, float size, in ImVec2 pos, [NativeTypeName("ImU32")] uint col, in ImVec4 clip_rect, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_begin, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_end, float wrap_width = 0.0f, [NativeTypeName("ImDrawTextFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN6ImFont15ClearOutputDataEv", ExactSpelling = true)]
         public static extern void ClearOutputData(ImFont* pThis);

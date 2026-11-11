@@ -77,7 +77,7 @@ namespace ImGui4NET
         public static extern void Dispose(ImDrawList* pThis);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList12PushClipRectERK6ImVec2S2_b", ExactSpelling = true)]
-        public static extern void PushClipRect(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* clip_rect_min, [NativeTypeName("const ImVec2 &")] ImVec2* clip_rect_max, [NativeTypeName("bool")] byte intersect_with_current_clip_rect = 0);
+        public static extern void PushClipRect(ImDrawList* pThis, in ImVec2 clip_rect_min, in ImVec2 clip_rect_max, [NativeTypeName("bool")] byte intersect_with_current_clip_rect = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList22PushClipRectFullScreenEv", ExactSpelling = true)]
         public static extern void PushClipRectFullScreen(ImDrawList* pThis);
@@ -98,7 +98,7 @@ namespace ImGui4NET
         public static extern void PopDrawFlag(ImDrawList* pThis);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList7AddLineERK6ImVec2S2_jfi", ExactSpelling = true)]
-        public static extern void AddLine(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* p1, [NativeTypeName("const ImVec2 &")] ImVec2* p2, [NativeTypeName("ImU32")] uint col, float thickness = 1.0f, [NativeTypeName("ImDrawFlags")] int flags = 0);
+        public static extern void AddLine(ImDrawList* pThis, in ImVec2 p1, in ImVec2 p2, [NativeTypeName("ImU32")] uint col, float thickness = 1.0f, [NativeTypeName("ImDrawFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList8AddLineHEfffjfi", ExactSpelling = true)]
         public static extern void AddLineH(ImDrawList* pThis, float min_x, float max_x, float y, [NativeTypeName("ImU32")] uint col, float thickness = 1.0f, [NativeTypeName("ImDrawFlags")] int flags = 0);
@@ -107,55 +107,55 @@ namespace ImGui4NET
         public static extern void AddLineV(ImDrawList* pThis, float x, float min_y, float max_y, [NativeTypeName("ImU32")] uint col, float thickness = 1.0f, [NativeTypeName("ImDrawFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList7AddRectERK6ImVec2S2_jffi", ExactSpelling = true)]
-        public static extern void AddRect(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* p_min, [NativeTypeName("const ImVec2 &")] ImVec2* p_max, [NativeTypeName("ImU32")] uint col, float rounding = 0.0f, float thickness = 1.0f, [NativeTypeName("ImDrawFlags")] int flags = 0);
+        public static extern void AddRect(ImDrawList* pThis, in ImVec2 p_min, in ImVec2 p_max, [NativeTypeName("ImU32")] uint col, float rounding = 0.0f, float thickness = 1.0f, [NativeTypeName("ImDrawFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList13AddRectFilledERK6ImVec2S2_jfi", ExactSpelling = true)]
-        public static extern void AddRectFilled(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* p_min, [NativeTypeName("const ImVec2 &")] ImVec2* p_max, [NativeTypeName("ImU32")] uint col, float rounding = 0.0f, [NativeTypeName("ImDrawFlags")] int flags = 0);
+        public static extern void AddRectFilled(ImDrawList* pThis, in ImVec2 p_min, in ImVec2 p_max, [NativeTypeName("ImU32")] uint col, float rounding = 0.0f, [NativeTypeName("ImDrawFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList23AddRectFilledMultiColorERK6ImVec2S2_jjjj", ExactSpelling = true)]
-        public static extern void AddRectFilledMultiColor(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* p_min, [NativeTypeName("const ImVec2 &")] ImVec2* p_max, [NativeTypeName("ImU32")] uint col_upr_left, [NativeTypeName("ImU32")] uint col_upr_right, [NativeTypeName("ImU32")] uint col_bot_right, [NativeTypeName("ImU32")] uint col_bot_left);
+        public static extern void AddRectFilledMultiColor(ImDrawList* pThis, in ImVec2 p_min, in ImVec2 p_max, [NativeTypeName("ImU32")] uint col_upr_left, [NativeTypeName("ImU32")] uint col_upr_right, [NativeTypeName("ImU32")] uint col_bot_right, [NativeTypeName("ImU32")] uint col_bot_left);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList7AddQuadERK6ImVec2S2_S2_S2_jfi", ExactSpelling = true)]
-        public static extern void AddQuad(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* p1, [NativeTypeName("const ImVec2 &")] ImVec2* p2, [NativeTypeName("const ImVec2 &")] ImVec2* p3, [NativeTypeName("const ImVec2 &")] ImVec2* p4, [NativeTypeName("ImU32")] uint col, float thickness = 1.0f, [NativeTypeName("ImDrawFlags")] int flags = 0);
+        public static extern void AddQuad(ImDrawList* pThis, in ImVec2 p1, in ImVec2 p2, in ImVec2 p3, in ImVec2 p4, [NativeTypeName("ImU32")] uint col, float thickness = 1.0f, [NativeTypeName("ImDrawFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList13AddQuadFilledERK6ImVec2S2_S2_S2_j", ExactSpelling = true)]
-        public static extern void AddQuadFilled(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* p1, [NativeTypeName("const ImVec2 &")] ImVec2* p2, [NativeTypeName("const ImVec2 &")] ImVec2* p3, [NativeTypeName("const ImVec2 &")] ImVec2* p4, [NativeTypeName("ImU32")] uint col);
+        public static extern void AddQuadFilled(ImDrawList* pThis, in ImVec2 p1, in ImVec2 p2, in ImVec2 p3, in ImVec2 p4, [NativeTypeName("ImU32")] uint col);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList11AddTriangleERK6ImVec2S2_S2_jfi", ExactSpelling = true)]
-        public static extern void AddTriangle(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* p1, [NativeTypeName("const ImVec2 &")] ImVec2* p2, [NativeTypeName("const ImVec2 &")] ImVec2* p3, [NativeTypeName("ImU32")] uint col, float thickness = 1.0f, [NativeTypeName("ImDrawFlags")] int flags = 0);
+        public static extern void AddTriangle(ImDrawList* pThis, in ImVec2 p1, in ImVec2 p2, in ImVec2 p3, [NativeTypeName("ImU32")] uint col, float thickness = 1.0f, [NativeTypeName("ImDrawFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList17AddTriangleFilledERK6ImVec2S2_S2_j", ExactSpelling = true)]
-        public static extern void AddTriangleFilled(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* p1, [NativeTypeName("const ImVec2 &")] ImVec2* p2, [NativeTypeName("const ImVec2 &")] ImVec2* p3, [NativeTypeName("ImU32")] uint col);
+        public static extern void AddTriangleFilled(ImDrawList* pThis, in ImVec2 p1, in ImVec2 p2, in ImVec2 p3, [NativeTypeName("ImU32")] uint col);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList9AddCircleERK6ImVec2fjifi", ExactSpelling = true)]
-        public static extern void AddCircle(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* center, float radius, [NativeTypeName("ImU32")] uint col, int num_segments = 0, float thickness = 1.0f, [NativeTypeName("ImDrawFlags")] int flags = 0);
+        public static extern void AddCircle(ImDrawList* pThis, in ImVec2 center, float radius, [NativeTypeName("ImU32")] uint col, int num_segments = 0, float thickness = 1.0f, [NativeTypeName("ImDrawFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList15AddCircleFilledERK6ImVec2fji", ExactSpelling = true)]
-        public static extern void AddCircleFilled(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* center, float radius, [NativeTypeName("ImU32")] uint col, int num_segments = 0);
+        public static extern void AddCircleFilled(ImDrawList* pThis, in ImVec2 center, float radius, [NativeTypeName("ImU32")] uint col, int num_segments = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList7AddNgonERK6ImVec2fjifi", ExactSpelling = true)]
-        public static extern void AddNgon(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* center, float radius, [NativeTypeName("ImU32")] uint col, int num_segments, float thickness = 1.0f, [NativeTypeName("ImDrawFlags")] int flags = 0);
+        public static extern void AddNgon(ImDrawList* pThis, in ImVec2 center, float radius, [NativeTypeName("ImU32")] uint col, int num_segments, float thickness = 1.0f, [NativeTypeName("ImDrawFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList13AddNgonFilledERK6ImVec2fji", ExactSpelling = true)]
-        public static extern void AddNgonFilled(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* center, float radius, [NativeTypeName("ImU32")] uint col, int num_segments);
+        public static extern void AddNgonFilled(ImDrawList* pThis, in ImVec2 center, float radius, [NativeTypeName("ImU32")] uint col, int num_segments);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList10AddEllipseERK6ImVec2S2_jfifi", ExactSpelling = true)]
-        public static extern void AddEllipse(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* center, [NativeTypeName("const ImVec2 &")] ImVec2* radius, [NativeTypeName("ImU32")] uint col, float rot = 0.0f, int num_segments = 0, float thickness = 1.0f, [NativeTypeName("ImDrawFlags")] int flags = 0);
+        public static extern void AddEllipse(ImDrawList* pThis, in ImVec2 center, in ImVec2 radius, [NativeTypeName("ImU32")] uint col, float rot = 0.0f, int num_segments = 0, float thickness = 1.0f, [NativeTypeName("ImDrawFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList16AddEllipseFilledERK6ImVec2S2_jfi", ExactSpelling = true)]
-        public static extern void AddEllipseFilled(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* center, [NativeTypeName("const ImVec2 &")] ImVec2* radius, [NativeTypeName("ImU32")] uint col, float rot = 0.0f, int num_segments = 0);
+        public static extern void AddEllipseFilled(ImDrawList* pThis, in ImVec2 center, in ImVec2 radius, [NativeTypeName("ImU32")] uint col, float rot = 0.0f, int num_segments = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList7AddTextERK6ImVec2jPKcS4_", ExactSpelling = true)]
-        public static extern void AddText(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* pos, [NativeTypeName("ImU32")] uint col, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_begin, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?text_end = null);
+        public static extern void AddText(ImDrawList* pThis, in ImVec2 pos, [NativeTypeName("ImU32")] uint col, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_begin, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?text_end = null);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList7AddTextEP6ImFontfRK6ImVec2jPKcS6_fPK6ImVec4", ExactSpelling = true)]
-        public static extern void AddText(ImDrawList* pThis, ImFont* font, float font_size, [NativeTypeName("const ImVec2 &")] ImVec2* pos, [NativeTypeName("ImU32")] uint col, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_begin, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?text_end = null, float wrap_width = 0.0f, [NativeTypeName("const ImVec4 *")] ImVec4* cpu_fine_clip_rect = null);
+        public static extern void AddText(ImDrawList* pThis, ImFont* font, float font_size, in ImVec2 pos, [NativeTypeName("ImU32")] uint col, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_begin, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?text_end = null, float wrap_width = 0.0f, [NativeTypeName("const ImVec4 *")] ImVec4* cpu_fine_clip_rect = null);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList14AddBezierCubicERK6ImVec2S2_S2_S2_jfii", ExactSpelling = true)]
-        public static extern void AddBezierCubic(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* p1, [NativeTypeName("const ImVec2 &")] ImVec2* p2, [NativeTypeName("const ImVec2 &")] ImVec2* p3, [NativeTypeName("const ImVec2 &")] ImVec2* p4, [NativeTypeName("ImU32")] uint col, float thickness, int num_segments = 0, [NativeTypeName("ImDrawFlags")] int flags = 0);
+        public static extern void AddBezierCubic(ImDrawList* pThis, in ImVec2 p1, in ImVec2 p2, in ImVec2 p3, in ImVec2 p4, [NativeTypeName("ImU32")] uint col, float thickness, int num_segments = 0, [NativeTypeName("ImDrawFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList18AddBezierQuadraticERK6ImVec2S2_S2_jfii", ExactSpelling = true)]
-        public static extern void AddBezierQuadratic(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* p1, [NativeTypeName("const ImVec2 &")] ImVec2* p2, [NativeTypeName("const ImVec2 &")] ImVec2* p3, [NativeTypeName("ImU32")] uint col, float thickness, int num_segments = 0, [NativeTypeName("ImDrawFlags")] int flags = 0);
+        public static extern void AddBezierQuadratic(ImDrawList* pThis, in ImVec2 p1, in ImVec2 p2, in ImVec2 p3, [NativeTypeName("ImU32")] uint col, float thickness, int num_segments = 0, [NativeTypeName("ImDrawFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList19AddConvexPolyFilledEPK6ImVec2iji", ExactSpelling = true)]
         public static extern void AddConvexPolyFilled(ImDrawList* pThis, [NativeTypeName("const ImVec2 *")] ImVec2* points, int num_points, [NativeTypeName("ImU32")] uint col, [NativeTypeName("ImDrawFlags")] int flags = 0);
@@ -164,31 +164,31 @@ namespace ImGui4NET
         public static extern void AddConcavePolyFilled(ImDrawList* pThis, [NativeTypeName("const ImVec2 *")] ImVec2* points, int num_points, [NativeTypeName("ImU32")] uint col);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList8AddImageE12ImTextureRefRK6ImVec2S3_S3_S3_j", ExactSpelling = true)]
-        public static extern void AddImage(ImDrawList* pThis, ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* p_min, [NativeTypeName("const ImVec2 &")] ImVec2* p_max, [NativeTypeName("const ImVec2 &")] ImVec2* uv_min, [NativeTypeName("const ImVec2 &")] ImVec2* uv_max, [NativeTypeName("ImU32")] uint col = (((uint)(255) << 24) | ((uint)(255) << 16) | ((uint)(255) << 8) | ((uint)(255) << 0)));
+        public static extern void AddImage(ImDrawList* pThis, ImTextureRef tex_ref, in ImVec2 p_min, in ImVec2 p_max, in ImVec2 uv_min, in ImVec2 uv_max, [NativeTypeName("ImU32")] uint col = (((uint)(255) << 24) | ((uint)(255) << 16) | ((uint)(255) << 8) | ((uint)(255) << 0)));
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList12AddImageQuadE12ImTextureRefRK6ImVec2S3_S3_S3_S3_S3_S3_S3_j", ExactSpelling = true)]
-        public static extern void AddImageQuad(ImDrawList* pThis, ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* p1, [NativeTypeName("const ImVec2 &")] ImVec2* p2, [NativeTypeName("const ImVec2 &")] ImVec2* p3, [NativeTypeName("const ImVec2 &")] ImVec2* p4, [NativeTypeName("const ImVec2 &")] ImVec2* uv1, [NativeTypeName("const ImVec2 &")] ImVec2* uv2, [NativeTypeName("const ImVec2 &")] ImVec2* uv3, [NativeTypeName("const ImVec2 &")] ImVec2* uv4, [NativeTypeName("ImU32")] uint col = (((uint)(255) << 24) | ((uint)(255) << 16) | ((uint)(255) << 8) | ((uint)(255) << 0)));
+        public static extern void AddImageQuad(ImDrawList* pThis, ImTextureRef tex_ref, in ImVec2 p1, in ImVec2 p2, in ImVec2 p3, in ImVec2 p4, in ImVec2 uv1, in ImVec2 uv2, in ImVec2 uv3, in ImVec2 uv4, [NativeTypeName("ImU32")] uint col = (((uint)(255) << 24) | ((uint)(255) << 16) | ((uint)(255) << 8) | ((uint)(255) << 0)));
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList15AddImageRoundedE12ImTextureRefRK6ImVec2S3_S3_S3_jfi", ExactSpelling = true)]
-        public static extern void AddImageRounded(ImDrawList* pThis, ImTextureRef tex_ref, [NativeTypeName("const ImVec2 &")] ImVec2* p_min, [NativeTypeName("const ImVec2 &")] ImVec2* p_max, [NativeTypeName("const ImVec2 &")] ImVec2* uv_min, [NativeTypeName("const ImVec2 &")] ImVec2* uv_max, [NativeTypeName("ImU32")] uint col, float rounding, [NativeTypeName("ImDrawFlags")] int flags = 0);
+        public static extern void AddImageRounded(ImDrawList* pThis, ImTextureRef tex_ref, in ImVec2 p_min, in ImVec2 p_max, in ImVec2 uv_min, in ImVec2 uv_max, [NativeTypeName("ImU32")] uint col, float rounding, [NativeTypeName("ImDrawFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList9PathArcToERK6ImVec2fffi", ExactSpelling = true)]
-        public static extern void PathArcTo(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* center, float radius, float a_min, float a_max, int num_segments = 0);
+        public static extern void PathArcTo(ImDrawList* pThis, in ImVec2 center, float radius, float a_min, float a_max, int num_segments = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList13PathArcToFastERK6ImVec2fii", ExactSpelling = true)]
-        public static extern void PathArcToFast(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* center, float radius, int a_min_of_12, int a_max_of_12);
+        public static extern void PathArcToFast(ImDrawList* pThis, in ImVec2 center, float radius, int a_min_of_12, int a_max_of_12);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList19PathEllipticalArcToERK6ImVec2S2_fffi", ExactSpelling = true)]
-        public static extern void PathEllipticalArcTo(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* center, [NativeTypeName("const ImVec2 &")] ImVec2* radius, float rot, float a_min, float a_max, int num_segments = 0);
+        public static extern void PathEllipticalArcTo(ImDrawList* pThis, in ImVec2 center, in ImVec2 radius, float rot, float a_min, float a_max, int num_segments = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList22PathBezierCubicCurveToERK6ImVec2S2_S2_i", ExactSpelling = true)]
-        public static extern void PathBezierCubicCurveTo(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* p2, [NativeTypeName("const ImVec2 &")] ImVec2* p3, [NativeTypeName("const ImVec2 &")] ImVec2* p4, int num_segments = 0);
+        public static extern void PathBezierCubicCurveTo(ImDrawList* pThis, in ImVec2 p2, in ImVec2 p3, in ImVec2 p4, int num_segments = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList26PathBezierQuadraticCurveToERK6ImVec2S2_i", ExactSpelling = true)]
-        public static extern void PathBezierQuadraticCurveTo(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* p2, [NativeTypeName("const ImVec2 &")] ImVec2* p3, int num_segments = 0);
+        public static extern void PathBezierQuadraticCurveTo(ImDrawList* pThis, in ImVec2 p2, in ImVec2 p3, int num_segments = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList8PathRectERK6ImVec2S2_fi", ExactSpelling = true)]
-        public static extern void PathRect(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* rect_min, [NativeTypeName("const ImVec2 &")] ImVec2* rect_max, float rounding = 0.0f, [NativeTypeName("ImDrawFlags")] int flags = 0);
+        public static extern void PathRect(ImDrawList* pThis, in ImVec2 rect_min, in ImVec2 rect_max, float rounding = 0.0f, [NativeTypeName("ImDrawFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList11AddCallbackEPFvPKS_PK9ImDrawCmdEPvy", ExactSpelling = true)]
         public static extern void AddCallback(ImDrawList* pThis, [NativeTypeName("ImDrawCallback")] delegate* unmanaged[Cdecl]<ImDrawList*, ImDrawCmd*, void> callback, void* userdata = null, [NativeTypeName("size_t")] nuint userdata_size = 0);
@@ -206,13 +206,13 @@ namespace ImGui4NET
         public static extern void PrimUnreserve(ImDrawList* pThis, int idx_count, int vtx_count);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList8PrimRectERK6ImVec2S2_j", ExactSpelling = true)]
-        public static extern void PrimRect(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* a, [NativeTypeName("const ImVec2 &")] ImVec2* b, [NativeTypeName("ImU32")] uint col);
+        public static extern void PrimRect(ImDrawList* pThis, in ImVec2 a, in ImVec2 b, [NativeTypeName("ImU32")] uint col);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList10PrimRectUVERK6ImVec2S2_S2_S2_j", ExactSpelling = true)]
-        public static extern void PrimRectUV(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* a, [NativeTypeName("const ImVec2 &")] ImVec2* b, [NativeTypeName("const ImVec2 &")] ImVec2* uv_a, [NativeTypeName("const ImVec2 &")] ImVec2* uv_b, [NativeTypeName("ImU32")] uint col);
+        public static extern void PrimRectUV(ImDrawList* pThis, in ImVec2 a, in ImVec2 b, in ImVec2 uv_a, in ImVec2 uv_b, [NativeTypeName("ImU32")] uint col);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList10PrimQuadUVERK6ImVec2S2_S2_S2_S2_S2_S2_S2_j", ExactSpelling = true)]
-        public static extern void PrimQuadUV(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* a, [NativeTypeName("const ImVec2 &")] ImVec2* b, [NativeTypeName("const ImVec2 &")] ImVec2* c, [NativeTypeName("const ImVec2 &")] ImVec2* d, [NativeTypeName("const ImVec2 &")] ImVec2* uv_a, [NativeTypeName("const ImVec2 &")] ImVec2* uv_b, [NativeTypeName("const ImVec2 &")] ImVec2* uv_c, [NativeTypeName("const ImVec2 &")] ImVec2* uv_d, [NativeTypeName("ImU32")] uint col);
+        public static extern void PrimQuadUV(ImDrawList* pThis, in ImVec2 a, in ImVec2 b, in ImVec2 c, in ImVec2 d, in ImVec2 uv_a, in ImVec2 uv_b, in ImVec2 uv_c, in ImVec2 uv_d, [NativeTypeName("ImU32")] uint col);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList22_SetDrawListSharedDataEP20ImDrawListSharedData", ExactSpelling = true)]
         public static extern void _SetDrawListSharedData(ImDrawList* pThis, ImDrawListSharedData* data);
@@ -248,22 +248,22 @@ namespace ImGui4NET
         public static extern int _CalcCircleAutoSegmentCount(ImDrawList* pThis, float radius);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList16_PathArcToFastExERK6ImVec2fiii", ExactSpelling = true)]
-        public static extern void _PathArcToFastEx(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* center, float radius, int a_min_sample, int a_max_sample, int a_step);
+        public static extern void _PathArcToFastEx(ImDrawList* pThis, in ImVec2 center, float radius, int a_min_sample, int a_max_sample, int a_step);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList11_PathArcToNERK6ImVec2fffi", ExactSpelling = true)]
-        public static extern void _PathArcToN(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* center, float radius, float a_min, float a_max, int num_segments);
+        public static extern void _PathArcToN(ImDrawList* pThis, in ImVec2 center, float radius, float a_min, float a_max, int num_segments);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList19_AddRectFilledBakedERK6ImVec2S2_jfRK6ImVec4i", ExactSpelling = true)]
-        public static extern void _AddRectFilledBaked(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* p_min, [NativeTypeName("const ImVec2 &")] ImVec2* p_max, [NativeTypeName("ImU32")] uint col, float r, [NativeTypeName("const ImVec4 &")] ImVec4* tex_uvs, [NativeTypeName("ImDrawFlags")] int flags);
+        public static extern void _AddRectFilledBaked(ImDrawList* pThis, in ImVec2 p_min, in ImVec2 p_max, [NativeTypeName("ImU32")] uint col, float r, in ImVec4 tex_uvs, [NativeTypeName("ImDrawFlags")] int flags);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList13_AddRectBakedERK6ImVec2S2_jffRK6ImVec4i", ExactSpelling = true)]
-        public static extern void _AddRectBaked(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* p_min, [NativeTypeName("const ImVec2 &")] ImVec2* p_max, [NativeTypeName("ImU32")] uint col, float r, float t, [NativeTypeName("const ImVec4 &")] ImVec4* tex_uvs, [NativeTypeName("ImDrawFlags")] int flags);
+        public static extern void _AddRectBaked(ImDrawList* pThis, in ImVec2 p_min, in ImVec2 p_max, [NativeTypeName("ImU32")] uint col, float r, float t, in ImVec4 tex_uvs, [NativeTypeName("ImDrawFlags")] int flags);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList8_AddLineERK6ImVec2S2_jfi", ExactSpelling = true)]
-        public static extern void _AddLine(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* p1, [NativeTypeName("const ImVec2 &")] ImVec2* p2, [NativeTypeName("ImU32")] uint col, float thickness, [NativeTypeName("ImDrawFlags")] int flags);
+        public static extern void _AddLine(ImDrawList* pThis, in ImVec2 p1, in ImVec2 p2, [NativeTypeName("ImU32")] uint col, float thickness, [NativeTypeName("ImDrawFlags")] int flags);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList20_AddRectTinyRoundingERK6ImVec2S2_jffi", ExactSpelling = true)]
-        public static extern void _AddRectTinyRounding(ImDrawList* pThis, [NativeTypeName("const ImVec2 &")] ImVec2* p_min, [NativeTypeName("const ImVec2 &")] ImVec2* p_max, [NativeTypeName("ImU32")] uint col, float rounding, float thickness, [NativeTypeName("ImDrawFlags")] int flags);
+        public static extern void _AddRectTinyRounding(ImDrawList* pThis, in ImVec2 p_min, in ImVec2 p_max, [NativeTypeName("ImU32")] uint col, float rounding, float thickness, [NativeTypeName("ImDrawFlags")] int flags);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList18_SelectLineTextureEfP6ImVec2S1_Pfi", ExactSpelling = true)]
         public static extern void _SelectLineTexture(ImDrawList* pThis, float screen_thickness, ImVec2* out_uv0, ImVec2* out_uv1, float* out_fringe, [NativeTypeName("ImDrawFlags")] int flags);
