@@ -450,7 +450,7 @@ public sealed unsafe class MultiContextCompositor
             | (int)ImGuiWindowFlags.ImGuiWindowFlags_NoFocusOnAppearing
             | (int)ImGuiWindowFlags.ImGuiWindowFlags_NoInputs;
 
-        ImGui.Begin("Multi-Context Compositor Overlay", null, flags);
+        ImGui.Begin("Multi-Context Compositor Overlay", flags);
         ImGui.SeparatorText("Multi-Context Compositor");
         ImGui.TextUnformatted($"Front: {NameOf(FrontContext())}");
         ImGui.TextUnformatted($"MousePos first: {NameOf(CtxMouseFirst)}");

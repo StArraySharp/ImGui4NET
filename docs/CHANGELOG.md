@@ -5,6 +5,23 @@ For example `1.93.0.1` is the first revision of the bindings for Dear ImGui
 1.93.0. The revision is bumped by hand whenever a package is republished without
 moving to a new Dear ImGui tag.
 
+## 1.93.0.5
+
+- **Breaking:** audited single-value pointer parameters use managed `ref`, `in`,
+  and `out` overloads backed by private pointer imports. Optional arguments keep
+  their native defaults: for example, `Begin(name)` still has no close button,
+  and the font-atlas bytes-per-pixel output can still be omitted. Required state
+  is passed by reference, with native Boolean state remaining one byte.
+- **Breaking:** replace `__arglist` text APIs with single managed text/format
+  entry points. Literal text is passed safely through a fixed native `%s` format;
+  supplied arguments use invariant-culture C# composite formatting instead of
+  `printf`. V variants forward to the safe text API; explicit `*NativeVaList`
+  imports remain available for callers with an ABI-correct native `va_list`.
+- Add regression coverage for parameter and text generation, including
+  function-pointer outputs, required argument ordering and repeatable generation.
+  The native smoke harness checks UTF-8, formatting, temporary-buffer lifetime,
+  texture/allocator outputs and actual native `ref bool` writeback after a click.
+
 ## 1.93.0.4
 
 **C++ reference parameters are now `in` / `ref` instead of nullable pointers.**

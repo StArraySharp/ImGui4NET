@@ -21,6 +21,9 @@ import re
 import sys
 from pathlib import Path
 
+from postprocess_single_values import rewrite_single_value_params
+from postprocess_varargs import rewrite_varargs
+
 # ---------------------------------------------------------------------------
 # C++ template expansion
 # ---------------------------------------------------------------------------
@@ -1113,6 +1116,8 @@ def apply_rewrites(
         text = add_objc_opaque_types(text, objc_opaque_types)
         text = retype_objc_handles(text, objc_opaque_types)
         text = normalise_comma_spacing(text)
+    text = rewrite_single_value_params(text, _split_top_level)
+    text = rewrite_varargs(text)
     text = collapse_blank_lines(text)
     return text
 

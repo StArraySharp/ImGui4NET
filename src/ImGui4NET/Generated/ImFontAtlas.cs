@@ -169,10 +169,60 @@ namespace ImGui4NET
         public static extern byte Build(ImFontAtlas* pThis);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN11ImFontAtlas18GetTexDataAsAlpha8EPPhPiS2_S2_", ExactSpelling = true)]
-        public static extern void GetTexDataAsAlpha8(ImFontAtlas* pThis, [NativeTypeName("unsigned char **")] byte** out_pixels, int* out_width, int* out_height, int* out_bytes_per_pixel = null);
+        private static unsafe extern void GetTexDataAsAlpha8_Raw(ImFontAtlas* pThis, [NativeTypeName("unsigned char **")] byte** out_pixels, int* out_width, int* out_height, int* out_bytes_per_pixel);
+
+        public static unsafe void GetTexDataAsAlpha8(ImFontAtlas* pThis, out byte* out_pixels, out int out_width, out int out_height, out int out_bytes_per_pixel)
+        {
+            byte* __value1 = default;
+            int __value2 = default;
+            int __value3 = default;
+            int __value4 = default;
+            GetTexDataAsAlpha8_Raw(pThis, &__value1, &__value2, &__value3, &__value4);
+            out_pixels = __value1;
+            out_width = __value2;
+            out_height = __value3;
+            out_bytes_per_pixel = __value4;
+        }
+
+        public static unsafe void GetTexDataAsAlpha8(ImFontAtlas* pThis, out byte* out_pixels, out int out_width, out int out_height)
+        {
+            byte* __value1 = default;
+            int __value2 = default;
+            int __value3 = default;
+            int __value4 = default;
+            GetTexDataAsAlpha8_Raw(pThis, &__value1, &__value2, &__value3, &__value4);
+            out_pixels = __value1;
+            out_width = __value2;
+            out_height = __value3;
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN11ImFontAtlas18GetTexDataAsRGBA32EPPhPiS2_S2_", ExactSpelling = true)]
-        public static extern void GetTexDataAsRGBA32(ImFontAtlas* pThis, [NativeTypeName("unsigned char **")] byte** out_pixels, int* out_width, int* out_height, int* out_bytes_per_pixel = null);
+        private static unsafe extern void GetTexDataAsRGBA32_Raw(ImFontAtlas* pThis, [NativeTypeName("unsigned char **")] byte** out_pixels, int* out_width, int* out_height, int* out_bytes_per_pixel);
+
+        public static unsafe void GetTexDataAsRGBA32(ImFontAtlas* pThis, out byte* out_pixels, out int out_width, out int out_height, out int out_bytes_per_pixel)
+        {
+            byte* __value1 = default;
+            int __value2 = default;
+            int __value3 = default;
+            int __value4 = default;
+            GetTexDataAsRGBA32_Raw(pThis, &__value1, &__value2, &__value3, &__value4);
+            out_pixels = __value1;
+            out_width = __value2;
+            out_height = __value3;
+            out_bytes_per_pixel = __value4;
+        }
+
+        public static unsafe void GetTexDataAsRGBA32(ImFontAtlas* pThis, out byte* out_pixels, out int out_width, out int out_height)
+        {
+            byte* __value1 = default;
+            int __value2 = default;
+            int __value3 = default;
+            int __value4 = default;
+            GetTexDataAsRGBA32_Raw(pThis, &__value1, &__value2, &__value3, &__value4);
+            out_pixels = __value1;
+            out_width = __value2;
+            out_height = __value3;
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN11ImFontAtlas21GetGlyphRangesDefaultEv", ExactSpelling = true)]
         [return: NativeTypeName("const ImWchar *")]

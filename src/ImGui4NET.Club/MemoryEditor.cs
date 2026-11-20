@@ -274,7 +274,7 @@ public sealed unsafe class MemoryEditor : IDisposable
         bool openFlag = Open;
         int flags = (int)ImGuiWindowFlags.ImGuiWindowFlags_NoScrollbar;
 
-        if (ImGui.Begin(title, &openFlag, flags) != 0)
+        if (ImGui.Begin(title, ref openFlag, flags) != 0)
         {
             DrawContents(memData, memSize, baseDisplayAddr);
 
@@ -541,7 +541,7 @@ public sealed unsafe class MemoryEditor : IDisposable
             ImGui.SetNextItemWidth(s.GlyphWidth * 7f + ImGui.GetStyle()->FramePadding.x * 2f);
 
             int cols = Cols;
-            if (ImGui.DragInt("##cols", &cols, 0.2f, 4, 32, "%d cols") != 0)
+            if (ImGui.DragInt("##cols", ref cols, 0.2f, 4, 32, "%d cols") != 0)
             {
                 Cols = Math.Max(cols, 1);
                 ContentsWidthChanged = true;
@@ -944,7 +944,7 @@ public sealed unsafe class MemoryEditor : IDisposable
         ImGui.SetNextItemWidth(s.GlyphWidth * 6f + style->FramePadding.x * 2f + style->ItemInnerSpacing.x);
 
         int endianness = _previewEndianness;
-        ImGui.Combo("##combo_endianness", &endianness, "LE\0BE\0\0", 2);
+        ImGui.Combo("##combo_endianness", ref endianness, "LE\0BE\0\0", 2);
         _previewEndianness = endianness;
 
         float x = s.GlyphWidth * 6f;
@@ -1161,7 +1161,7 @@ public sealed unsafe class MemoryEditor : IDisposable
     private static bool CheckboxBool(string label, ref bool value)
     {
         bool temp = value;
-        bool changed = ImGui.Checkbox(label, &temp) != 0;
+        bool changed = ImGui.Checkbox(label, ref temp) != 0;
         if (changed)
         {
             value = temp;

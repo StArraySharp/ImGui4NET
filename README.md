@@ -5,9 +5,9 @@
 Bare-metal .NET bindings for [Dear ImGui](https://github.com/ocornut/imgui), tracking `v1.93.0-docking`.
 
 The bindings expose the native C++ API directly: structs are `unsafe` value
-types with the exact native layout, and every function is a `[DllImport]` with
-the mangled entry point. There is no wrapper layer and no allocation on the
-interop boundary.
+types with the exact native layout, and native imports use the mangled entry
+points. Former variadic text APIs have managed formatting entry points backed
+by fixed-signature imports; supplying format arguments can allocate.
 
 ## Getting started
 
@@ -64,6 +64,30 @@ unsafe
     ImGui_ImplOpenGL3.Init("#version 330");
 }
 ```
+
+## Pointer parameters
+
+Audited single-value pointers use managed `ref`, `in`, and `out` overloads
+backed by private pointer imports. For example, use
+`ImGui.Checkbox("Enabled", ref enabled)` for required state or
+`ImGui.Begin("Window", ref open)` for a close button with state written back.
+`ImGui.Begin("Window")` still opens a window without a close button, and
+`ImGui.StyleColorsDark()` still updates the current style.
+
+Optional read-only inputs preserve the native default, such as omitting a
+clipping rectangle. Optional outputs, such as font-atlas bytes per pixel, can
+be omitted. The wrappers pass null only where the native implementation
+explicitly supports it. This is a breaking change for callers that previously
+passed raw pointers for converted parameters. Arrays, handles, and buffers
+retain their pointer signatures.
+
+## Text formatting
+
+Former `__arglist` methods take literal text, or C# composite formatting when
+arguments are supplied: `ImGui.Text("Value: {0:F2}", value)`. Plain percent signs
+and braces are safe in literal text. Native `printf` formats such as `%d` must be
+migrated to `{0}`. See [docs/varargs.md](docs/varargs.md) for V variants and native
+`va_list` escape hatches.
 
 ## Building from source
 

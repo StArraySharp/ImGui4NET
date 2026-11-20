@@ -2,10 +2,11 @@
 
 Bare-metal .NET bindings for [Dear ImGui](https://github.com/ocornut/imgui), tracking `v1.93.0-docking`.
 
-The bindings expose the native C++ API directly: structs are `unsafe` value
-types with the exact native layout, and every function is a `[DllImport]` with
-the mangled entry point. There is no wrapper layer and no allocation on the
-interop boundary.
+The bindings use `unsafe` value types with the exact native layout and import
+mangled C++ entry points. Selected single-value pointers use managed `ref`,
+`in`, and `out` overloads that preserve optional arguments, such as `ImGui.Begin(name)`.
+Former variadic text APIs use managed composite formatting backed by fixed-signature
+imports; supplying format arguments can allocate.
 
 ## Getting started
 

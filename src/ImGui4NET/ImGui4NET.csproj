@@ -9,7 +9,7 @@
     <AssemblyName>ImGui4NET</AssemblyName>
     <RootNamespace>ImGui4NET</RootNamespace>
     <PackageId>ImGui4NET</PackageId>
-    <Description>Bare-metal .NET bindings for Dear ImGui: the native structs and functions are exposed directly, without a wrapper layer. Use together with one of the ImGui4NET.Backend.* packages.</Description>
+    <Description>Bare-metal .NET bindings for Dear ImGui: native-layout structs and direct imports, with managed formatting for variadic text APIs. Use together with one of the ImGui4NET.Backend.* packages.</Description>
     <PackageTags>imgui;dear-imgui;gui;bindings;native</PackageTags>
     <IsPackable>true</IsPackable>
 

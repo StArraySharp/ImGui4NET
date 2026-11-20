@@ -149,7 +149,21 @@ namespace ImGui4NET
         public static extern void AddText(ImDrawList* pThis, in ImVec2 pos, [NativeTypeName("ImU32")] uint col, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_begin, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?text_end = null);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList7AddTextEP6ImFontfRK6ImVec2jPKcS6_fPK6ImVec4", ExactSpelling = true)]
-        public static extern void AddText(ImDrawList* pThis, ImFont* font, float font_size, in ImVec2 pos, [NativeTypeName("ImU32")] uint col, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_begin, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?text_end = null, float wrap_width = 0.0f, [NativeTypeName("const ImVec4 *")] ImVec4* cpu_fine_clip_rect = null);
+        private static unsafe extern void AddText_Raw(ImDrawList* pThis, ImFont* font, float font_size, in ImVec2 pos, [NativeTypeName("ImU32")] uint col, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_begin, [MarshalAs(UnmanagedType.LPUTF8Str)] string? text_end, float wrap_width, [NativeTypeName("const ImVec4 *")] ImVec4* cpu_fine_clip_rect);
+
+        public static unsafe void AddText(ImDrawList* pThis, ImFont* font, float font_size, in ImVec2 pos, uint col, string text_begin, string? text_end, float wrap_width, in ImVec4 cpu_fine_clip_rect)
+        {
+            fixed (ImVec4* __pointer8 = &cpu_fine_clip_rect)
+            {
+                AddText_Raw(pThis, font, font_size, in pos, col, text_begin, text_end, wrap_width, __pointer8);
+            }
+        }
+
+        public static unsafe void AddText(ImDrawList* pThis, ImFont* font, float font_size, in ImVec2 pos, uint col, string text_begin, string? text_end = null, float wrap_width = 0.0f, ImVec4? cpu_fine_clip_rect = null)
+        {
+            ImVec4 __value8 = cpu_fine_clip_rect.GetValueOrDefault();
+            AddText_Raw(pThis, font, font_size, in pos, col, text_begin, text_end, wrap_width, cpu_fine_clip_rect.HasValue ? &__value8 : null);
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList14AddBezierCubicERK6ImVec2S2_S2_S2_jfii", ExactSpelling = true)]
         public static extern void AddBezierCubic(ImDrawList* pThis, in ImVec2 p1, in ImVec2 p2, in ImVec2 p3, in ImVec2 p4, [NativeTypeName("ImU32")] uint col, float thickness, int num_segments = 0, [NativeTypeName("ImDrawFlags")] int flags = 0);
@@ -266,7 +280,18 @@ namespace ImGui4NET
         public static extern void _AddRectTinyRounding(ImDrawList* pThis, in ImVec2 p_min, in ImVec2 p_max, [NativeTypeName("ImU32")] uint col, float rounding, float thickness, [NativeTypeName("ImDrawFlags")] int flags);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList18_SelectLineTextureEfP6ImVec2S1_Pfi", ExactSpelling = true)]
-        public static extern void _SelectLineTexture(ImDrawList* pThis, float screen_thickness, ImVec2* out_uv0, ImVec2* out_uv1, float* out_fringe, [NativeTypeName("ImDrawFlags")] int flags);
+        private static unsafe extern void _SelectLineTexture_Raw(ImDrawList* pThis, float screen_thickness, ImVec2* out_uv0, ImVec2* out_uv1, float* out_fringe, [NativeTypeName("ImDrawFlags")] int flags);
+
+        public static unsafe void _SelectLineTexture(ImDrawList* pThis, float screen_thickness, out ImVec2 out_uv0, out ImVec2 out_uv1, out float out_fringe, int flags)
+        {
+            ImVec2 __value2 = default;
+            ImVec2 __value3 = default;
+            float __value4 = default;
+            _SelectLineTexture_Raw(pThis, screen_thickness, &__value2, &__value3, &__value4, flags);
+            out_uv0 = __value2;
+            out_uv1 = __value3;
+            out_fringe = __value4;
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN10ImDrawList28_CalculateCenterBiasedOffsetEf", ExactSpelling = true)]
         public static extern float _CalculateCenterBiasedOffset(ImDrawList* pThis, float thickness);

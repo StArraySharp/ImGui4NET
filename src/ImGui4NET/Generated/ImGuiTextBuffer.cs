@@ -30,9 +30,30 @@ namespace ImGui4NET
         public static extern void append(ImGuiTextBuffer* pThis, [MarshalAs(UnmanagedType.LPUTF8Str)] string str, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?str_end = null);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN15ImGuiTextBuffer7appendfEPKcz", ExactSpelling = true)]
-        public static extern void appendf(ImGuiTextBuffer* pThis, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, __arglist);
+        private static extern void appendfNativeText(ImGuiTextBuffer* pThis, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN15ImGuiTextBuffer7appendfEPKcz", ExactSpelling = true)]
+        private static extern void appendfNativeTextDarwinArm64(ImGuiTextBuffer* pThis, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, nint __varargPad2, nint __varargPad3, nint __varargPad4, nint __varargPad5, nint __varargPad6, nint __varargPad7, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void appendf(ImGuiTextBuffer* pThis, string text, params object?[] args)
+        {
+            text = args is { Length: 0 } ? text : string.Format(System.Globalization.CultureInfo.InvariantCulture, text, args);
+            if (System.OperatingSystem.IsMacOS() && System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
+            {
+                appendfNativeTextDarwinArm64(pThis, "%s", 0, 0, 0, 0, 0, 0, text);
+            }
+            else
+            {
+                appendfNativeText(pThis, "%s", text);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN15ImGuiTextBuffer8appendfvEPKcPc", ExactSpelling = true)]
-        public static extern void appendfv(ImGuiTextBuffer* pThis, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+        public static extern void appendfvNativeVaList(ImGuiTextBuffer* pThis, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void appendfv(ImGuiTextBuffer* pThis, string text, params object?[] args) =>
+            appendf(pThis, text, args);
     }
 }

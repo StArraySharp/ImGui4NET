@@ -80,22 +80,100 @@ namespace ImGui4NET
         public static extern ImDrawData* GetDrawData();
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui14ShowDemoWindowEPb", ExactSpelling = true)]
-        public static extern void ShowDemoWindow(bool* p_open = null);
+        private static unsafe extern void ShowDemoWindow_Raw(bool* p_open);
+
+        public static unsafe void ShowDemoWindow(ref bool p_open)
+        {
+            fixed (bool* __pointer0 = &p_open)
+            {
+                ShowDemoWindow_Raw(__pointer0);
+            }
+        }
+
+        public static unsafe void ShowDemoWindow()
+        {
+            ShowDemoWindow_Raw(null);
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui17ShowMetricsWindowEPb", ExactSpelling = true)]
-        public static extern void ShowMetricsWindow(bool* p_open = null);
+        private static unsafe extern void ShowMetricsWindow_Raw(bool* p_open);
+
+        public static unsafe void ShowMetricsWindow(ref bool p_open)
+        {
+            fixed (bool* __pointer0 = &p_open)
+            {
+                ShowMetricsWindow_Raw(__pointer0);
+            }
+        }
+
+        public static unsafe void ShowMetricsWindow()
+        {
+            ShowMetricsWindow_Raw(null);
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui18ShowDebugLogWindowEPb", ExactSpelling = true)]
-        public static extern void ShowDebugLogWindow(bool* p_open = null);
+        private static unsafe extern void ShowDebugLogWindow_Raw(bool* p_open);
+
+        public static unsafe void ShowDebugLogWindow(ref bool p_open)
+        {
+            fixed (bool* __pointer0 = &p_open)
+            {
+                ShowDebugLogWindow_Raw(__pointer0);
+            }
+        }
+
+        public static unsafe void ShowDebugLogWindow()
+        {
+            ShowDebugLogWindow_Raw(null);
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui21ShowIDStackToolWindowEPb", ExactSpelling = true)]
-        public static extern void ShowIDStackToolWindow(bool* p_open = null);
+        private static unsafe extern void ShowIDStackToolWindow_Raw(bool* p_open);
+
+        public static unsafe void ShowIDStackToolWindow(ref bool p_open)
+        {
+            fixed (bool* __pointer0 = &p_open)
+            {
+                ShowIDStackToolWindow_Raw(__pointer0);
+            }
+        }
+
+        public static unsafe void ShowIDStackToolWindow()
+        {
+            ShowIDStackToolWindow_Raw(null);
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui15ShowAboutWindowEPb", ExactSpelling = true)]
-        public static extern void ShowAboutWindow(bool* p_open = null);
+        private static unsafe extern void ShowAboutWindow_Raw(bool* p_open);
+
+        public static unsafe void ShowAboutWindow(ref bool p_open)
+        {
+            fixed (bool* __pointer0 = &p_open)
+            {
+                ShowAboutWindow_Raw(__pointer0);
+            }
+        }
+
+        public static unsafe void ShowAboutWindow()
+        {
+            ShowAboutWindow_Raw(null);
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui15ShowStyleEditorEP10ImGuiStyle", ExactSpelling = true)]
-        public static extern void ShowStyleEditor(ImGuiStyle* @ref = null);
+        private static unsafe extern void ShowStyleEditor_Raw(ImGuiStyle* @ref);
+
+        public static unsafe void ShowStyleEditor(ref ImGuiStyle @ref)
+        {
+            fixed (ImGuiStyle* __pointer0 = &@ref)
+            {
+                ShowStyleEditor_Raw(__pointer0);
+            }
+        }
+
+        public static unsafe void ShowStyleEditor()
+        {
+            ShowStyleEditor_Raw(null);
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui17ShowStyleSelectorEPKc", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -112,17 +190,69 @@ namespace ImGui4NET
         public static extern sbyte* GetVersion();
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui15StyleColorsDarkEP10ImGuiStyle", ExactSpelling = true)]
-        public static extern void StyleColorsDark(ImGuiStyle* dst = null);
+        private static unsafe extern void StyleColorsDark_Raw(ImGuiStyle* dst);
+
+        public static unsafe void StyleColorsDark(ref ImGuiStyle dst)
+        {
+            fixed (ImGuiStyle* __pointer0 = &dst)
+            {
+                StyleColorsDark_Raw(__pointer0);
+            }
+        }
+
+        public static unsafe void StyleColorsDark()
+        {
+            StyleColorsDark_Raw(null);
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui16StyleColorsLightEP10ImGuiStyle", ExactSpelling = true)]
-        public static extern void StyleColorsLight(ImGuiStyle* dst = null);
+        private static unsafe extern void StyleColorsLight_Raw(ImGuiStyle* dst);
+
+        public static unsafe void StyleColorsLight(ref ImGuiStyle dst)
+        {
+            fixed (ImGuiStyle* __pointer0 = &dst)
+            {
+                StyleColorsLight_Raw(__pointer0);
+            }
+        }
+
+        public static unsafe void StyleColorsLight()
+        {
+            StyleColorsLight_Raw(null);
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui18StyleColorsClassicEP10ImGuiStyle", ExactSpelling = true)]
-        public static extern void StyleColorsClassic(ImGuiStyle* dst = null);
+        private static unsafe extern void StyleColorsClassic_Raw(ImGuiStyle* dst);
+
+        public static unsafe void StyleColorsClassic(ref ImGuiStyle dst)
+        {
+            fixed (ImGuiStyle* __pointer0 = &dst)
+            {
+                StyleColorsClassic_Raw(__pointer0);
+            }
+        }
+
+        public static unsafe void StyleColorsClassic()
+        {
+            StyleColorsClassic_Raw(null);
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui5BeginEPKcPbi", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte Begin([MarshalAs(UnmanagedType.LPUTF8Str)] string name, bool* p_open = null, [NativeTypeName("ImGuiWindowFlags")] int flags = 0);
+        private static unsafe extern byte Begin_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string name, bool* p_open, [NativeTypeName("ImGuiWindowFlags")] int flags);
+
+        public static unsafe byte Begin(string name, ref bool p_open, int flags = 0)
+        {
+            fixed (bool* __pointer1 = &p_open)
+            {
+                return Begin_Raw(name, __pointer1, flags);
+            }
+        }
+
+        public static unsafe byte Begin(string name, int flags = 0)
+        {
+            return Begin_Raw(name, null, flags);
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui3EndEv", ExactSpelling = true)]
         public static extern void End();
@@ -445,40 +575,166 @@ namespace ImGui4NET
         public static extern void TextUnformatted([MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?text_end = null);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui4TextEPKcz", ExactSpelling = true)]
-        public static extern void Text([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, __arglist);
+        private static extern void TextNativeText([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui4TextEPKcz", ExactSpelling = true)]
+        private static extern void TextNativeTextDarwinArm64([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, nint __varargPad1, nint __varargPad2, nint __varargPad3, nint __varargPad4, nint __varargPad5, nint __varargPad6, nint __varargPad7, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void Text(string text, params object?[] args)
+        {
+            text = args is { Length: 0 } ? text : string.Format(System.Globalization.CultureInfo.InvariantCulture, text, args);
+            if (System.OperatingSystem.IsMacOS() && System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
+            {
+                TextNativeTextDarwinArm64("%s", 0, 0, 0, 0, 0, 0, 0, text);
+            }
+            else
+            {
+                TextNativeText("%s", text);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui5TextVEPKcPc", ExactSpelling = true)]
-        public static extern void TextV([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+        public static extern void TextVNativeVaList([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void TextV(string text, params object?[] args) =>
+            Text(text, args);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11TextColoredERK6ImVec4PKcz", ExactSpelling = true)]
-        public static extern void TextColored(in ImVec4 col, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, __arglist);
+        private static extern void TextColoredNativeText(in ImVec4 col, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11TextColoredERK6ImVec4PKcz", ExactSpelling = true)]
+        private static extern void TextColoredNativeTextDarwinArm64(in ImVec4 col, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, nint __varargPad2, nint __varargPad3, nint __varargPad4, nint __varargPad5, nint __varargPad6, nint __varargPad7, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void TextColored(in ImVec4 col, string text, params object?[] args)
+        {
+            text = args is { Length: 0 } ? text : string.Format(System.Globalization.CultureInfo.InvariantCulture, text, args);
+            if (System.OperatingSystem.IsMacOS() && System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
+            {
+                TextColoredNativeTextDarwinArm64(in col, "%s", 0, 0, 0, 0, 0, 0, text);
+            }
+            else
+            {
+                TextColoredNativeText(in col, "%s", text);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12TextColoredVERK6ImVec4PKcPc", ExactSpelling = true)]
-        public static extern void TextColoredV(in ImVec4 col, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+        public static extern void TextColoredVNativeVaList(in ImVec4 col, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void TextColoredV(in ImVec4 col, string text, params object?[] args) =>
+            TextColored(in col, text, args);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12TextDisabledEPKcz", ExactSpelling = true)]
-        public static extern void TextDisabled([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, __arglist);
+        private static extern void TextDisabledNativeText([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12TextDisabledEPKcz", ExactSpelling = true)]
+        private static extern void TextDisabledNativeTextDarwinArm64([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, nint __varargPad1, nint __varargPad2, nint __varargPad3, nint __varargPad4, nint __varargPad5, nint __varargPad6, nint __varargPad7, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void TextDisabled(string text, params object?[] args)
+        {
+            text = args is { Length: 0 } ? text : string.Format(System.Globalization.CultureInfo.InvariantCulture, text, args);
+            if (System.OperatingSystem.IsMacOS() && System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
+            {
+                TextDisabledNativeTextDarwinArm64("%s", 0, 0, 0, 0, 0, 0, 0, text);
+            }
+            else
+            {
+                TextDisabledNativeText("%s", text);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13TextDisabledVEPKcPc", ExactSpelling = true)]
-        public static extern void TextDisabledV([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+        public static extern void TextDisabledVNativeVaList([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void TextDisabledV(string text, params object?[] args) =>
+            TextDisabled(text, args);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11TextWrappedEPKcz", ExactSpelling = true)]
-        public static extern void TextWrapped([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, __arglist);
+        private static extern void TextWrappedNativeText([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11TextWrappedEPKcz", ExactSpelling = true)]
+        private static extern void TextWrappedNativeTextDarwinArm64([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, nint __varargPad1, nint __varargPad2, nint __varargPad3, nint __varargPad4, nint __varargPad5, nint __varargPad6, nint __varargPad7, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void TextWrapped(string text, params object?[] args)
+        {
+            text = args is { Length: 0 } ? text : string.Format(System.Globalization.CultureInfo.InvariantCulture, text, args);
+            if (System.OperatingSystem.IsMacOS() && System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
+            {
+                TextWrappedNativeTextDarwinArm64("%s", 0, 0, 0, 0, 0, 0, 0, text);
+            }
+            else
+            {
+                TextWrappedNativeText("%s", text);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12TextWrappedVEPKcPc", ExactSpelling = true)]
-        public static extern void TextWrappedV([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+        public static extern void TextWrappedVNativeVaList([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void TextWrappedV(string text, params object?[] args) =>
+            TextWrapped(text, args);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui9LabelTextEPKcS1_z", ExactSpelling = true)]
-        public static extern void LabelText([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, __arglist);
+        private static extern void LabelTextNativeText([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui9LabelTextEPKcS1_z", ExactSpelling = true)]
+        private static extern void LabelTextNativeTextDarwinArm64([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, nint __varargPad2, nint __varargPad3, nint __varargPad4, nint __varargPad5, nint __varargPad6, nint __varargPad7, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void LabelText(string label, string text, params object?[] args)
+        {
+            text = args is { Length: 0 } ? text : string.Format(System.Globalization.CultureInfo.InvariantCulture, text, args);
+            if (System.OperatingSystem.IsMacOS() && System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
+            {
+                LabelTextNativeTextDarwinArm64(label, "%s", 0, 0, 0, 0, 0, 0, text);
+            }
+            else
+            {
+                LabelTextNativeText(label, "%s", text);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10LabelTextVEPKcS1_Pc", ExactSpelling = true)]
-        public static extern void LabelTextV([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+        public static extern void LabelTextVNativeVaList([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void LabelTextV(string label, string text, params object?[] args) =>
+            LabelText(label, text, args);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10BulletTextEPKcz", ExactSpelling = true)]
-        public static extern void BulletText([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, __arglist);
+        private static extern void BulletTextNativeText([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10BulletTextEPKcz", ExactSpelling = true)]
+        private static extern void BulletTextNativeTextDarwinArm64([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, nint __varargPad1, nint __varargPad2, nint __varargPad3, nint __varargPad4, nint __varargPad5, nint __varargPad6, nint __varargPad7, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void BulletText(string text, params object?[] args)
+        {
+            text = args is { Length: 0 } ? text : string.Format(System.Globalization.CultureInfo.InvariantCulture, text, args);
+            if (System.OperatingSystem.IsMacOS() && System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
+            {
+                BulletTextNativeTextDarwinArm64("%s", 0, 0, 0, 0, 0, 0, 0, text);
+            }
+            else
+            {
+                BulletTextNativeText("%s", text);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11BulletTextVEPKcPc", ExactSpelling = true)]
-        public static extern void BulletTextV([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+        public static extern void BulletTextVNativeVaList([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void BulletTextV(string text, params object?[] args) =>
+            BulletText(text, args);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13SeparatorTextEPKc", ExactSpelling = true)]
         public static extern void SeparatorText([MarshalAs(UnmanagedType.LPUTF8Str)] string label);
@@ -501,15 +757,39 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui8CheckboxEPKcPb", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte Checkbox([MarshalAs(UnmanagedType.LPUTF8Str)] string label, bool* v);
+        private static unsafe extern byte Checkbox_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, bool* v);
+
+        public static unsafe byte Checkbox(string label, ref bool v)
+        {
+            fixed (bool* __pointer1 = &v)
+            {
+                return Checkbox_Raw(label, __pointer1);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13CheckboxFlagsEPKcPii", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte CheckboxFlags([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* flags, int flags_value);
+        private static unsafe extern byte CheckboxFlags_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* flags, int flags_value);
+
+        public static unsafe byte CheckboxFlags(string label, ref int flags, int flags_value)
+        {
+            fixed (int* __pointer1 = &flags)
+            {
+                return CheckboxFlags_Raw(label, __pointer1, flags_value);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13CheckboxFlagsEPKcPjj", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte CheckboxFlags([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("unsigned int *")] uint* flags, [NativeTypeName("unsigned int")] uint flags_value);
+        private static unsafe extern byte CheckboxFlags_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("unsigned int *")] uint* flags, [NativeTypeName("unsigned int")] uint flags_value);
+
+        public static unsafe byte CheckboxFlags(string label, ref uint flags, uint flags_value)
+        {
+            fixed (uint* __pointer1 = &flags)
+            {
+                return CheckboxFlags_Raw(label, __pointer1, flags_value);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11RadioButtonEPKcb", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -517,7 +797,15 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11RadioButtonEPKcPii", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte RadioButton([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* v, int v_button);
+        private static unsafe extern byte RadioButton_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* v, int v_button);
+
+        public static unsafe byte RadioButton(string label, ref int v, int v_button)
+        {
+            fixed (int* __pointer1 = &v)
+            {
+                return RadioButton_Raw(label, __pointer1, v_button);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11ProgressBarEfRK6ImVec2PKc", ExactSpelling = true)]
         public static extern void ProgressBar(float fraction, in ImVec2 size_arg, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?overlay = null);
@@ -552,19 +840,51 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui5ComboEPKcPiPKS1_ii", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte Combo([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* current_item, [NativeTypeName("const char *const[]")] sbyte** items, int items_count, int popup_max_height_in_items = -1);
+        private static unsafe extern byte Combo_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* current_item, [NativeTypeName("const char *const[]")] sbyte** items, int items_count, int popup_max_height_in_items);
+
+        public static unsafe byte Combo(string label, ref int current_item, sbyte** items, int items_count, int popup_max_height_in_items = -1)
+        {
+            fixed (int* __pointer1 = &current_item)
+            {
+                return Combo_Raw(label, __pointer1, items, items_count, popup_max_height_in_items);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui5ComboEPKcPiS1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte Combo([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* current_item, [MarshalAs(UnmanagedType.LPUTF8Str)] string items_separated_by_zeros, int popup_max_height_in_items = -1);
+        private static unsafe extern byte Combo_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* current_item, [MarshalAs(UnmanagedType.LPUTF8Str)] string items_separated_by_zeros, int popup_max_height_in_items);
+
+        public static unsafe byte Combo(string label, ref int current_item, string items_separated_by_zeros, int popup_max_height_in_items = -1)
+        {
+            fixed (int* __pointer1 = &current_item)
+            {
+                return Combo_Raw(label, __pointer1, items_separated_by_zeros, popup_max_height_in_items);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui5ComboEPKcPiPFS1_PviES3_ii", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte Combo([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* current_item, [NativeTypeName("const char *(*)(void *, int)")] delegate* unmanaged[Cdecl]<void*, int, sbyte*> getter, void* user_data, int items_count, int popup_max_height_in_items = -1);
+        private static unsafe extern byte Combo_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* current_item, [NativeTypeName("const char *(*)(void *, int)")] delegate* unmanaged[Cdecl]<void*, int, sbyte*> getter, void* user_data, int items_count, int popup_max_height_in_items);
+
+        public static unsafe byte Combo(string label, ref int current_item, delegate* unmanaged[Cdecl]<void*, int, sbyte*> getter, void* user_data, int items_count, int popup_max_height_in_items = -1)
+        {
+            fixed (int* __pointer1 = &current_item)
+            {
+                return Combo_Raw(label, __pointer1, getter, user_data, items_count, popup_max_height_in_items);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui9DragFloatEPKcPffffS1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte DragFloat([MarshalAs(UnmanagedType.LPUTF8Str)] string label, float* v, float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?format = null, [NativeTypeName("ImGuiSliderFlags")] int flags = 0);
+        private static unsafe extern byte DragFloat_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, float* v, float v_speed, float v_min, float v_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string? format, [NativeTypeName("ImGuiSliderFlags")] int flags);
+
+        public static unsafe byte DragFloat(string label, ref float v, float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, string? format = null, int flags = 0)
+        {
+            fixed (float* __pointer1 = &v)
+            {
+                return DragFloat_Raw(label, __pointer1, v_speed, v_min, v_max, format, flags);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10DragFloat2EPKcPffffS1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -580,11 +900,28 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui15DragFloatRange2EPKcPfS2_fffS1_S1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte DragFloatRange2([MarshalAs(UnmanagedType.LPUTF8Str)] string label, float* v_current_min, float* v_current_max, float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?format = null, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?format_max = null, [NativeTypeName("ImGuiSliderFlags")] int flags = 0);
+        private static unsafe extern byte DragFloatRange2_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, float* v_current_min, float* v_current_max, float v_speed, float v_min, float v_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string? format, [MarshalAs(UnmanagedType.LPUTF8Str)] string? format_max, [NativeTypeName("ImGuiSliderFlags")] int flags);
+
+        public static unsafe byte DragFloatRange2(string label, ref float v_current_min, ref float v_current_max, float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, string? format = null, string? format_max = null, int flags = 0)
+        {
+            fixed (float* __pointer1 = &v_current_min)
+            fixed (float* __pointer2 = &v_current_max)
+            {
+                return DragFloatRange2_Raw(label, __pointer1, __pointer2, v_speed, v_min, v_max, format, format_max, flags);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui7DragIntEPKcPifiiS1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte DragInt([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* v, float v_speed = 1.0f, int v_min = 0, int v_max = 0, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?format = null, [NativeTypeName("ImGuiSliderFlags")] int flags = 0);
+        private static unsafe extern byte DragInt_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* v, float v_speed, int v_min, int v_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string? format, [NativeTypeName("ImGuiSliderFlags")] int flags);
+
+        public static unsafe byte DragInt(string label, ref int v, float v_speed = 1.0f, int v_min = 0, int v_max = 0, string? format = null, int flags = 0)
+        {
+            fixed (int* __pointer1 = &v)
+            {
+                return DragInt_Raw(label, __pointer1, v_speed, v_min, v_max, format, flags);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui8DragInt2EPKcPifiiS1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -600,7 +937,16 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13DragIntRange2EPKcPiS2_fiiS1_S1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte DragIntRange2([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* v_current_min, int* v_current_max, float v_speed = 1.0f, int v_min = 0, int v_max = 0, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?format = null, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?format_max = null, [NativeTypeName("ImGuiSliderFlags")] int flags = 0);
+        private static unsafe extern byte DragIntRange2_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* v_current_min, int* v_current_max, float v_speed, int v_min, int v_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string? format, [MarshalAs(UnmanagedType.LPUTF8Str)] string? format_max, [NativeTypeName("ImGuiSliderFlags")] int flags);
+
+        public static unsafe byte DragIntRange2(string label, ref int v_current_min, ref int v_current_max, float v_speed = 1.0f, int v_min = 0, int v_max = 0, string? format = null, string? format_max = null, int flags = 0)
+        {
+            fixed (int* __pointer1 = &v_current_min)
+            fixed (int* __pointer2 = &v_current_max)
+            {
+                return DragIntRange2_Raw(label, __pointer1, __pointer2, v_speed, v_min, v_max, format, format_max, flags);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10DragScalarEPKciPvfPKvS4_S1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -612,7 +958,15 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11SliderFloatEPKcPfffS1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte SliderFloat([MarshalAs(UnmanagedType.LPUTF8Str)] string label, float* v, float v_min, float v_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?format = null, [NativeTypeName("ImGuiSliderFlags")] int flags = 0);
+        private static unsafe extern byte SliderFloat_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, float* v, float v_min, float v_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string? format, [NativeTypeName("ImGuiSliderFlags")] int flags);
+
+        public static unsafe byte SliderFloat(string label, ref float v, float v_min, float v_max, string? format = null, int flags = 0)
+        {
+            fixed (float* __pointer1 = &v)
+            {
+                return SliderFloat_Raw(label, __pointer1, v_min, v_max, format, flags);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12SliderFloat2EPKcPfffS1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -628,11 +982,27 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11SliderAngleEPKcPfffS1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte SliderAngle([MarshalAs(UnmanagedType.LPUTF8Str)] string label, float* v_rad, float v_degrees_min = -360.0f, float v_degrees_max = +360.0f, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?format = null, [NativeTypeName("ImGuiSliderFlags")] int flags = 0);
+        private static unsafe extern byte SliderAngle_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, float* v_rad, float v_degrees_min, float v_degrees_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string? format, [NativeTypeName("ImGuiSliderFlags")] int flags);
+
+        public static unsafe byte SliderAngle(string label, ref float v_rad, float v_degrees_min = -360.0f, float v_degrees_max = +360.0f, string? format = null, int flags = 0)
+        {
+            fixed (float* __pointer1 = &v_rad)
+            {
+                return SliderAngle_Raw(label, __pointer1, v_degrees_min, v_degrees_max, format, flags);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui9SliderIntEPKcPiiiS1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte SliderInt([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* v, int v_min, int v_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?format = null, [NativeTypeName("ImGuiSliderFlags")] int flags = 0);
+        private static unsafe extern byte SliderInt_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* v, int v_min, int v_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string? format, [NativeTypeName("ImGuiSliderFlags")] int flags);
+
+        public static unsafe byte SliderInt(string label, ref int v, int v_min, int v_max, string? format = null, int flags = 0)
+        {
+            fixed (int* __pointer1 = &v)
+            {
+                return SliderInt_Raw(label, __pointer1, v_min, v_max, format, flags);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10SliderInt2EPKcPiiiS1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -656,11 +1026,27 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12VSliderFloatEPKcRK6ImVec2PfffS1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte VSliderFloat([MarshalAs(UnmanagedType.LPUTF8Str)] string label, in ImVec2 size, float* v, float v_min, float v_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?format = null, [NativeTypeName("ImGuiSliderFlags")] int flags = 0);
+        private static unsafe extern byte VSliderFloat_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, in ImVec2 size, float* v, float v_min, float v_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string? format, [NativeTypeName("ImGuiSliderFlags")] int flags);
+
+        public static unsafe byte VSliderFloat(string label, in ImVec2 size, ref float v, float v_min, float v_max, string? format = null, int flags = 0)
+        {
+            fixed (float* __pointer2 = &v)
+            {
+                return VSliderFloat_Raw(label, in size, __pointer2, v_min, v_max, format, flags);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10VSliderIntEPKcRK6ImVec2PiiiS1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte VSliderInt([MarshalAs(UnmanagedType.LPUTF8Str)] string label, in ImVec2 size, int* v, int v_min, int v_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?format = null, [NativeTypeName("ImGuiSliderFlags")] int flags = 0);
+        private static unsafe extern byte VSliderInt_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, in ImVec2 size, int* v, int v_min, int v_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string? format, [NativeTypeName("ImGuiSliderFlags")] int flags);
+
+        public static unsafe byte VSliderInt(string label, in ImVec2 size, ref int v, int v_min, int v_max, string? format = null, int flags = 0)
+        {
+            fixed (int* __pointer2 = &v)
+            {
+                return VSliderInt_Raw(label, in size, __pointer2, v_min, v_max, format, flags);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13VSliderScalarEPKcRK6ImVec2iPvPKvS7_S1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -680,7 +1066,15 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10InputFloatEPKcPfffS1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte InputFloat([MarshalAs(UnmanagedType.LPUTF8Str)] string label, float* v, float step = 0.0f, float step_fast = 0.0f, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?format = null, [NativeTypeName("ImGuiInputTextFlags")] int flags = 0);
+        private static unsafe extern byte InputFloat_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, float* v, float step, float step_fast, [MarshalAs(UnmanagedType.LPUTF8Str)] string? format, [NativeTypeName("ImGuiInputTextFlags")] int flags);
+
+        public static unsafe byte InputFloat(string label, ref float v, float step = 0.0f, float step_fast = 0.0f, string? format = null, int flags = 0)
+        {
+            fixed (float* __pointer1 = &v)
+            {
+                return InputFloat_Raw(label, __pointer1, step, step_fast, format, flags);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11InputFloat2EPKcPfS1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -696,7 +1090,15 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui8InputIntEPKcPiiii", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte InputInt([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* v, int step = 1, int step_fast = 100, [NativeTypeName("ImGuiInputTextFlags")] int flags = 0);
+        private static unsafe extern byte InputInt_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* v, int step, int step_fast, [NativeTypeName("ImGuiInputTextFlags")] int flags);
+
+        public static unsafe byte InputInt(string label, ref int v, int step = 1, int step_fast = 100, int flags = 0)
+        {
+            fixed (int* __pointer1 = &v)
+            {
+                return InputInt_Raw(label, __pointer1, step, step_fast, flags);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui9InputInt2EPKcPii", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -712,7 +1114,15 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11InputDoubleEPKcPdddS1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte InputDouble([MarshalAs(UnmanagedType.LPUTF8Str)] string label, double* v, double step = 0.0, double step_fast = 0.0, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?format = null, [NativeTypeName("ImGuiInputTextFlags")] int flags = 0);
+        private static unsafe extern byte InputDouble_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, double* v, double step, double step_fast, [MarshalAs(UnmanagedType.LPUTF8Str)] string? format, [NativeTypeName("ImGuiInputTextFlags")] int flags);
+
+        public static unsafe byte InputDouble(string label, ref double v, double step = 0.0, double step_fast = 0.0, string? format = null, int flags = 0)
+        {
+            fixed (double* __pointer1 = &v)
+            {
+                return InputDouble_Raw(label, __pointer1, step, step_fast, format, flags);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11InputScalarEPKciPvPKvS4_S1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -748,19 +1158,63 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui8TreeNodeEPKcS1_z", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte TreeNode([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, __arglist);
+        private static extern byte TreeNodeNativeText([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui8TreeNodeEPKcS1_z", ExactSpelling = true)]
+        [return: NativeTypeName("bool")]
+        private static extern byte TreeNodeNativeTextDarwinArm64([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, nint __varargPad2, nint __varargPad3, nint __varargPad4, nint __varargPad5, nint __varargPad6, nint __varargPad7, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static byte TreeNode(string str_id, string text, params object?[] args)
+        {
+            text = args is { Length: 0 } ? text : string.Format(System.Globalization.CultureInfo.InvariantCulture, text, args);
+            if (System.OperatingSystem.IsMacOS() && System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
+            {
+                return TreeNodeNativeTextDarwinArm64(str_id, "%s", 0, 0, 0, 0, 0, 0, text);
+            }
+            else
+            {
+                return TreeNodeNativeText(str_id, "%s", text);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui8TreeNodeEPKvPKcz", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte TreeNode([NativeTypeName("const void *")] void* ptr_id, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, __arglist);
+        private static extern byte TreeNodeNativeText([NativeTypeName("const void *")] void* ptr_id, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui8TreeNodeEPKvPKcz", ExactSpelling = true)]
+        [return: NativeTypeName("bool")]
+        private static extern byte TreeNodeNativeTextDarwinArm64([NativeTypeName("const void *")] void* ptr_id, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, nint __varargPad2, nint __varargPad3, nint __varargPad4, nint __varargPad5, nint __varargPad6, nint __varargPad7, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static byte TreeNode(void* ptr_id, string text, params object?[] args)
+        {
+            text = args is { Length: 0 } ? text : string.Format(System.Globalization.CultureInfo.InvariantCulture, text, args);
+            if (System.OperatingSystem.IsMacOS() && System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
+            {
+                return TreeNodeNativeTextDarwinArm64(ptr_id, "%s", 0, 0, 0, 0, 0, 0, text);
+            }
+            else
+            {
+                return TreeNodeNativeText(ptr_id, "%s", text);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui9TreeNodeVEPKcS1_Pc", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte TreeNodeV([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+        public static extern byte TreeNodeVNativeVaList([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static byte TreeNodeV(string str_id, string text, params object?[] args) =>
+            TreeNode(str_id, text, args);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui9TreeNodeVEPKvPKcPc", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte TreeNodeV([NativeTypeName("const void *")] void* ptr_id, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+        public static extern byte TreeNodeVNativeVaList([NativeTypeName("const void *")] void* ptr_id, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static byte TreeNodeV(void* ptr_id, string text, params object?[] args) =>
+            TreeNode(ptr_id, text, args);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10TreeNodeExEPKci", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -768,19 +1222,63 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10TreeNodeExEPKciS1_z", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte TreeNodeEx([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, [NativeTypeName("ImGuiTreeNodeFlags")] int flags, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, __arglist);
+        private static extern byte TreeNodeExNativeText([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, [NativeTypeName("ImGuiTreeNodeFlags")] int flags, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10TreeNodeExEPKciS1_z", ExactSpelling = true)]
+        [return: NativeTypeName("bool")]
+        private static extern byte TreeNodeExNativeTextDarwinArm64([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, [NativeTypeName("ImGuiTreeNodeFlags")] int flags, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, nint __varargPad3, nint __varargPad4, nint __varargPad5, nint __varargPad6, nint __varargPad7, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static byte TreeNodeEx(string str_id, int flags, string text, params object?[] args)
+        {
+            text = args is { Length: 0 } ? text : string.Format(System.Globalization.CultureInfo.InvariantCulture, text, args);
+            if (System.OperatingSystem.IsMacOS() && System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
+            {
+                return TreeNodeExNativeTextDarwinArm64(str_id, flags, "%s", 0, 0, 0, 0, 0, text);
+            }
+            else
+            {
+                return TreeNodeExNativeText(str_id, flags, "%s", text);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10TreeNodeExEPKviPKcz", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte TreeNodeEx([NativeTypeName("const void *")] void* ptr_id, [NativeTypeName("ImGuiTreeNodeFlags")] int flags, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, __arglist);
+        private static extern byte TreeNodeExNativeText([NativeTypeName("const void *")] void* ptr_id, [NativeTypeName("ImGuiTreeNodeFlags")] int flags, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10TreeNodeExEPKviPKcz", ExactSpelling = true)]
+        [return: NativeTypeName("bool")]
+        private static extern byte TreeNodeExNativeTextDarwinArm64([NativeTypeName("const void *")] void* ptr_id, [NativeTypeName("ImGuiTreeNodeFlags")] int flags, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, nint __varargPad3, nint __varargPad4, nint __varargPad5, nint __varargPad6, nint __varargPad7, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static byte TreeNodeEx(void* ptr_id, int flags, string text, params object?[] args)
+        {
+            text = args is { Length: 0 } ? text : string.Format(System.Globalization.CultureInfo.InvariantCulture, text, args);
+            if (System.OperatingSystem.IsMacOS() && System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
+            {
+                return TreeNodeExNativeTextDarwinArm64(ptr_id, flags, "%s", 0, 0, 0, 0, 0, text);
+            }
+            else
+            {
+                return TreeNodeExNativeText(ptr_id, flags, "%s", text);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11TreeNodeExVEPKciS1_Pc", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte TreeNodeExV([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, [NativeTypeName("ImGuiTreeNodeFlags")] int flags, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+        public static extern byte TreeNodeExVNativeVaList([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id, [NativeTypeName("ImGuiTreeNodeFlags")] int flags, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static byte TreeNodeExV(string str_id, int flags, string text, params object?[] args) =>
+            TreeNodeEx(str_id, flags, text, args);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11TreeNodeExVEPKviPKcPc", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte TreeNodeExV([NativeTypeName("const void *")] void* ptr_id, [NativeTypeName("ImGuiTreeNodeFlags")] int flags, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+        public static extern byte TreeNodeExVNativeVaList([NativeTypeName("const void *")] void* ptr_id, [NativeTypeName("ImGuiTreeNodeFlags")] int flags, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static byte TreeNodeExV(void* ptr_id, int flags, string text, params object?[] args) =>
+            TreeNodeEx(ptr_id, flags, text, args);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui8TreePushEPKc", ExactSpelling = true)]
         public static extern void TreePush([MarshalAs(UnmanagedType.LPUTF8Str)] string str_id);
@@ -800,7 +1298,15 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui16CollapsingHeaderEPKcPbi", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte CollapsingHeader([MarshalAs(UnmanagedType.LPUTF8Str)] string label, bool* p_visible, [NativeTypeName("ImGuiTreeNodeFlags")] int flags = 0);
+        private static unsafe extern byte CollapsingHeader_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, bool* p_visible, [NativeTypeName("ImGuiTreeNodeFlags")] int flags);
+
+        public static unsafe byte CollapsingHeader(string label, ref bool p_visible, int flags = 0)
+        {
+            fixed (bool* __pointer1 = &p_visible)
+            {
+                return CollapsingHeader_Raw(label, __pointer1, flags);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui15SetNextItemOpenEbi", ExactSpelling = true)]
         public static extern void SetNextItemOpen([NativeTypeName("bool")] byte is_open, [NativeTypeName("ImGuiCond")] int cond = 0);
@@ -818,7 +1324,15 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10SelectableEPKcPbiRK6ImVec2", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte Selectable([MarshalAs(UnmanagedType.LPUTF8Str)] string label, bool* p_selected, [NativeTypeName("ImGuiSelectableFlags")] int flags, in ImVec2 size);
+        private static unsafe extern byte Selectable_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, bool* p_selected, [NativeTypeName("ImGuiSelectableFlags")] int flags, in ImVec2 size);
+
+        public static unsafe byte Selectable(string label, ref bool p_selected, int flags = 0, in ImVec2 size = default)
+        {
+            fixed (bool* __pointer1 = &p_selected)
+            {
+                return Selectable_Raw(label, __pointer1, flags, in size);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui16BeginMultiSelectEiii", ExactSpelling = true)]
         public static extern ImGuiMultiSelectIO* BeginMultiSelect([NativeTypeName("ImGuiMultiSelectFlags")] int flags, int selection_size = -1, int items_count = -1);
@@ -842,11 +1356,27 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui7ListBoxEPKcPiPKS1_ii", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte ListBox([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* current_item, [NativeTypeName("const char *const[]")] sbyte** items, int items_count, int height_in_items = -1);
+        private static unsafe extern byte ListBox_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* current_item, [NativeTypeName("const char *const[]")] sbyte** items, int items_count, int height_in_items);
+
+        public static unsafe byte ListBox(string label, ref int current_item, sbyte** items, int items_count, int height_in_items = -1)
+        {
+            fixed (int* __pointer1 = &current_item)
+            {
+                return ListBox_Raw(label, __pointer1, items, items_count, height_in_items);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui7ListBoxEPKcPiPFS1_PviES3_ii", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte ListBox([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* current_item, [NativeTypeName("const char *(*)(void *, int)")] delegate* unmanaged[Cdecl]<void*, int, sbyte*> getter, void* user_data, int items_count, int height_in_items = -1);
+        private static unsafe extern byte ListBox_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, int* current_item, [NativeTypeName("const char *(*)(void *, int)")] delegate* unmanaged[Cdecl]<void*, int, sbyte*> getter, void* user_data, int items_count, int height_in_items);
+
+        public static unsafe byte ListBox(string label, ref int current_item, delegate* unmanaged[Cdecl]<void*, int, sbyte*> getter, void* user_data, int items_count, int height_in_items = -1)
+        {
+            fixed (int* __pointer1 = &current_item)
+            {
+                return ListBox_Raw(label, __pointer1, getter, user_data, items_count, height_in_items);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui9PlotLinesEPKcPKfiiS1_ff6ImVec2i", ExactSpelling = true)]
         public static extern void PlotLines([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("const float *")] float* values, int values_count, int values_offset = 0, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?overlay_text = null, float scale_min = 3.40282347e+38F, float scale_max = 3.40282347e+38F, ImVec2 graph_size = default, int stride = 4);
@@ -899,7 +1429,15 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui8MenuItemEPKcS1_Pbb", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte MenuItem([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [MarshalAs(UnmanagedType.LPUTF8Str)] string shortcut, bool* p_selected, [NativeTypeName("bool")] byte enabled = 1);
+        private static unsafe extern byte MenuItem_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [MarshalAs(UnmanagedType.LPUTF8Str)] string? shortcut, bool* p_selected, [NativeTypeName("bool")] byte enabled);
+
+        public static unsafe byte MenuItem(string label, string? shortcut, ref bool p_selected, byte enabled = 1)
+        {
+            fixed (bool* __pointer2 = &p_selected)
+            {
+                return MenuItem_Raw(label, shortcut, __pointer2, enabled);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12BeginTooltipEv", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -909,20 +1447,62 @@ namespace ImGui4NET
         public static extern void EndTooltip();
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10SetTooltipEPKcz", ExactSpelling = true)]
-        public static extern void SetTooltip([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, __arglist);
+        private static extern void SetTooltipNativeText([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10SetTooltipEPKcz", ExactSpelling = true)]
+        private static extern void SetTooltipNativeTextDarwinArm64([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, nint __varargPad1, nint __varargPad2, nint __varargPad3, nint __varargPad4, nint __varargPad5, nint __varargPad6, nint __varargPad7, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void SetTooltip(string text, params object?[] args)
+        {
+            text = args is { Length: 0 } ? text : string.Format(System.Globalization.CultureInfo.InvariantCulture, text, args);
+            if (System.OperatingSystem.IsMacOS() && System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
+            {
+                SetTooltipNativeTextDarwinArm64("%s", 0, 0, 0, 0, 0, 0, 0, text);
+            }
+            else
+            {
+                SetTooltipNativeText("%s", text);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11SetTooltipVEPKcPc", ExactSpelling = true)]
-        public static extern void SetTooltipV([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+        public static extern void SetTooltipVNativeVaList([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void SetTooltipV(string text, params object?[] args) =>
+            SetTooltip(text, args);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui16BeginItemTooltipEv", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
         public static extern byte BeginItemTooltip();
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui14SetItemTooltipEPKcz", ExactSpelling = true)]
-        public static extern void SetItemTooltip([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, __arglist);
+        private static extern void SetItemTooltipNativeText([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui14SetItemTooltipEPKcz", ExactSpelling = true)]
+        private static extern void SetItemTooltipNativeTextDarwinArm64([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, nint __varargPad1, nint __varargPad2, nint __varargPad3, nint __varargPad4, nint __varargPad5, nint __varargPad6, nint __varargPad7, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void SetItemTooltip(string text, params object?[] args)
+        {
+            text = args is { Length: 0 } ? text : string.Format(System.Globalization.CultureInfo.InvariantCulture, text, args);
+            if (System.OperatingSystem.IsMacOS() && System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
+            {
+                SetItemTooltipNativeTextDarwinArm64("%s", 0, 0, 0, 0, 0, 0, 0, text);
+            }
+            else
+            {
+                SetItemTooltipNativeText("%s", text);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui15SetItemTooltipVEPKcPc", ExactSpelling = true)]
-        public static extern void SetItemTooltipV([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+        public static extern void SetItemTooltipVNativeVaList([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void SetItemTooltipV(string text, params object?[] args) =>
+            SetItemTooltip(text, args);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10BeginPopupEPKci", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -930,7 +1510,20 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui15BeginPopupModalEPKcPbi", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte BeginPopupModal([MarshalAs(UnmanagedType.LPUTF8Str)] string name, bool* p_open = null, [NativeTypeName("ImGuiWindowFlags")] int flags = 0);
+        private static unsafe extern byte BeginPopupModal_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string name, bool* p_open, [NativeTypeName("ImGuiWindowFlags")] int flags);
+
+        public static unsafe byte BeginPopupModal(string name, ref bool p_open, int flags = 0)
+        {
+            fixed (bool* __pointer1 = &p_open)
+            {
+                return BeginPopupModal_Raw(name, __pointer1, flags);
+            }
+        }
+
+        public static unsafe byte BeginPopupModal(string name, int flags = 0)
+        {
+            return BeginPopupModal_Raw(name, null, flags);
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui8EndPopupEv", ExactSpelling = true)]
         public static extern void EndPopup();
@@ -1061,7 +1654,20 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12BeginTabItemEPKcPbi", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte BeginTabItem([MarshalAs(UnmanagedType.LPUTF8Str)] string label, bool* p_open = null, [NativeTypeName("ImGuiTabItemFlags")] int flags = 0);
+        private static unsafe extern byte BeginTabItem_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, bool* p_open, [NativeTypeName("ImGuiTabItemFlags")] int flags);
+
+        public static unsafe byte BeginTabItem(string label, ref bool p_open, int flags = 0)
+        {
+            fixed (bool* __pointer1 = &p_open)
+            {
+                return BeginTabItem_Raw(label, __pointer1, flags);
+            }
+        }
+
+        public static unsafe byte BeginTabItem(string label, int flags = 0)
+        {
+            return BeginTabItem_Raw(label, null, flags);
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui10EndTabItemEv", ExactSpelling = true)]
         public static extern void EndTabItem();
@@ -1111,10 +1717,31 @@ namespace ImGui4NET
         public static extern void LogButtons();
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui7LogTextEPKcz", ExactSpelling = true)]
-        public static extern void LogText([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, __arglist);
+        private static extern void LogTextNativeText([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui7LogTextEPKcz", ExactSpelling = true)]
+        private static extern void LogTextNativeTextDarwinArm64([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, nint __varargPad1, nint __varargPad2, nint __varargPad3, nint __varargPad4, nint __varargPad5, nint __varargPad6, nint __varargPad7, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void LogText(string text, params object?[] args)
+        {
+            text = args is { Length: 0 } ? text : string.Format(System.Globalization.CultureInfo.InvariantCulture, text, args);
+            if (System.OperatingSystem.IsMacOS() && System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
+            {
+                LogTextNativeTextDarwinArm64("%s", 0, 0, 0, 0, 0, 0, 0, text);
+            }
+            else
+            {
+                LogTextNativeText("%s", text);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui8LogTextVEPKcPc", ExactSpelling = true)]
-        public static extern void LogTextV([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+        public static extern void LogTextVNativeVaList([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void LogTextV(string text, params object?[] args) =>
+            LogText(text, args);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui19BeginDragDropSourceEi", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -1356,7 +1983,21 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui15IsMousePosValidEPK6ImVec2", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte IsMousePosValid([NativeTypeName("const ImVec2 *")] ImVec2* mouse_pos = null);
+        private static unsafe extern byte IsMousePosValid_Raw([NativeTypeName("const ImVec2 *")] ImVec2* mouse_pos);
+
+        public static unsafe byte IsMousePosValid(in ImVec2 mouse_pos)
+        {
+            fixed (ImVec2* __pointer0 = &mouse_pos)
+            {
+                return IsMousePosValid_Raw(__pointer0);
+            }
+        }
+
+        public static unsafe byte IsMousePosValid(ImVec2? mouse_pos = null)
+        {
+            ImVec2 __value0 = mouse_pos.GetValueOrDefault();
+            return IsMousePosValid_Raw(mouse_pos.HasValue ? &__value0 : null);
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui14IsAnyMouseDownEv", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -1422,16 +2063,48 @@ namespace ImGui4NET
         public static extern byte DebugCheckVersionAndDataLayout([MarshalAs(UnmanagedType.LPUTF8Str)] string version_str, [NativeTypeName("size_t")] nuint sz_io, [NativeTypeName("size_t")] nuint sz_style, [NativeTypeName("size_t")] nuint sz_vec2, [NativeTypeName("size_t")] nuint sz_vec4, [NativeTypeName("size_t")] nuint sz_drawvert, [NativeTypeName("size_t")] nuint sz_drawidx);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui8DebugLogEPKcz", ExactSpelling = true)]
-        public static extern void DebugLog([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, __arglist);
+        private static extern void DebugLogNativeText([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui8DebugLogEPKcz", ExactSpelling = true)]
+        private static extern void DebugLogNativeTextDarwinArm64([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, nint __varargPad1, nint __varargPad2, nint __varargPad3, nint __varargPad4, nint __varargPad5, nint __varargPad6, nint __varargPad7, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void DebugLog(string text, params object?[] args)
+        {
+            text = args is { Length: 0 } ? text : string.Format(System.Globalization.CultureInfo.InvariantCulture, text, args);
+            if (System.OperatingSystem.IsMacOS() && System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
+            {
+                DebugLogNativeTextDarwinArm64("%s", 0, 0, 0, 0, 0, 0, 0, text);
+            }
+            else
+            {
+                DebugLogNativeText("%s", text);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui9DebugLogVEPKcPc", ExactSpelling = true)]
-        public static extern void DebugLogV([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+        public static extern void DebugLogVNativeVaList([MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void DebugLogV(string text, params object?[] args) =>
+            DebugLog(text, args);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui21SetAllocatorFunctionsEPFPvyS0_EPFvS0_S0_ES0_", ExactSpelling = true)]
         public static extern void SetAllocatorFunctions([NativeTypeName("ImGuiMemAllocFunc")] delegate* unmanaged[Cdecl]<nuint, void*, void*> alloc_func, [NativeTypeName("ImGuiMemFreeFunc")] delegate* unmanaged[Cdecl]<void*, void*, void> free_func, void* user_data = null);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui21GetAllocatorFunctionsEPPFPvyS0_EPPFvS0_S0_EPS0_", ExactSpelling = true)]
-        public static extern void GetAllocatorFunctions([NativeTypeName("ImGuiMemAllocFunc *")] delegate* unmanaged[Cdecl]<nuint, void*, void*>* p_alloc_func, [NativeTypeName("ImGuiMemFreeFunc *")] delegate* unmanaged[Cdecl]<void*, void*, void>* p_free_func, void** p_user_data);
+        private static unsafe extern void GetAllocatorFunctions_Raw([NativeTypeName("ImGuiMemAllocFunc *")] delegate* unmanaged[Cdecl]<nuint, void*, void*>* p_alloc_func, [NativeTypeName("ImGuiMemFreeFunc *")] delegate* unmanaged[Cdecl]<void*, void*, void>* p_free_func, void** p_user_data);
+
+        public static unsafe void GetAllocatorFunctions(out delegate* unmanaged[Cdecl]<nuint, void*, void*> p_alloc_func, out delegate* unmanaged[Cdecl]<void*, void*, void> p_free_func, out void* p_user_data)
+        {
+            delegate* unmanaged[Cdecl]<nuint, void*, void*> __value0 = default;
+            delegate* unmanaged[Cdecl]<void*, void*, void> __value1 = default;
+            void* __value2 = default;
+            GetAllocatorFunctions_Raw(&__value0, &__value1, &__value2);
+            p_alloc_func = __value0;
+            p_free_func = __value1;
+            p_user_data = __value2;
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui8MemAllocEy", ExactSpelling = true)]
         public static extern void* MemAlloc([NativeTypeName("size_t")] nuint size);
@@ -1535,16 +2208,58 @@ namespace ImGui4NET
         public static extern sbyte* ImStrbol([MarshalAs(UnmanagedType.LPUTF8Str)] string buf_mid_line, [MarshalAs(UnmanagedType.LPUTF8Str)] string buf_begin);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_Z14ImFormatStringPcyPKcz", ExactSpelling = true)]
-        public static extern int ImFormatString([NativeTypeName("char *")] sbyte* buf, [NativeTypeName("size_t")] nuint buf_size, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, __arglist);
+        private static extern int ImFormatStringNativeText([NativeTypeName("char *")] sbyte* buf, [NativeTypeName("size_t")] nuint buf_size, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_Z14ImFormatStringPcyPKcz", ExactSpelling = true)]
+        private static extern int ImFormatStringNativeTextDarwinArm64([NativeTypeName("char *")] sbyte* buf, [NativeTypeName("size_t")] nuint buf_size, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, nint __varargPad3, nint __varargPad4, nint __varargPad5, nint __varargPad6, nint __varargPad7, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static int ImFormatString(sbyte* buf, nuint buf_size, string text, params object?[] args)
+        {
+            text = args is { Length: 0 } ? text : string.Format(System.Globalization.CultureInfo.InvariantCulture, text, args);
+            if (System.OperatingSystem.IsMacOS() && System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
+            {
+                return ImFormatStringNativeTextDarwinArm64(buf, buf_size, "%s", 0, 0, 0, 0, 0, text);
+            }
+            else
+            {
+                return ImFormatStringNativeText(buf, buf_size, "%s", text);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_Z15ImFormatStringVPcyPKcS_", ExactSpelling = true)]
-        public static extern int ImFormatStringV([NativeTypeName("char *")] sbyte* buf, [NativeTypeName("size_t")] nuint buf_size, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+        public static extern int ImFormatStringVNativeVaList([NativeTypeName("char *")] sbyte* buf, [NativeTypeName("size_t")] nuint buf_size, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static int ImFormatStringV(sbyte* buf, nuint buf_size, string text, params object?[] args) =>
+            ImFormatString(buf, buf_size, text, args);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_Z26ImFormatStringToTempBufferPPKcS1_S0_z", ExactSpelling = true)]
-        public static extern void ImFormatStringToTempBuffer([NativeTypeName("const char **")] sbyte** out_buf, [NativeTypeName("const char **")] sbyte** out_buf_end, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, __arglist);
+        private static extern void ImFormatStringToTempBufferNativeText([NativeTypeName("const char **")] sbyte** out_buf, [NativeTypeName("const char **")] sbyte** out_buf_end, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string suffix);
+
+        [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_Z26ImFormatStringToTempBufferPPKcS1_S0_z", ExactSpelling = true)]
+        private static extern void ImFormatStringToTempBufferNativeTextDarwinArm64([NativeTypeName("const char **")] sbyte** out_buf, [NativeTypeName("const char **")] sbyte** out_buf_end, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, nint __varargPad3, nint __varargPad4, nint __varargPad5, nint __varargPad6, nint __varargPad7, [MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string suffix);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void ImFormatStringToTempBuffer(sbyte** out_buf, sbyte** out_buf_end, string text, params object?[] args)
+        {
+            text = args is { Length: 0 } ? text : string.Format(System.Globalization.CultureInfo.InvariantCulture, text, args);
+            if (System.OperatingSystem.IsMacOS() && System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
+            {
+                ImFormatStringToTempBufferNativeTextDarwinArm64(out_buf, out_buf_end, "%s%s", 0, 0, 0, 0, 0, text, string.Empty);
+            }
+            else
+            {
+                ImFormatStringToTempBufferNativeText(out_buf, out_buf_end, "%s%s", text, string.Empty);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_Z27ImFormatStringToTempBufferVPPKcS1_S0_Pc", ExactSpelling = true)]
-        public static extern void ImFormatStringToTempBufferV([NativeTypeName("const char **")] sbyte** out_buf, [NativeTypeName("const char **")] sbyte** out_buf_end, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+        public static extern void ImFormatStringToTempBufferVNativeVaList([NativeTypeName("const char **")] sbyte** out_buf, [NativeTypeName("const char **")] sbyte** out_buf_end, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void ImFormatStringToTempBufferV(sbyte** out_buf, sbyte** out_buf_end, string text, params object?[] args) =>
+            ImFormatStringToTempBuffer(out_buf, out_buf_end, text, args);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_Z22ImParseFormatFindStartPKc", ExactSpelling = true)]
         [return: NativeTypeName("const char *")]
@@ -2164,7 +2879,21 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui7ItemAddERK6ImRectjPS1_i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte ItemAdd(in ImRect bb, [NativeTypeName("ImGuiID")] uint id, [NativeTypeName("const ImRect *")] ImRect* nav_bb = null, [NativeTypeName("ImGuiItemFlags")] int extra_flags = 0);
+        private static unsafe extern byte ItemAdd_Raw(in ImRect bb, [NativeTypeName("ImGuiID")] uint id, [NativeTypeName("const ImRect *")] ImRect* nav_bb, [NativeTypeName("ImGuiItemFlags")] int extra_flags);
+
+        public static unsafe byte ItemAdd(in ImRect bb, uint id, in ImRect nav_bb, int extra_flags = 0)
+        {
+            fixed (ImRect* __pointer2 = &nav_bb)
+            {
+                return ItemAdd_Raw(in bb, id, __pointer2, extra_flags);
+            }
+        }
+
+        public static unsafe byte ItemAdd(in ImRect bb, uint id, ImRect? nav_bb = null, int extra_flags = 0)
+        {
+            ImRect __value2 = nav_bb.GetValueOrDefault();
+            return ItemAdd_Raw(in bb, id, nav_bb.HasValue ? &__value2 : null, extra_flags);
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13ItemHoverableERK6ImRectji", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -2601,7 +3330,21 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui27BeginDragDropTargetViewportEP13ImGuiViewportPK6ImRect", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte BeginDragDropTargetViewport(ImGuiViewport* viewport, [NativeTypeName("const ImRect *")] ImRect* p_bb = null);
+        private static unsafe extern byte BeginDragDropTargetViewport_Raw(ImGuiViewport* viewport, [NativeTypeName("const ImRect *")] ImRect* p_bb);
+
+        public static unsafe byte BeginDragDropTargetViewport(ImGuiViewport* viewport, in ImRect p_bb)
+        {
+            fixed (ImRect* __pointer1 = &p_bb)
+            {
+                return BeginDragDropTargetViewport_Raw(viewport, __pointer1);
+            }
+        }
+
+        public static unsafe byte BeginDragDropTargetViewport(ImGuiViewport* viewport, ImRect? p_bb = null)
+        {
+            ImRect __value1 = p_bb.GetValueOrDefault();
+            return BeginDragDropTargetViewport_Raw(viewport, p_bb.HasValue ? &__value1 : null);
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13ClearDragDropEv", ExactSpelling = true)]
         public static extern void ClearDragDrop();
@@ -2730,13 +3473,95 @@ namespace ImGui4NET
         public static extern void RenderTextWrapped(ImVec2 pos, [MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_end, float wrap_width);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui17RenderTextClippedERK6ImVec2S2_PKcS4_PS1_S2_PK6ImRect", ExactSpelling = true)]
-        public static extern void RenderTextClipped(in ImVec2 pos_min, in ImVec2 pos_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_end, [NativeTypeName("const ImVec2 *")] ImVec2* text_size_if_known, in ImVec2 align, [NativeTypeName("const ImRect *")] ImRect* clip_rect = null);
+        private static unsafe extern void RenderTextClipped_Raw(in ImVec2 pos_min, in ImVec2 pos_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string? text_end, [NativeTypeName("const ImVec2 *")] ImVec2* text_size_if_known, in ImVec2 align, [NativeTypeName("const ImRect *")] ImRect* clip_rect);
+
+        public static unsafe void RenderTextClipped(in ImVec2 pos_min, in ImVec2 pos_max, string text, string? text_end, in ImVec2 text_size_if_known, in ImVec2 align, in ImRect clip_rect)
+        {
+            fixed (ImVec2* __pointer4 = &text_size_if_known)
+            fixed (ImRect* __pointer6 = &clip_rect)
+            {
+                RenderTextClipped_Raw(in pos_min, in pos_max, text, text_end, __pointer4, in align, __pointer6);
+            }
+        }
+
+        public static unsafe void RenderTextClipped(in ImVec2 pos_min, in ImVec2 pos_max, string text, string? text_end, ImVec2? text_size_if_known, in ImVec2 align, in ImRect clip_rect)
+        {
+            ImVec2 __value4 = text_size_if_known.GetValueOrDefault();
+            fixed (ImRect* __pointer6 = &clip_rect)
+            {
+                RenderTextClipped_Raw(in pos_min, in pos_max, text, text_end, text_size_if_known.HasValue ? &__value4 : null, in align, __pointer6);
+            }
+        }
+
+        public static unsafe void RenderTextClipped(in ImVec2 pos_min, in ImVec2 pos_max, string text, string? text_end, in ImVec2 text_size_if_known, in ImVec2 align = default, ImRect? clip_rect = null)
+        {
+            ImRect __value6 = clip_rect.GetValueOrDefault();
+            fixed (ImVec2* __pointer4 = &text_size_if_known)
+            {
+                RenderTextClipped_Raw(in pos_min, in pos_max, text, text_end, __pointer4, in align, clip_rect.HasValue ? &__value6 : null);
+            }
+        }
+
+        public static unsafe void RenderTextClipped(in ImVec2 pos_min, in ImVec2 pos_max, string text, string? text_end, ImVec2? text_size_if_known, in ImVec2 align = default, ImRect? clip_rect = null)
+        {
+            ImVec2 __value4 = text_size_if_known.GetValueOrDefault();
+            ImRect __value6 = clip_rect.GetValueOrDefault();
+            RenderTextClipped_Raw(in pos_min, in pos_max, text, text_end, text_size_if_known.HasValue ? &__value4 : null, in align, clip_rect.HasValue ? &__value6 : null);
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui19RenderTextClippedExEP10ImDrawListRK6ImVec2S4_PKcS6_PS3_S4_PK6ImRect", ExactSpelling = true)]
-        public static extern void RenderTextClippedEx(ImDrawList* draw_list, in ImVec2 pos_min, in ImVec2 pos_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_end, [NativeTypeName("const ImVec2 *")] ImVec2* text_size_if_known, in ImVec2 align, [NativeTypeName("const ImRect *")] ImRect* clip_rect = null);
+        private static unsafe extern void RenderTextClippedEx_Raw(ImDrawList* draw_list, in ImVec2 pos_min, in ImVec2 pos_max, [MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string? text_end, [NativeTypeName("const ImVec2 *")] ImVec2* text_size_if_known, in ImVec2 align, [NativeTypeName("const ImRect *")] ImRect* clip_rect);
+
+        public static unsafe void RenderTextClippedEx(ImDrawList* draw_list, in ImVec2 pos_min, in ImVec2 pos_max, string text, string? text_end, in ImVec2 text_size_if_known, in ImVec2 align, in ImRect clip_rect)
+        {
+            fixed (ImVec2* __pointer5 = &text_size_if_known)
+            fixed (ImRect* __pointer7 = &clip_rect)
+            {
+                RenderTextClippedEx_Raw(draw_list, in pos_min, in pos_max, text, text_end, __pointer5, in align, __pointer7);
+            }
+        }
+
+        public static unsafe void RenderTextClippedEx(ImDrawList* draw_list, in ImVec2 pos_min, in ImVec2 pos_max, string text, string? text_end, ImVec2? text_size_if_known, in ImVec2 align, in ImRect clip_rect)
+        {
+            ImVec2 __value5 = text_size_if_known.GetValueOrDefault();
+            fixed (ImRect* __pointer7 = &clip_rect)
+            {
+                RenderTextClippedEx_Raw(draw_list, in pos_min, in pos_max, text, text_end, text_size_if_known.HasValue ? &__value5 : null, in align, __pointer7);
+            }
+        }
+
+        public static unsafe void RenderTextClippedEx(ImDrawList* draw_list, in ImVec2 pos_min, in ImVec2 pos_max, string text, string? text_end, in ImVec2 text_size_if_known, in ImVec2 align = default, ImRect? clip_rect = null)
+        {
+            ImRect __value7 = clip_rect.GetValueOrDefault();
+            fixed (ImVec2* __pointer5 = &text_size_if_known)
+            {
+                RenderTextClippedEx_Raw(draw_list, in pos_min, in pos_max, text, text_end, __pointer5, in align, clip_rect.HasValue ? &__value7 : null);
+            }
+        }
+
+        public static unsafe void RenderTextClippedEx(ImDrawList* draw_list, in ImVec2 pos_min, in ImVec2 pos_max, string text, string? text_end, ImVec2? text_size_if_known, in ImVec2 align = default, ImRect? clip_rect = null)
+        {
+            ImVec2 __value5 = text_size_if_known.GetValueOrDefault();
+            ImRect __value7 = clip_rect.GetValueOrDefault();
+            RenderTextClippedEx_Raw(draw_list, in pos_min, in pos_max, text, text_end, text_size_if_known.HasValue ? &__value5 : null, in align, clip_rect.HasValue ? &__value7 : null);
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui18RenderTextEllipsisEP10ImDrawListRK6ImVec2S4_fPKcS6_PS3_", ExactSpelling = true)]
-        public static extern void RenderTextEllipsis(ImDrawList* draw_list, in ImVec2 pos_min, in ImVec2 pos_max, float ellipsis_max_x, [MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_end, [NativeTypeName("const ImVec2 *")] ImVec2* text_size_if_known);
+        private static unsafe extern void RenderTextEllipsis_Raw(ImDrawList* draw_list, in ImVec2 pos_min, in ImVec2 pos_max, float ellipsis_max_x, [MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string? text_end, [NativeTypeName("const ImVec2 *")] ImVec2* text_size_if_known);
+
+        public static unsafe void RenderTextEllipsis(ImDrawList* draw_list, in ImVec2 pos_min, in ImVec2 pos_max, float ellipsis_max_x, string text, string? text_end, in ImVec2 text_size_if_known)
+        {
+            fixed (ImVec2* __pointer6 = &text_size_if_known)
+            {
+                RenderTextEllipsis_Raw(draw_list, in pos_min, in pos_max, ellipsis_max_x, text, text_end, __pointer6);
+            }
+        }
+
+        public static unsafe void RenderTextEllipsis(ImDrawList* draw_list, in ImVec2 pos_min, in ImVec2 pos_max, float ellipsis_max_x, string text, string? text_end, ImVec2? text_size_if_known)
+        {
+            ImVec2 __value6 = text_size_if_known.GetValueOrDefault();
+            RenderTextEllipsis_Raw(draw_list, in pos_min, in pos_max, ellipsis_max_x, text, text_end, text_size_if_known.HasValue ? &__value6 : null);
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11RenderFrameE6ImVec2S0_jbf", ExactSpelling = true)]
         public static extern void RenderFrame(ImVec2 p_min, ImVec2 p_max, [NativeTypeName("ImU32")] uint fill_col, [NativeTypeName("bool")] byte borders = 1, float rounding = 0.0f);
@@ -2789,10 +3614,31 @@ namespace ImGui4NET
         public static extern void TextEx([MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string ?text_end = null, [NativeTypeName("ImGuiTextFlags")] int flags = 0);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11TextAlignedEffPKcz", ExactSpelling = true)]
-        public static extern void TextAligned(float align_x, float width, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, __arglist);
+        private static extern void TextAlignedNativeText(float align_x, float width, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11TextAlignedEffPKcz", ExactSpelling = true)]
+        private static extern void TextAlignedNativeTextDarwinArm64(float align_x, float width, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, nint __varargPad1, nint __varargPad2, nint __varargPad3, nint __varargPad4, nint __varargPad5, nint __varargPad6, nint __varargPad7, [MarshalAs(UnmanagedType.LPUTF8Str)] string text);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void TextAligned(float align_x, float width, string text, params object?[] args)
+        {
+            text = args is { Length: 0 } ? text : string.Format(System.Globalization.CultureInfo.InvariantCulture, text, args);
+            if (System.OperatingSystem.IsMacOS() && System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64)
+            {
+                TextAlignedNativeTextDarwinArm64(align_x, width, "%s", 0, 0, 0, 0, 0, 0, 0, text);
+            }
+            else
+            {
+                TextAlignedNativeText(align_x, width, "%s", text);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui12TextAlignedVEffPKcPc", ExactSpelling = true)]
-        public static extern void TextAlignedV(float align_x, float width, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+        public static extern void TextAlignedVNativeVaList(float align_x, float width, [MarshalAs(UnmanagedType.LPUTF8Str)] string fmt, [NativeTypeName("va_list")] sbyte* args);
+
+        /// <summary>Passes literal UTF-8 text, or invariant-culture C# composite formatting when arguments are supplied.</summary>
+        public static void TextAlignedV(float align_x, float width, string text, params object?[] args) =>
+            TextAligned(align_x, width, text, args);
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui8ButtonExEPKcRK6ImVec2i", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
@@ -2814,11 +3660,27 @@ namespace ImGui4NET
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13CheckboxFlagsEPKcPxx", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte CheckboxFlags([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("ImS64 *")] long* flags, [NativeTypeName("ImS64")] long flags_value);
+        private static unsafe extern byte CheckboxFlags_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("ImS64 *")] long* flags, [NativeTypeName("ImS64")] long flags_value);
+
+        public static unsafe byte CheckboxFlags(string label, ref long flags, long flags_value)
+        {
+            fixed (long* __pointer1 = &flags)
+            {
+                return CheckboxFlags_Raw(label, __pointer1, flags_value);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui13CheckboxFlagsEPKcPyy", ExactSpelling = true)]
         [return: NativeTypeName("bool")]
-        public static extern byte CheckboxFlags([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("ImU64 *")] ulong* flags, [NativeTypeName("ImU64")] ulong flags_value);
+        private static unsafe extern byte CheckboxFlags_Raw([MarshalAs(UnmanagedType.LPUTF8Str)] string label, [NativeTypeName("ImU64 *")] ulong* flags, [NativeTypeName("ImU64")] ulong flags_value);
+
+        public static unsafe byte CheckboxFlags(string label, ref ulong flags, ulong flags_value)
+        {
+            fixed (ulong* __pointer1 = &flags)
+            {
+                return CheckboxFlags_Raw(label, __pointer1, flags_value);
+            }
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.Cdecl, EntryPoint = "_ZN5ImGui11CloseButtonEjRK6ImVec2", ExactSpelling = true)]
         [return: NativeTypeName("bool")]

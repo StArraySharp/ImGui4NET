@@ -283,7 +283,7 @@ internal static unsafe class ShowcaseUi
         ImGui.PushStyleVar((int)ImGuiStyleVar.ImGuiStyleVar_WindowRounding, 0f);
         ImGui.PushStyleVar((int)ImGuiStyleVar.ImGuiStyleVar_WindowBorderSize, 0f);
 
-        bool open = ImGui.Begin("##showcase-root", null, rootFlags) != 0;
+        bool open = ImGui.Begin("##showcase-root", rootFlags) != 0;
         if (open)
         {
             DrawBackdrop(width, height);
@@ -306,7 +306,7 @@ internal static unsafe class ShowcaseUi
 
         if (_showDemo)
         {
-            ImGui.ShowDemoWindow();
+            ImGui.ShowDemoWindow(ref _showDemo);
         }
     }
 
@@ -1164,8 +1164,7 @@ internal static unsafe class ShowcaseUi
     static void Text(ImDrawList* dl, ImVec2 pos, uint color, string text, float size)
     {
         ImVec2 p = pos;
-        // cpu_fine_clip_rect is null-checked natively, so null is safe here.
-        ImDrawList.AddText(dl, null, size, in p, color, text, null, 0f, null);
+        ImDrawList.AddText(dl, null, size, in p, color, text);
     }
 
     // Measuring text requires pushing a font size, which is relatively costly.
@@ -1297,7 +1296,7 @@ internal static unsafe class ShowcaseUi
     static bool SliderF(string label, ref float value, float min, float max, string? format = null)
     {
         float temp = value;
-        bool changed = ImGui.SliderFloat(label, &temp, min, max, format) != 0;
+        bool changed = ImGui.SliderFloat(label, ref temp, min, max, format) != 0;
         if (changed)
         {
             value = temp;
@@ -1309,7 +1308,7 @@ internal static unsafe class ShowcaseUi
     static bool SliderI(string label, ref int value, int min, int max)
     {
         int temp = value;
-        bool changed = ImGui.SliderInt(label, &temp, min, max) != 0;
+        bool changed = ImGui.SliderInt(label, ref temp, min, max) != 0;
         if (changed)
         {
             value = temp;
@@ -1321,7 +1320,7 @@ internal static unsafe class ShowcaseUi
     static bool CheckboxB(string label, ref bool value)
     {
         bool temp = value;
-        bool changed = ImGui.Checkbox(label, &temp) != 0;
+        bool changed = ImGui.Checkbox(label, ref temp) != 0;
         if (changed)
         {
             value = temp;

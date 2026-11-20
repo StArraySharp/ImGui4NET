@@ -77,7 +77,21 @@ namespace ImGui4NET
         public static extern sbyte* CalcWordWrapPosition(ImFont* pThis, float size, [MarshalAs(UnmanagedType.LPUTF8Str)] string text, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_end, float wrap_width);
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN6ImFont10RenderCharEP10ImDrawListfRK6ImVec2jtPK6ImVec4", ExactSpelling = true)]
-        public static extern void RenderChar(ImFont* pThis, ImDrawList* draw_list, float size, in ImVec2 pos, [NativeTypeName("ImU32")] uint col, [NativeTypeName("ImWchar")] ushort c, [NativeTypeName("const ImVec4 *")] ImVec4* cpu_fine_clip = null);
+        private static unsafe extern void RenderChar_Raw(ImFont* pThis, ImDrawList* draw_list, float size, in ImVec2 pos, [NativeTypeName("ImU32")] uint col, [NativeTypeName("ImWchar")] ushort c, [NativeTypeName("const ImVec4 *")] ImVec4* cpu_fine_clip);
+
+        public static unsafe void RenderChar(ImFont* pThis, ImDrawList* draw_list, float size, in ImVec2 pos, uint col, ushort c, in ImVec4 cpu_fine_clip)
+        {
+            fixed (ImVec4* __pointer6 = &cpu_fine_clip)
+            {
+                RenderChar_Raw(pThis, draw_list, size, in pos, col, c, __pointer6);
+            }
+        }
+
+        public static unsafe void RenderChar(ImFont* pThis, ImDrawList* draw_list, float size, in ImVec2 pos, uint col, ushort c, ImVec4? cpu_fine_clip = null)
+        {
+            ImVec4 __value6 = cpu_fine_clip.GetValueOrDefault();
+            RenderChar_Raw(pThis, draw_list, size, in pos, col, c, cpu_fine_clip.HasValue ? &__value6 : null);
+        }
 
         [DllImport("imgui", CallingConvention = CallingConvention.ThisCall, EntryPoint = "_ZN6ImFont10RenderTextEP10ImDrawListfRK6ImVec2jRK6ImVec4PKcS9_fi", ExactSpelling = true)]
         public static extern void RenderText(ImFont* pThis, ImDrawList* draw_list, float size, in ImVec2 pos, [NativeTypeName("ImU32")] uint col, in ImVec4 clip_rect, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_begin, [MarshalAs(UnmanagedType.LPUTF8Str)] string text_end, float wrap_width = 0.0f, [NativeTypeName("ImDrawTextFlags")] int flags = 0);
