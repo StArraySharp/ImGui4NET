@@ -511,14 +511,19 @@ if [ "$BUILD_NATIVE" = "1" ]; then
     CORE_OUT="$SRC_DIR/ImGui4NET/runtimes/$RID/native"
     mkdir -p "$CORE_OUT"
 
-    # -static-libgcc/-static-libstdc++ keep the shipped DLL free of MinGW
-    # runtime dependencies. Backends omit them because linking the core import
-    # library would otherwise duplicate libgcc_eh symbols.
     SHARED_FLAGS=(-shared -O2 -DNDEBUG -fPIC)
     BACKEND_FLAGS=(-shared -O2 -DNDEBUG -fPIC)
+    RUNTIME_LIBS=()
     case "$HOST" in
         windows)
             SHARED_FLAGS+=("-Wl,--export-all-symbols" -static-libgcc -static-libstdc++)
+            # Put the static C++ library before winpthread so its pthread
+            # references resolve here, ahead of the compiler's default libraries.
+            RUNTIME_LIBS+=('-Wl,--exclude-libs,libwinpthread.a' '-l:libstdc++.a' '-l:libwinpthread.a')
+            PE_OBJDUMP="$(command -v objdump || command -v llvm-objdump)" || {
+                echo 'error: objdump or llvm-objdump is required to check Windows DLL imports' >&2
+                exit 1
+            }
             # Linking the core import library alongside libgcc_eh.a duplicates
             # _Unwind_Resume; the backend only needs its own symbols exported.
             BACKEND_FLAGS+=("-Wl,--export-all-symbols" -static-libgcc -static-libstdc++
@@ -529,6 +534,16 @@ if [ "$BUILD_NATIVE" = "1" ]; then
             BACKEND_FLAGS+=("-Wl,--export-dynamic")
             ;;
     esac
+
+    check_windows_imports() {
+        local dll="$1" imports
+        [ "$HOST" = windows ] || return 0
+        imports="$("$PE_OBJDUMP" -p "$dll")" || return 1
+        if grep -Eiq 'DLL Name:[[:space:]]*libwinpthread[^[:space:]]*\.dll' <<<"$imports"; then
+            echo "error: $dll imports winpthread dynamically" >&2
+            return 1
+        fi
+    }
 
     # Import library the backends link against. Kept outside the ``runtimes`` tree:
     # it is a link-time artifact, not something an application should load, and
@@ -542,7 +557,9 @@ if [ "$BUILD_NATIVE" = "1" ]; then
             (cd "$IMGUI_DIR" && "$CXX" -std=c++17 "${SHARED_FLAGS[@]}" -I. \
                 "-Wl,--out-implib,$CORE_IMPLIB" \
                 -o "$CORE_OUT/$LIB_NAME" \
-                imgui.cpp imgui_draw.cpp imgui_tables.cpp imgui_widgets.cpp imgui_demo.cpp)
+                imgui.cpp imgui_draw.cpp imgui_tables.cpp imgui_widgets.cpp imgui_demo.cpp \
+                "${RUNTIME_LIBS[@]}")
+            check_windows_imports "$CORE_OUT/$LIB_NAME"
             ;;
         *)
             CORE_IMPLIB="$CORE_OUT/$LIB_NAME"
@@ -696,10 +713,13 @@ if [ "$BUILD_NATIVE" = "1" ]; then
                     $(platform_includes "$name") $(external_includes "$name") \
             -o "$backend_out/$backend_lib" \
             "backends/${header%.h}.cpp" \
-                    "-L$CORE_OUT" -limgui $(platform_libs "$name") $(external_libs "$name")) 2>"$build_log" || {
-                echo "    $name backend FAILED (see $build_log)"
+                    "-L$CORE_OUT" -limgui $(platform_libs "$name") $(external_libs "$name") \
+                    "${RUNTIME_LIBS[@]}") 2>"$build_log" || {
+                echo "    $name backend FAILED (see $build_log)" >&2
+                if [ "$HOST" = windows ]; then exit 1; fi
                 continue
             }
+        check_windows_imports "$backend_out/$backend_lib"
         rm -f "$build_log"
         echo "    $name backend"
 

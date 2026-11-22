@@ -5,6 +5,12 @@ For example `1.93.0.1` is the first revision of the bindings for Dear ImGui
 1.93.0. The revision is bumped by hand whenever a package is republished without
 moving to a new Dear ImGui tag.
 
+## 1.93.0.6
+
+- Statically link winpthreads in the Windows x64 core library and all Windows
+  backends so they no longer require `libwinpthread-1.dll`. The native build
+  checks the DLL import tables after linking.
+
 ## 1.93.0.5
 
 - **Breaking:** audited single-value pointer parameters use managed `ref`, `in`,

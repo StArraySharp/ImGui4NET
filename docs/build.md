@@ -84,6 +84,10 @@ export CLANG_RESOURCE=/path/to/clang/22
 ./tools/generate.sh --help
 ```
 
+Windows x64 builds statically link winpthreads in the core DLL and all backend
+DLLs. The build uses `objdump` or `llvm-objdump` to reject imports of the
+winpthread DLL.
+
 ### When `--no-generate` is mandatory
 
 The bindings are generated with a **Windows target triple**

@@ -77,6 +77,9 @@ export CLANG_RESOURCE=/path/to/clang/22
 ./tools/generate.sh --help
 ```
 
+Windows x64 的核心 DLL 和所有后端 DLL 均静态链接 winpthreads。构建通过
+`objdump` 或 `llvm-objdump` 检查导入表，发现动态依赖 winpthread 时会报错。
+
 ### `--no-generate` 什么时候必须用
 
 绑定是用 **Windows 三元组**（`x86_64-w64-windows-gnu`）生成的，所以 `DllImport` 里的名字是 **LLP64 mangling**：
